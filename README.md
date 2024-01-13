@@ -1,11 +1,11 @@
 ## Hello there 👋
 This is our team organization page for COSC 4P02 Software Engineering II at Brock University. 
 
+Project documents are located in the [doc](doc) folder.
 
 
 ## Project Description 📝
 Project Description
-
 
 
 ## Team Members 👥
@@ -16,7 +16,6 @@ Project Description
 | [Ralph Terte](https://github.com/Jaserii)| 6911002 |
 | [Duc Nguyen Minh](https://github.com/ducoday12345)| 6877765 |
 | [Antonio Belsito](https://github.com/AntonioBelsito1)| 6909543 |
-
 
 
 ## License
