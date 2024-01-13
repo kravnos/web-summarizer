@@ -5,7 +5,17 @@ Project documents are located in the [doc](doc) folder.
 
 
 ## Project Description 📝
-Project Description
+- Web Summarizer and Shortener
+  - A tool for creating brief summaries and short links for web content
+  - There are both free and pro features
+Features:
+- Short Link Creation
+- Summarization: uses NLP or LLMs to summarize the content of a given weburl
+- Custom Summarization Levels (pro-feature)
+- Social Media Integration through Google and FB authentication (pro-feature)
+- API Access (pro-feature)
+- User Dashboard (pro-feature) for registered users to track their activity,
+- manage links, and customize settings.
 
 
 ## Team Members 👥
