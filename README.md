@@ -15,7 +15,7 @@ Project Description
 | [Yuvraj Sehgal](https://github.com/17YuvrajSehgal) - *Scrum Master*| 6921795 |
 | [Ralph Terte](https://github.com/Jaserii)| 6911002 |
 | [Duc Nguyen Minh](https://github.com/ducoday12345)| 6877765 |
-| [Antonio Belsito](https://github.com/tbd)| 6909543 |
+| [Antonio Belsito](https://github.com/AntonioBelsito1)| 6909543 |
 
 
 
