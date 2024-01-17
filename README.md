@@ -21,7 +21,7 @@ Project documents are located in the [doc](doc) folder.
 ## Team Members 👥
 | Name | Student Number|
 |------|---------------|
-| [Thomas Van Veen](https://github.com/tv15jl) - *Team Leader* | 5937123 |
+| [Thomas Van Veen](https://github.com/tv15jl) - *Product Owner* | 5937123 |
 | [Yuvraj Sehgal](https://github.com/17YuvrajSehgal) - *Scrum Master*| 6921795 |
 | [Ralph Terte](https://github.com/Jaserii)| 6911002 |
 | [Duc Nguyen Minh](https://github.com/ducoday12345)| 6877765 |
