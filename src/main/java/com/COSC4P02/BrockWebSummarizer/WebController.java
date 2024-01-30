@@ -9,7 +9,7 @@ public class WebController {
 
     @GetMapping
     String test(Model model) {
-        model.addAttribute("test", "Test from controller in Java"); // data to send to html page
+        model.addAttribute("test", "Data from WebController"); // data to send to html page
         return "index"; // webpage name
     }
 
