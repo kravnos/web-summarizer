@@ -21,6 +21,10 @@ public class SecurityConfig {
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(withDefaults())
+                .logout((logout) -> {
+                    logout.logoutUrl("/logout");
+                    logout.logoutSuccessUrl("/");
+                })
                 .build();
     }
 }
