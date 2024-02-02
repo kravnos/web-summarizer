@@ -25,6 +25,7 @@ public class SecurityConfig {
                     logout.logoutUrl("/logout");
                     logout.logoutSuccessUrl("/");
                 })
+                
                 .build();
     }
 }
