@@ -1,0 +1,19 @@
+*:not(.static), *:not(.static):hover {
+	-o-transition-duration: 0.75s;
+	-webkit-transition-duration: 0.75s;
+	-moz-transition-duration: 0.75s;
+	transition-duration: 0.75s;
+}
+*:not(.navbar) {
+    border-radius: 1.375rem!important;
+}
+body {
+	font-family: 'Roboto Condensed', arial;
+}
+.container {
+    max-width: 992px!important;
+}
+.btn, .form-control {
+    padding-left: 1rem!important;
+    padding-right: 1rem!important;
+}
