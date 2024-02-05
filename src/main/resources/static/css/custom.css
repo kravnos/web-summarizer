@@ -1,8 +1,8 @@
 *:not(.static), *:not(.static):hover {
-	-o-transition-duration: 0.75s;
-	-webkit-transition-duration: 0.75s;
-	-moz-transition-duration: 0.75s;
-	transition-duration: 0.75s;
+	-o-transition-duration: 0.25s;
+	-webkit-transition-duration: 0.25s;
+	-moz-transition-duration: 0.25s;
+	transition-duration: 0.25s;
 }
 *:not(.navbar) {
     border-radius: 1.375rem!important;
@@ -10,10 +10,16 @@
 body {
 	font-family: 'Roboto Condensed', arial;
 }
-.container {
+.container-ct {
     max-width: 992px!important;
 }
 .btn, .form-control {
-    padding-left: 1rem!important;
-    padding-right: 1rem!important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.bi-lock-fill-ms {
+    margin-left: 2px;
+}
+.modal-header, .modal-footer {
+    border: 0;
 }
