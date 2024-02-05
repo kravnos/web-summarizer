@@ -17,12 +17,15 @@
 <!-- Navbar -->
 <!-- fixed-top -->
 <nav class="navbar navbar-expand navbar-dark bg-primary">
-    <div class="container">
+    <div class="container container-ct">
         <a class="navbar-brand" href="#">Web Summarizer</a>
         <div class="justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
                 </li>
                 <li class="nav-item">
                     <div class="form-check form-switch nav-link ms-5">
@@ -36,9 +39,9 @@
 </nav>
 
 <!-- Main Content -->
-<div class="container mt-5">
+<div class="container container-ct mt-5">
     <h1>Welcome to Web Summarizer</h1>
-    <p>A tool to summarize web content quickly and easily.</p>
+    <p>A tool to summarize web content quickly and easily. Enter a website link below and click 'Summarize' to begin.</p>
 
     <div class="row mt-5">
         <div class="col-md-6">
@@ -63,5 +66,42 @@
     </div>
 </div>
 
+<!-- Login Modal -->
+<div class="modal fade modal-dialog-scrollable" id="modal-login" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-label-login">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <br /><br /><br /><br /><br /><br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pro Modal -->
+<div class="modal fade modal-dialog-scrollable" id="modal-pro" tabindex="-1" aria-labelledby="modal-label-pro" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-label-pro">Pro Features</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <br /><br /><br /><br /><br /><br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
