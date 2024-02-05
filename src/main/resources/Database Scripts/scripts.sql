@@ -30,5 +30,3 @@ SELECT
     substr(md5(random()::text), 0, 20) AS password,
     floor(random() * 10000000000)::bigint AS phone_number
 FROM generate_series(1, 10);
-
-
