@@ -1,12 +1,9 @@
 $(document).ready(function () {
     $("#flexSwitchCheckDefault").change(function() {
-        $("body").toggleClass("bg-secondary");
+        $("body, .modal-content").toggleClass("bg-secondary");
+        $("h1, h2, h3, h4, h5, p").toggleClass("text-white");
         $("nav").toggleClass("bg-dark");
         $("button").toggleClass("btn-dark");
-        $("h1").toggleClass("text-white");
-        $("h2").toggleClass("text-white");
-        $("h3").toggleClass("text-white");
-        $("p").toggleClass("text-white");
         $(".dkmode-check-label").toggleClass("bi-moon-fill");
         $(".dkmode-check-label").toggleClass("bi-brightness-high-fill");
     });
