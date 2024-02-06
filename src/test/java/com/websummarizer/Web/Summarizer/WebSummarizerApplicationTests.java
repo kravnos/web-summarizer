@@ -1,10 +1,10 @@
-package com.COSC4P02.BrockWebSummarizer;
+package com.websummarizer.Web.Summarizer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BrockWebSummarizerApplicationTests {
+class WebSummarizerApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,4 +1,4 @@
-package com.COSC4P02.BrockWebSummarizer;
+package com.websummarizer.Web.Summarizer.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/pro").authenticated();
+                    auth.requestMatchers("/login").authenticated();
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(withDefaults())

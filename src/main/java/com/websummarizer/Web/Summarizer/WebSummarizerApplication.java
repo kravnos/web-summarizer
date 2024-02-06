@@ -1,13 +1,13 @@
-package com.COSC4P02.BrockWebSummarizer;
+package com.websummarizer.Web.Summarizer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BrockWebSummarizerApplication {
+public class WebSummarizerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BrockWebSummarizerApplication.class, args);
+		SpringApplication.run(WebSummarizerApplication.class, args);
 	}
 
 }
