@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() { // when DOM is ready
     var bDark = sessionStorage.getItem('bDark') || '';
 
     if (bDark == 'true') {
@@ -26,5 +26,11 @@ $(document).ready(function () {
         } else {
             sessionStorage.removeItem('bDark');
         }
+    });
+});
+
+$(window).on("load", function() { // when ALL content is loaded
+    $("#loader").fadeOut(750).queue(function() {
+        $("#wrapper").removeClass("opacity-0");
     });
 });

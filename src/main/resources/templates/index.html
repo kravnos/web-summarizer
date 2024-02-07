@@ -13,7 +13,19 @@
     <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
     <script th:src="@{/js/custom.js}" type="text/javascript"></script>
 </head>
-<body>
+<body><!--class="overflow-hidden"-->
+<!-- loading -->
+<div id="loader" class="static position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto zindex-loader">
+    <div class="d-flex justify-content-center align-items-center w-100 h-100">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<!-- Main Wrapper -->
+<div id="wrapper" class="static opacity-0">
+
 <!-- Header -->
 <nav class="navbar fixed-top navbar-expand navbar-dark bg-primary">
     <div class="container container-ct">
@@ -66,6 +78,7 @@
                             type="button">Summarize
                     </button>
                 </div>
+                </input>
             </div>
         </div>
     </div>
@@ -108,5 +121,7 @@
         </div>
     </div>
 </div>
+</div>
+
 </body>
 </html>
