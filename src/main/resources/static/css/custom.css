@@ -25,6 +25,9 @@ body {
 .modal-header, .modal-footer {
     border: 0;
 }
+.zindex-loader {
+    z-index: 1100;
+}
 /* custom scrollbar */
 ::-webkit-scrollbar {
     width: 20px;
