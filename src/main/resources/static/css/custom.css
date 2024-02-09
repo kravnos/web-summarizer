@@ -28,6 +28,14 @@ body {
 .fs-7 {
     font-size: 0.75rem;
 }
+.spinner-border-lg {
+    width: 2.75rem;
+    height: 2.75rem;
+}
+.spinner-grow-xs {
+    --bs-spinner-width: 0.5rem;
+    --bs-spinner-height: 0.1rem;
+}
 .modal-header, .modal-footer {
     border: 0;
 }
