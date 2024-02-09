@@ -15,7 +15,7 @@
 </head>
 <body><!--class="overflow-hidden"-->
 <!-- loading -->
-<div id="loader" class="static position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto zindex-loader">
+<div id="loader" class="static text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto zindex-loader">
     <div class="d-flex justify-content-center align-items-center w-100 h-100">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -28,8 +28,8 @@
 
 <!-- Header -->
 <nav class="navbar fixed-top navbar-expand navbar-dark bg-primary">
-    <div class="container container-ct">
-        <a class="navbar-brand" href="#">Web Summarizer</a>
+    <div class="container container-custom">
+        <a class="navbar-brand" href="/">Web Summarizer</a>
         <div class="justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -41,7 +41,7 @@
                 <li class="nav-item">
                     <div class="form-check form-switch nav-link ms-5">
                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label dkmode-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
+                        <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
                     </div>
                 </li>
             </ul>
@@ -50,33 +50,39 @@
 </nav>
 
 <!-- Main -->
-<div class="container container-ct scroll-ct">
-    <h1 class="mt-5">Welcome to Web Summarizer</h1>
-    <p>A tool to summarize web content quickly and easily. Enter a website link below and click 'Summarize' to begin.</p>
-
-    <div class="row mt-5">
+<div class="container container-custom scroll-custom">
+    <div class="row">
         <div class="col">
-            <h2>Summary</h2>
-            <p id="summary-text">This is where the summarized content will appear.</p>
+            <div id="intro" class="static position-absolute top-50 start-50 translate-middle text-center m-auto zindex-loader">
+                    <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
+                    <h3 class="mt-2">What would you like to summarize?</h3>
+            </div>
+            <div id="summary-wrapper"><!-- Summarized Text --></div>
         </div>
     </div>
 </div>
 
 <!-- Footer -->
-<div class="container container-ct fixed-bottom mb-4">
+<div class="container container-custom fixed-bottom mb-4">
     <div class="row">
         <div class="col">
+            <!--<label for="url" class="form-label invalid-feedback">Please enter a valid URL</label>-->
+            <div for="url" class="invalid-feedback mt-0 mb-1 px-4 fs-7">Please enter a valid URL</div>
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Enter a URL">
+                <!--<span class="input-group-text">https://</span>-->
+                <input name="url" id="url" class="form-control shadow-google border-0" type="text" placeholder="Enter a URL">
                 <div class="input-group-append ms-2">
                     <button
-                            hx-get="/api/summary"
-                            hx-target="#summary-text"
-                            hx-swap="outerHTML"
+                            hx-trigger="click queue:none"
+                            hx-post="/api/summary"
+                            hx-target="#summary-wrapper"
+                            hx-swap="beforeend"
+                            hx-indicator=".htmx-indicator"
+                            type="button"
                             id="summary-button"
-                            class="btn btn-primary"
-                            type="button">Summarize
-                    </button>
+                            class="btn btn-primary disabled"
+                            aria-disabled="true">Summarize
+                    </button><!-- multiple spam clicks will be ignored until response -->
                 </div>
                 </input>
             </div>
