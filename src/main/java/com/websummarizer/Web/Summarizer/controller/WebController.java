@@ -30,10 +30,6 @@ public class WebController {
         // If the user is actively logged in, automatically redirect to pro features site
         // https://stackoverflow.com/questions/13131122/spring-security-redirect-if-already-logged-in
         if (!(auth instanceof AnonymousAuthenticationToken)) {
-            //System.out.println(principal.getAttributes());
-            System.out.println(principal.getName());
-            System.out.println((String) principal.getAttribute("name"));
-            System.out.println((String) principal.getAttribute("email"));
             model.addAttribute("loginText", "Logout"); // data to send to html page
             model.addAttribute("loginURL", "/logout");
             return "index";
