@@ -1,7 +1,7 @@
-body *:not(.static), body *:not(.static):hover {
+body *:not(.transition-0), body *:not(.transition-0):hover {
 	transition-duration: 0.25s!important;
 }
-body *:not(.navbar) {
+body *:not(.rounded-0):not(.modal-backdrop) {
     border-radius: 1.5rem!important;
 }
 body {
@@ -42,8 +42,11 @@ body {
 .zindex-loader {
     z-index: 1100;
 }
+.zindex-intro {
+    z-index: 1090;
+}
 /* custom htmx loader */
-.htmx-indicator {
+/*.htmx-indicator {
     opacity: 0;
     transition: opacity 500ms ease-in;
 }
@@ -52,7 +55,7 @@ body {
 }
 .htmx-request.htmx-indicator {
     opacity: 1;
-}
+}*/
 /* custom scrollbar */
 ::-webkit-scrollbar {
     width: 20px;
