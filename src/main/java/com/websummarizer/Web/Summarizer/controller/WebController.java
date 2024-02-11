@@ -15,7 +15,6 @@ public class WebController {
     @PostMapping("/api/summary")
     String getSummary(Model model) {
         model.addAttribute("summaryText", "<< Example Data from WebController >> The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog<br /><br />The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog << END >>"); // data to send to html page
-        //Thread.sleep(500); // testing server response delays - delete later
         return "api/summary"; // webpage to return
     }
 
