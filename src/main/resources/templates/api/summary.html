@@ -8,7 +8,7 @@ function type() {
     if (index < text.length) {
         id.innerHTML = text.slice(0, index);
         index++;
-        setTimeout(type, (Math.random() * 50) + 1);
+        setTimeout(type, (Math.random() * 50 | 0));
     } else {
         id.innerHTML = text.slice(0, index);
         ai.style.display = 'none';
@@ -19,7 +19,6 @@ type();
 </script>
 
 <div id="summary-bubble" class="shadow-google bg-white border-0 mt-4 mb-4">
-    <!--<span id="summary-text" th:text="${summaryText}"></span>-->
-    <span id="summary-text"></span>
+    <span id="summary-text" th:utext="${summaryText}"></span>
     <span id="ai" class="spinner-grow spinner-grow-xs"></span>
 </div>
