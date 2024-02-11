@@ -15,7 +15,7 @@
 </head>
 <body><!--class="overflow-hidden"-->
 <!-- loading -->
-<div id="loader" class="static text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto zindex-loader">
+<div id="loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
     <div class="d-flex justify-content-center align-items-center w-100 h-100">
         <div class="spinner-border spinner-border-lg" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -24,10 +24,10 @@
 </div>
 
 <!-- Main Wrapper -->
-<div id="wrapper" class="static opacity-0">
+<div id="wrapper" class="rounded-0 transition-0 opacity-0">
 
 <!-- Header -->
-<nav class="navbar fixed-top navbar-expand navbar-dark bg-primary">
+<nav class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
     <div class="container container-custom">
         <a class="navbar-brand" href="/">Web Summarizer</a>
         <div class="justify-content-end" id="navbarNav">
@@ -53,39 +53,38 @@
 <div class="container container-custom scroll-custom">
     <div class="row">
         <div class="col">
-            <div id="intro" class="static position-absolute top-50 start-50 translate-middle text-center m-auto zindex-loader">
+            <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
                     <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
                     <h3 class="mt-2">What would you like to summarize?</h3>
             </div>
-            <div id="summary-wrapper"><!-- Summarized Text --></div>
+            <div id="summary-wrapper" class="transition-0"><!-- Summarized Text --></div>
         </div>
     </div>
 </div>
 
 <!-- Footer -->
-<div class="container container-custom fixed-bottom mb-4">
+<div class="container container-custom fixed-bottom">
     <div class="row">
         <div class="col">
-            <!--<label for="url" class="form-label invalid-feedback">Please enter a valid URL</label>-->
-            <div for="url" class="invalid-feedback mt-0 mb-1 px-4 fs-7">Please enter a valid URL</div>
+            <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
             <div class="input-group">
-                <!--<span class="input-group-text">https://</span>-->
-                <input name="url" id="url" class="form-control shadow-google border-0" type="text" placeholder="Enter a URL">
+                <!--<span class="input-group-text">http(s)://</span>-->
+                <input id="input-main" class="form-control shadow-google border-0" name="url" type="text" maxlength="5000" placeholder="Enter Text or a URL" autofocus />
                 <div class="input-group-append ms-2">
                     <button
                             hx-trigger="click queue:none"
                             hx-post="/api/summary"
                             hx-target="#summary-wrapper"
                             hx-swap="beforeend"
-                            hx-indicator=".htmx-indicator"
+                            hx-disabled-elt="this"
                             type="button"
                             id="summary-button"
                             class="btn btn-primary disabled"
                             aria-disabled="true">Summarize
                     </button><!-- multiple spam clicks will be ignored until response -->
                 </div>
-                </input>
             </div>
+            <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
         </div>
     </div>
 </div>
