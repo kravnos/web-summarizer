@@ -1,6 +1,7 @@
 $(document).ready(function() { // when DOM is ready
     const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
     let bDark = sessionStorage.getItem("bDark");
+    let timeout;
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
@@ -30,40 +31,46 @@ $(document).ready(function() { // when DOM is ready
     });
 
     $("#input-main").on("input keyup", function(event) {
-        let value = $(this).val();
+        if (timeout) {
+            clearTimeout(timeout);
+        }
 
-        if (value.length > 0) {
-            $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
+        timeout = setTimeout(function() { // throttle input events
+            let value = $("#input-main").val();
 
-            if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf('www') >= 0) || (value.toLowerCase().indexOf('.c') >= 0)) {
-                if (regex.test(value)) {
-                    $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
-                    $(".invalid-feedback").fadeOut(250);
+            if (value.length > 0) {
+                $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
+
+                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf('www') >= 0) || (value.toLowerCase().indexOf('.c') >= 0)) {
+                    if (regex.test(value)) {
+                        $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
+                        $(".invalid-feedback").fadeOut(250);
+                    } else {
+                        $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                        $(".invalid-feedback").text("Please enter a valid URL").fadeIn(250);
+                    }
                 } else {
-                    $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
-                    $(".invalid-feedback").text("Please enter a valid URL").fadeIn(250);
+                    if (value.length >= 200) {
+                        $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
+                        $(".invalid-feedback").fadeOut(250);
+                    } else {
+                        $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                        $(".invalid-feedback").text("Please provide a minimum of 200 characters").fadeIn(250);
+                    }
                 }
             } else {
-                if (value.length >= 200) {
-                    $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
-                    $(".invalid-feedback").fadeOut(250);
-                } else {
-                    $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
-                    $(".invalid-feedback").text("Please provide a minimum of 200 characters").fadeIn(250);
-                }
+                $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                $(".invalid-feedback").fadeOut(250);
+
+                $("#feedback-length").text("0/5000").addClass("opacity-0");
             }
-        } else {
-            $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
-            $(".invalid-feedback").fadeOut(250);
 
-            $("#feedback-length").text("0/5000").addClass("opacity-0");
-        }
+            if ((!$("#summary-button").hasClass("disabled")) && (event.key == "Enter")) {
+                event.preventDefault();
 
-        if ((!$("#summary-button").hasClass("disabled")) && (event.key == "Enter")) {
-            event.preventDefault();
-
-            $("#summary-button").trigger("click");
-        }
+                $("#summary-button").trigger("click");
+            }
+        }, 250);
     });
 
     $("#summary-button").on("htmx:beforeRequest", function() {
@@ -77,9 +84,37 @@ $(document).ready(function() { // when DOM is ready
         $("#loader").show();
     });
 
+    $("#summary-button").on("htmx:afterRequest", function(event) {
+        if (event.detail.successful == true) {
+            let div = $(".summary-text").last();
+            let summary = div.html();
+            let scroller = $(".scroll-custom");
+            let height = 0;
+
+            for (let i = 0, l = summary.length; i <= l; i++) {
+                setTimeout(function() {
+                    if (i == summary.length) {
+                        $(".ai").last().hide();
+                    }
+                    if ((i > 0) && (height < div.height())) {
+                        height = div.height();
+                        scroller.scrollTop(scroller[0].scrollHeight);
+                    }
+                    /*if (!(i % 100)) {
+                        scroller.scrollTop(scroller[0].scrollHeight);
+                    }*/
+                    div.html(summary.slice(0, i)); //(Math.random() * 50 | 0))
+                }, 10 * i);
+            }
+        } else {
+            $(".summary-text").last().text("Request from server failed");
+        }
+    });
+
     $("#summary-wrapper").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(250, function() {
-            $(".scroll-custom").scrollTop($(".scroll-custom")[0].scrollHeight);
+            let scroller = $(".scroll-custom");
+            scroller.scrollTop(scroller[0].scrollHeight);
             $("#summary-wrapper").removeClass("opacity-0");
         });
     });
