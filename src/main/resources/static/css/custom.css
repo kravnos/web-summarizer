@@ -4,6 +4,9 @@ body *:not(.transition-0), body *:not(.transition-0):hover {
 body *:not(.rounded-0):not(.modal-backdrop) {
     border-radius: 1.5rem!important;
 }
+body *:focus {
+    box-shadow: 0 1px 6px 0 rgba(13,110,253,.25)!important;
+}
 body {
 	font-family: 'Roboto Condensed', arial;
 }
