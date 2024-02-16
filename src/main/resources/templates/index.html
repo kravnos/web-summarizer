@@ -69,7 +69,7 @@
             <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
             <div class="input-group">
                 <!--<span class="input-group-text">http(s)://</span>-->
-                <input id="input-main" class="form-control shadow-google border-0" name="url" type="text" maxlength="5000" placeholder="Enter Text or a URL" autofocus />
+                <input id="input-main" class="form-control shadow-google border-0" name="inputId" type="text" maxlength="5000" placeholder="Enter Text or a URL" autofocus />
                 <div class="input-group-append ms-2">
                     <button
                             hx-trigger="click queue:none"
@@ -77,10 +77,13 @@
                             hx-target="#summary-wrapper"
                             hx-swap="beforeend"
                             hx-disabled-elt="this"
+                            th:object="${input}"
                             type="button"
                             id="summary-button"
-                            class="btn btn-primary disabled"
-                            aria-disabled="true">Summarize
+                            class="btn btn-primary position-relative disabled"
+                            aria-disabled="true">
+                            <span id="summary-button-text">Summarize</span>
+                            <span id="summary-button-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
                     </button><!-- multiple spam clicks will be ignored until response -->
                 </div>
             </div>
