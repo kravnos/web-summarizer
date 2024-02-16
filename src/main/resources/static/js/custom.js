@@ -31,14 +31,13 @@ $(document).ready(function() { // when DOM is ready
     });
 
     $("#input-main").on("input keyup", function(event) {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
+        let value = $("#input-main").val();
+        let ai = $(".ai").last();
+
+        clearTimeout(timeout);
 
         timeout = setTimeout(function() { // throttle input events
-            let value = $("#input-main").val();
-
-            if (value.length > 0) {
+            if ((value.length > 0) && ((!ai.length) || (ai.css("display") == "none"))) {
                 $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
 
                 if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf('www') >= 0) || (value.toLowerCase().indexOf('.c') >= 0)) {
@@ -55,7 +54,7 @@ $(document).ready(function() { // when DOM is ready
                         $(".invalid-feedback").fadeOut(250);
                     } else {
                         $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
-                        $(".invalid-feedback").text("Please provide a minimum of 200 characters").fadeIn(250);
+                        $(".invalid-feedback").text("Please enter a minimum of 200 characters").fadeIn(250);
                     }
                 }
             } else {
@@ -75,6 +74,8 @@ $(document).ready(function() { // when DOM is ready
 
     $("#summary-button").on("htmx:beforeRequest", function() {
         $(this).addClass("disabled").attr("aria-disabled", "true");
+        $("#summary-button-text").addClass("opacity-0");
+        $("#summary-button-spinner").removeClass("d-none").removeAttr("aria-hidden");
         $("#input-main").val(null).focus();
         $("#feedback-length").text($("#input-main").val().length + "/5000").addClass("opacity-0");
         $(".invalid-feedback").hide();
@@ -95,6 +96,9 @@ $(document).ready(function() { // when DOM is ready
                 setTimeout(function() {
                     if (i == summary.length) {
                         $(".ai").last().hide();
+                        $("#summary-button-spinner").addClass("d-none").attr("aria-hidden", "true");
+                        $("#summary-button-text").removeClass("opacity-0");
+                        $("#input-main").trigger("input");
                     }
                     if ((i > 0) && (height < div.height())) {
                         height = div.height();
