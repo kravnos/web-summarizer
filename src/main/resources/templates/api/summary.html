@@ -1,4 +1,8 @@
-<div class="shadow-google bg-white border-0 mt-4 mb-4">
-    <span class="summary-text" th:utext="${summaryText}"></span>
+<div class="date text-black-50 text-center fs-7 w-100" th:text="${date}"></div>
+<div class="input chat shadow-google bg-white border-0 ms-auto me-0 my-4">
+    <span th:utext="${input}"></span>
+</div>
+<div class="output chat shadow-google bg-white border-0 me-auto ms-0 my-4">
+    <span class="summary-text" th:utext="${output}"></span>
     <span class="ai spinner-grow spinner-grow-xs"></span>
 </div>
