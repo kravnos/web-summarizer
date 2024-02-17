@@ -25,6 +25,16 @@ body {
 .shadow-google {
     box-shadow: 0 1px 6px 0 #20212447;
 }
+.date:not(:first-child) {
+    margin-top: 3rem!important;
+}
+.chat {
+    max-width: 88%;
+    width: fit-content;
+}
+.text-justify {
+    text-align: justify;
+}
 .bi-lock-fill-ms {
     margin-left: 2px;
 }
