@@ -6,6 +6,7 @@ $(document).ready(function() { // when DOM is ready
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
         $("h1, h2, h3, h4, h5, p, #feedback-length").addClass("text-white");
+        $(".date").removeClass("text-black-50").addClass("text-white-50");
         $("nav").addClass("bg-dark");
         $("button").addClass("btn-dark");
         $(".form-check-input").addClass("border-secondary");
@@ -17,6 +18,7 @@ $(document).ready(function() { // when DOM is ready
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
         $("h1, h2, h3, h4, h5, p, #feedback-length").toggleClass("text-white");
+        $(".date").toggleClass("text-black-50").toggleClass("text-white-50");
         $("nav").toggleClass("bg-dark");
         $("button").toggleClass("btn-dark");
         $(".form-check-input").toggleClass("border-secondary");
