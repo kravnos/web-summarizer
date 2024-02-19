@@ -67,7 +67,6 @@
     <div class="row">
         <div class="col">
             <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
-            <form>
             <div class="input-group">
                 <!--<span class="input-group-text">http(s)://</span>-->
                 <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter Text or a URL" autofocus />
@@ -75,6 +74,7 @@
                     <button
                             hx-trigger="click queue:none"
                             hx-post="/api/summary"
+                            hx-include="[name='input']"
                             hx-target="#summary-wrapper"
                             hx-swap="beforeend"
                             hx-disabled-elt="this"
@@ -87,7 +87,6 @@
                     </button><!-- multiple spam clicks will be ignored until response -->
                 </div>
             </div>
-            </form>
             <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
         </div>
     </div>
