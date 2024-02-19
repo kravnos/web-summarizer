@@ -33,7 +33,7 @@
         <div class="justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
+                    <a class="nav-link" th:href="${loginURL}" id="login" th:text="${loginText}" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
