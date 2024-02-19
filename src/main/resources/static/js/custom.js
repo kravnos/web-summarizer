@@ -32,10 +32,10 @@ $(document).ready(function() { // when DOM is ready
         }
     });
 
-    $("#input-main").on("input keydown", function(event) {
-        if (event.key == "Enter") {
+    $("#input-main").on("input keyup", function(event) {
+        /*if (event.key == "Enter") {
             event.preventDefault();
-        }
+        }*/
 
         let value = $("#input-main").val();
         let ai = $(".ai").last();
