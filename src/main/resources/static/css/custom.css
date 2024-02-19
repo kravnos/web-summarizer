@@ -29,7 +29,9 @@ body {
     margin-top: 3rem!important;
 }
 .chat {
-    max-width: 88%;
+    max-width: 85%;
+}
+.fit-content {
     width: fit-content;
 }
 .text-justify {
