@@ -32,12 +32,15 @@ $(document).ready(function() { // when DOM is ready
         }
     });
 
-    $("#input-main").on("input keyup", function(event) {
+    $("#input-main").on("input keydown", function(event) {
+        if (event.key == "Enter") {
+            event.preventDefault();
+        }
+
         let value = $("#input-main").val();
         let ai = $(".ai").last();
 
         clearTimeout(timeout);
-
         timeout = setTimeout(function() { // throttle input events
             if ((value.length > 0) && ((!ai.length) || (ai.css("display") == "none"))) {
                 $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
@@ -66,9 +69,7 @@ $(document).ready(function() { // when DOM is ready
                 $("#feedback-length").text("0/5000").addClass("opacity-0");
             }
 
-            if ((!$("#summary-button").hasClass("disabled")) && (event.key == "Enter")) {
-                event.preventDefault();
-
+            if ((event.key == "Enter") && (!$("#summary-button").hasClass("disabled"))) {
                 $("#summary-button").trigger("click");
             }
         }, 250);
@@ -79,7 +80,7 @@ $(document).ready(function() { // when DOM is ready
         $("#summary-button-text").addClass("opacity-0");
         $("#summary-button-spinner").removeClass("d-none").removeAttr("aria-hidden");
         $("#input-main").val(null).focus();
-        $("#feedback-length").text($("#input-main").val().length + "/5000").addClass("opacity-0");
+        $("#feedback-length").text("0/5000").addClass("opacity-0");
         $(".invalid-feedback").hide();
 
         $("#summary-wrapper").addClass("opacity-0");
