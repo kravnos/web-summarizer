@@ -1,1 +1,16 @@
-<p id="summary-text" th:text="${summaryText}"></p>
+<div class="date text-black-50 text-center fs-7 w-100" th:text="${date}"></div>
+<div class="user fit-content ms-auto me-0 my-2 px-4">
+    <h4 class="d-inline-block mt-0 me-1 mb-0 ms-0 bi bi-person-circle"></h4>
+    <h3 class="d-inline-block m-0" th:text="${user}"></h3>
+</div>
+<div class="input chat fit-content shadow-google bg-white border-0 ms-auto me-0 my-2">
+    <span th:text="${input}"></span>
+</div>
+<div class="bot fit-content ms-0 me-auto my-2 px-4">
+    <h3 class="d-inline-block m-0">Jarvis</h3>
+    <h4 class="d-inline-block mt-0 me-0 mb-0 ms-1 bi bi-robot"></h4>
+</div>
+<div class="output chat fit-content shadow-google bg-white border-0 me-auto ms-0 my-2">
+    <span class="summary-text" th:utext="${output}"></span>
+    <span class="ai spinner-grow spinner-grow-xs"></span>
+</div>
