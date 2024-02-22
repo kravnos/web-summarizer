@@ -125,6 +125,15 @@ $(document).ready(function() { // when DOM is ready
             $("#summary-wrapper").removeClass("opacity-0");
         });
     });
+
+    $("body").on("htmx:configRequest", function(event) {
+        event.detail.headers["accept"] = "text/html-partial";
+
+        if (event.detail.verb !== "get") {
+          const csrfHeaderName = $("meta[name='_csrf_header']").attr("content");
+          event.detail.headers[csrfHeaderName] = $("meta[name='_csrf']").attr("content");
+        }
+    });
 });
 
 $(window).on("load", function() { // when ALL content is loaded
