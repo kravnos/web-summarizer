@@ -1,8 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
-import com.websummarizer.Web.Summarizer.model.User;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
