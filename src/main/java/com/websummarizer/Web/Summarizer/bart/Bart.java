@@ -15,7 +15,7 @@ public class Bart {
     @Value("${API_URL}")
     private String API_URL="https://api-inference.huggingface.co/models/facebook/bart-large-cnn";
     @Value("${AUTH_TOKEN}")
-    private String AUTH_TOKEN="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";
+    private String AUTH_TOKEN="_________________API_TOKEN";
 
     HttpHeaders headers;
 
