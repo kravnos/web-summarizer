@@ -4,20 +4,27 @@
     <title>Web Summarizer</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&display=swap" rel="stylesheet" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&display=swap" rel="stylesheet"
+          type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link th:href="@{/css/custom.css}" rel="stylesheet" type="text/css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"
+            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+            crossorigin="anonymous"></script>
     <script th:src="@{/js/custom.js}" type="text/javascript"></script>
 </head>
-<body>
+<body><!--class="overflow-hidden"-->
 <!-- loading -->
-<div id="loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
+<div id="loader"
+     class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
     <div class="d-flex justify-content-center align-items-center w-100 h-100">
         <div class="spinner-border spinner-border-lg" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -28,109 +35,189 @@
 <!-- Main Wrapper -->
 <div id="wrapper" class="rounded-0 transition-0 opacity-0">
 
-<!-- Header -->
-<nav class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
-    <div class="container container-custom">
-        <a class="navbar-brand" href="/">Web Summarizer</a>
-        <div class="justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="${loginURL}" id="login" th:text="${loginText}" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
-                </li>
-                <li class="nav-item">
-                    <div class="form-check form-switch nav-link ms-5">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
-                    </div>
-                </li>
-            </ul>
+    <!-- Header -->
+    <nav class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
+        <div class="container container-custom">
+            <a class="navbar-brand" href="/">Web Summarizer</a>
+            <div class="justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           data-bs-toggle="modal" data-bs-target="#modal-register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span
+                                class="bi-lock-fill-ms">Pro</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="form-check form-switch nav-link ms-5">login
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- Main -->
-<div class="container container-custom scroll-custom">
-    <div class="row">
-        <div class="col">
-            <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
+    <!-- Main -->
+    <div class="container container-custom scroll-custom">
+        <div class="row">
+            <div class="col">
+                <div id="intro"
+                     class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
                     <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
                     <h3 class="mt-2">What would you like to summarize?</h3>
+                </div>
+                <div id="summary-wrapper" class="text-break text-justify transition-0"><!-- Summarized Text --></div>
             </div>
-            <div id="summary-wrapper" class="text-break text-justify transition-0"><!-- Summarized Text --></div>
         </div>
     </div>
-</div>
 
-<!-- Footer -->
-<div class="container container-custom fixed-bottom">
-    <div class="row">
-        <div class="col">
-            <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
-            <div class="input-group">
-                <!--<span class="input-group-text">http(s)://</span>-->
-                <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter Text or a URL" autofocus />
-                <div class="input-group-append ms-2">
-                    <button
-                            hx-trigger="click queue:none"
-                            hx-post="/api/summary"
-                            hx-include="[name='input']"
-                            hx-target="#summary-wrapper"
-                            hx-swap="beforeend"
-                            hx-disabled-elt="this"
-                            type="button"
-                            id="summary-button"
-                            class="btn btn-primary position-relative disabled"
-                            aria-disabled="true">
+    <!-- Footer -->
+    <div class="container container-custom fixed-bottom">
+        <div class="row">
+            <div class="col">
+                <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
+                <div class="input-group">
+                    <!--<span class="input-group-text">http(s)://</span>-->
+                    <input id="input-main" class="form-control shadow-google border-0" name="input" type="text"
+                           maxlength="5000" placeholder="Enter Text or a URL" autofocus/>
+                    <div class="input-group-append ms-2">
+                        <button
+                                hx-trigger="click queue:none"
+                                hx-post="/api/summary"
+                                hx-include="[name='input']"
+                                hx-target="#summary-wrapper"
+                                hx-swap="beforeend"
+                                hx-disabled-elt="this"
+                                type="button"
+                                id="summary-button"
+                                class="btn btn-primary position-relative disabled"
+                                aria-disabled="true">
                             <span id="summary-button-text">Summarize</span>
-                            <span id="summary-button-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
-                    </button><!-- multiple spam clicks will be ignored until response -->
+                            <span id="summary-button-spinner"
+                                  class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none"
+                                  role="status" aria-hidden="true"></span>
+                        </button><!-- multiple spam clicks will be ignored until response -->
+                    </div>
+                </div>
+                <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade modal-dialog-scrollable" id="modal-register" tabindex="-1" aria-labelledby="modal-label-login"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-label-login">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <th:block th:if="${session.msg}">
+                        <p class="text-center fs-7">[[${session.msg}]]</p>
+                    </th:block>
+
+
+                    <form action="createUser" method="post">
+                        <div class="mb-3">
+                            <label for="registerFirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" name="first_name" id="registerFirstName"
+                                   aria-describedby="emailHelp"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerLastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" id="registerLastName"
+                                   aria-describedby="emailHelp"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" name="email" id="registerEmail"
+                                   aria-describedby="emailHelp"
+                                   required>
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPhoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" name="phone_number" class="form-control" id="registerPhoneNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" id="registerPassword"
+                                   required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
         </div>
     </div>
-</div>
 
-<!-- Login Modal -->
-<div class="modal fade modal-dialog-scrollable" id="modal-login" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-label-login">Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <br /><br /><br /><br /><br /><br />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Login</button>
+    <!-- Login Modal -->
+    <div class="modal fade modal-dialog-scrollable" id="modal-login" tabindex="-1"
+         aria-labelledby="modal-label-login"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-label-register">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="createUser" method="post">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" name="email" id="login-email"
+                                   aria-describedby="emailHelp"
+                                   required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-password" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" id="login-password"
+                                   required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Pro Modal -->
-<div class="modal fade modal-dialog-scrollable" id="modal-pro" tabindex="-1" aria-labelledby="modal-label-pro" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-label-pro">Pro Features</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <br /><br /><br /><br /><br /><br />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Purchase</button>
+    <!-- Login Modal -->
+    <div class="modal fade modal-dialog-scrollable" id="modal-pro" tabindex="-1" aria-labelledby="modal-label-pro"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-label-pro">Pro Features</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <br/><br/><br/><br/><br/><br/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Purchase</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 </body>
