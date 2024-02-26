@@ -23,17 +23,17 @@ public class WebController {
     ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
+        //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         String username = "You";
-        //if (bLoggedIn == true) {
+        //if (auth instanceof AnonymousAuthenticationToken) {
             // set username to logged in name
         //}
-        //String input = "Input text or URL";
         String output = "<< Example Data from WebController >> The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog<br /><br />The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog << END >>";
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
-        model.addAttribute("input", input);
+        model.addAttribute("input", input.trim());
         model.addAttribute("output", output);
         return "api/summary";
     }
