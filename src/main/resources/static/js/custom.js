@@ -1,25 +1,33 @@
-$(document).ready(function() { // when DOM is ready
-    const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+function updateDark() {
     let bDark = sessionStorage.getItem("bDark");
-    let timeout;
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, #feedback-length").addClass("text-white");
-        $(".date").removeClass("text-black-50").addClass("text-white-50");
-        $("nav").addClass("bg-dark");
+        $("h1, h2, h3, h4, h5, p, input, .chat-text, #feedback-length").addClass("text-white");
+        $("nav, input").addClass("bg-dark");
+        $(".chat").addClass("bg-dark").removeClass("bg-white");
+        $(".date").addClass("text-white-50").removeClass("text-black-50");
         $("button").addClass("btn-dark");
         $(".form-check-input").addClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
         $("#loader, #wand, .htmx-indicator").removeClass("text-primary");
         $("#flexSwitchCheckDefault").each(function() { this.checked = true; });
     }
+}
+
+$(document).ready(function() { // when DOM is ready
+    const csrfHeaderName = $("meta[name='_csrf_header']").attr("content");
+    const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+    let timeout;
+
+    updateDark(); // set dark mode state
 
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, #feedback-length").toggleClass("text-white");
-        $(".date").toggleClass("text-black-50").toggleClass("text-white-50");
-        $("nav").toggleClass("bg-dark");
+        $("h1, h2, h3, h4, h5, p, input, .chat-text, #feedback-length").toggleClass("text-white");
+        $("nav, input").toggleClass("bg-dark");
+        $(".chat").toggleClass("bg-dark").toggleClass("bg-white");
+        $(".date").toggleClass("text-white-50").toggleClass("text-black-50");
         $("button").toggleClass("btn-dark");
         $(".form-check-input").toggleClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
@@ -90,7 +98,7 @@ $(document).ready(function() { // when DOM is ready
 
     $("#summary-button").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
-            let div = $(".summary-text").last();
+            let div = $(".output-text").last();
             let summary = div.html();
             let scroller = $(".scroll-custom");
             let height = 0;
@@ -114,8 +122,10 @@ $(document).ready(function() { // when DOM is ready
                 }, 10 * i);
             }
         } else {
-            $(".summary-text").last().text("Request from server failed");
+            $(".output-text").last().text("Request from server failed");
         }
+
+        updateDark();
     });
 
     $("#summary-wrapper").on("htmx:afterSettle", function() {
@@ -130,7 +140,6 @@ $(document).ready(function() { // when DOM is ready
         event.detail.headers["accept"] = "text/html-partial";
 
         if (event.detail.verb !== "get") {
-          const csrfHeaderName = $("meta[name='_csrf_header']").attr("content");
           event.detail.headers[csrfHeaderName] = $("meta[name='_csrf']").attr("content");
         }
     });
