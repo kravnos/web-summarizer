@@ -6,10 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 public class Bart {
+
+    private static final Logger LOGGER = Logger.getLogger(Bart.class.getName());
 
     private final String API_URL;
     private final String AUTH_TOKEN;
@@ -41,15 +47,15 @@ public class Bart {
             } else {
                 return "Cannot summarize at the moment. Please try again later.";
             }
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
             // Log the error for debugging
-            System.out.println("HTTP client error");
+            LOGGER.log(Level.SEVERE, "HTTP client/server error");
             return "Error: " + e.getRawStatusCode() + " " + e.getStatusText();
         } catch (Exception e) {
             // Handle other exceptions
+            LOGGER.log(Level.SEVERE, "An error occurred");
             return "An error occurred. Please try again later.";
         }
     }
-
-
 }
+
