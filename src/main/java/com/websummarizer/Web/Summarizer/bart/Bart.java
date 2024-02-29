@@ -71,7 +71,7 @@ public class Bart {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             // Log HTTP client/server error
             LOGGER.log(Level.SEVERE, "HTTP client/server error");
-            return "Error: " + e.getRawStatusCode() + " " + e.getStatusText();
+            return "Error: " + e.getStatusCode() + " " + e.getStatusText();
         } catch (Exception e) {
             // Log other exceptions
             LOGGER.log(Level.SEVERE, "An error occurred");
