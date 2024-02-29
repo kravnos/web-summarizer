@@ -1,11 +1,11 @@
 package com.websummarizer.Web.Summarizer.bart;
 
+import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 class HTMLParserTest {
     @Test
     void testParser() {
@@ -22,7 +22,6 @@ class HTMLParserTest {
         }
         assertEquals(expected, result, "The parser did not return the expected result.");
     }
-
     @Test
     public void testParserWithIOException() {
         String url = "invalid-url"; // Invalid URL that will cause an IOException
@@ -30,7 +29,6 @@ class HTMLParserTest {
             HTMLParser.parser(url);
         });
     }
-
     @Test
     public void testParserWithNullURL() {
         String url = null; // Invalid URL that will cause an IOException
@@ -38,6 +36,5 @@ class HTMLParserTest {
             HTMLParser.parser(url);
         });
     }
-
 
 }

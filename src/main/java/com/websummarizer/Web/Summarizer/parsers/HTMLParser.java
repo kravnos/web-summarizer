@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.bart;
+package com.websummarizer.Web.Summarizer.parsers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
