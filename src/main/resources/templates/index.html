@@ -35,10 +35,10 @@
         <div class="justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="${loginURL}" id="login" th:text="${loginText}" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
+                    <a id="login" class="nav-link" th:href="${loginURL}" th:text="${loginText}" data-bs-toggle="modal" data-bs-target="#modal-login">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
+                    <a id="pro" class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
                 </li>
                 <li class="nav-item">
                     <div class="form-check form-switch nav-link ms-5">
@@ -80,9 +80,9 @@
                             hx-target="#summary-wrapper"
                             hx-swap="beforeend"
                             hx-disabled-elt="this"
-                            type="button"
                             id="summary-button"
                             class="btn btn-primary position-relative disabled"
+                            type="button"
                             aria-disabled="true">
                             <span id="summary-button-text">Summarize</span>
                             <span id="summary-button-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
