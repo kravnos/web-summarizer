@@ -29,7 +29,13 @@ class HTMLParserTest {
         });
     }
 
-}
+    @Test
+    public void testParserWithNullURL() {
+        String url = null; // Invalid URL that will cause an IOException
+        assertThrows(IllegalArgumentException.class, () -> {
+            HTMLParser.parser(url);
+        });
+    }
 
 
 
