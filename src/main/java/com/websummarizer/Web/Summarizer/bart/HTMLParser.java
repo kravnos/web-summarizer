@@ -6,12 +6,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class provides a method to parse HTML content from a given URL and extract text from paragraph elements.
  */
 public class HTMLParser {
+    private static final Logger LOGGER = Logger.getLogger(HTMLParser.class.getName());
 
     /**
      * Parses HTML content from a given URL and extracts text from paragraph elements.
@@ -20,27 +22,31 @@ public class HTMLParser {
      * @return A string containing the concatenated text from all paragraph elements found on the webpage.
      * @throws IOException If an I/O error occurs while connecting to the URL or reading its content.
      */
-    public static String parser(String url) {
+    public static String parser(String url) throws IOException {
         try {
-            // Connect to the URL and get the HTML document
+            // Get the URL, selects every paragraph element, extract the text value of each paragraph
             Document doc = Jsoup.connect(url).get();
 
             // Select all paragraph elements from the HTML document
             Elements paragraphs = doc.select("p");
 
-            // Use Java 8's Stream API to extract the text from each paragraph and join them into a single string
-            String websiteData = paragraphs.stream()
-                    .map(Element::text)
-                    .collect(Collectors.joining(" "));
+            // StringBuilder to store the extracted text from paragraph elements
+            StringBuilder websiteData = new StringBuilder();
 
-            // Return the concatenated text
-            return websiteData.trim();
+            // Iterate through each paragraph element and append its text to the StringBuilder
+            for (Element p : paragraphs) {
+                websiteData.append(p.text()).append(" ");
+            }
+            // Log success message
+            LOGGER.log(Level.INFO, "HTML content parsed successfully from URL: {0}", url);
+
+            // Trim excess whitespace and return the concatenated text
+            return websiteData.toString().trim();
         } catch (IOException e) {
-            // Log the exception and return a user-friendly message
-            System.err.println("An error occurred while parsing the URL: " + e.getMessage());
-            return "An error occurred. Please try again later.";
+            // Log error message
+            LOGGER.log(Level.SEVERE, "Error parsing HTML content from URL: " + url, e);
+            throw e;
         }
     }
-
 }
 
