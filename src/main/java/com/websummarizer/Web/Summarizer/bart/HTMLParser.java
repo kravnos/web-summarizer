@@ -13,7 +13,13 @@ import java.util.stream.Collectors;
  */
 public class HTMLParser {
 
-
+    /**
+     * Parses HTML content from a given URL and extracts text from paragraph elements.
+     *
+     * @param url The URL of the webpage to parse.
+     * @return A string containing the concatenated text from all paragraph elements found on the webpage.
+     * @throws IOException If an I/O error occurs while connecting to the URL or reading its content.
+     */
     public static String parser(String url) {
         try {
             // Connect to the URL and get the HTML document
