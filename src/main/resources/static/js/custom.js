@@ -50,10 +50,10 @@ $(document).ready(function() { // when DOM is ready
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
-            if ((value.length > 0) && ((!ai.length) || (ai.css("display") == "none"))) {
+            if ((value.length) && ((!ai.length) || (ai.css("display") == "none"))) {
                 $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
 
-                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf('www') >= 0) || (value.toLowerCase().indexOf('.c') >= 0)) {
+                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf("www") >= 0) || (value.toLowerCase().indexOf(".c") >= 0)) {
                     if (regex.test(value)) {
                         $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
                         $(".invalid-feedback").fadeOut(250);
