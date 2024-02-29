@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +22,11 @@ import java.text.SimpleDateFormat;
 public class WebController {
 
     @Autowired
-    private final Bart bart = new Bart();
+    private final Bart bart;
+
+    public WebController(Bart bart) {
+        this.bart = bart;
+    }
 
     @GetMapping("/register")
     public String register() {
@@ -35,13 +42,25 @@ public class WebController {
     public String getSummary(
             @RequestParam(value = "input") String input,
             Model model
-    ) {
+    ) throws IOException {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
         String username = "You";
         String output;
-        output = bart.queryModelText(input);
+
+        boolean isURL = isValidURL(input);
+
+        if(isURL) {
+            input = HTMLParser.parser(input);
+        }
+        try {
+            output = bart.queryModel(input);
+        }catch (Exception e){
+            output = "Error Occured";
+            System.out.println("catched");
+        }
+
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
@@ -49,6 +68,18 @@ public class WebController {
         model.addAttribute("output", output);
         return "api/summary";
     }
+
+    private static boolean isValidURL(String urlStr) {
+        try {
+            // Attempt to create a URL object
+            new URL(urlStr).toURI();
+            return true;
+        } catch (Exception e) {
+            // If an exception occurs, URL is not valid
+            return false;
+        }
+    }
+
 
 //    @GetMapping("/")
 //    String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
