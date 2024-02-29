@@ -14,7 +14,7 @@ class HTMLParserTest {
                 " You may use this domain in literature without prior coordination or asking for permission." +
                 " More information...";
 
-        String result = null;
+        String result;
         try {
             result = HTMLParser.parser(url);
         } catch (IOException e) {
@@ -25,16 +25,12 @@ class HTMLParserTest {
     @Test
     public void testParserWithIOException() {
         String url = "invalid-url"; // Invalid URL that will cause an IOException
-        assertThrows(IllegalArgumentException.class, () -> {
-            HTMLParser.parser(url);
-        });
+        assertThrows(IllegalArgumentException.class, () -> HTMLParser.parser(url));
     }
     @Test
     public void testParserWithNullURL() {
         String url = null; // Invalid URL that will cause an IOException
-        assertThrows(IllegalArgumentException.class, () -> {
-            HTMLParser.parser(url);
-        });
+        assertThrows(IllegalArgumentException.class, () -> HTMLParser.parser(url));
     }
 
 }
