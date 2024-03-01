@@ -20,29 +20,58 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
 
+/**
+ * Controller for web-related actions.
+ */
 @Controller
 public class WebController {
 
     @Autowired
     private final Bart bart;
+
     @Autowired
     private UserServiceImpl userService;
+    private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
+    /**
+     * Constructor for WebController.
+     *
+     * @param bart The Bart instance to use.
+     */
     public WebController(Bart bart) {
         this.bart = bart;
     }
 
+    /**
+     * Endpoint for user registration.
+     *
+     * @return The name of the view to render.
+     */
     @GetMapping("/register")
     public String register() {
         return "index";
     }
 
+    /**
+     * Endpoint for user sign in.
+     *
+     * @return The name of the view to render.
+     */
     @GetMapping("/signin")
-    public String signIn(){
+    public String signIn() {
         return "index";
     }
 
+    /**
+     * Endpoint for getting a summary.
+     *
+     * @param input The input from the user.
+     * @param model The model to use.
+     * @return The name of the view to render.
+     * @throws IOException If an I/O error occurs.
+     */
     @PostMapping("/api/summary")
     public String getSummary(
             @RequestParam(value = "input") String input,
@@ -56,12 +85,12 @@ public class WebController {
 
         boolean isURL = isValidURL(input);
 
-        if(isURL) {
+        if (isURL) {
             input = HTMLParser.parser(input);
         }
         try {
             output = bart.queryModel(input);
-        }catch (Exception e){
+        } catch (Exception e) {
             output = "Error Occured";
             System.out.println("catched");
         }
@@ -74,17 +103,6 @@ public class WebController {
         return "api/summary";
     }
 
-    private static boolean isValidURL(String urlStr) {
-        try {
-            // Attempt to create a URL object
-            new URL(urlStr).toURI();
-            return true;
-        } catch (Exception e) {
-            // If an exception occurs, URL is not valid
-            return false;
-        }
-    }
-
     /**
      * Endpoint for creating a user.
      *
@@ -95,19 +113,36 @@ public class WebController {
     @PostMapping("/createUser")
     public String createUser(@ModelAttribute User user, HttpSession session) {
         session.setAttribute("msg", "");
-        //logger.info("Received user creation request: " + user);
+        logger.info("Received user creation request: " + user);
         boolean bool = false;
         try {
             bool = userService.createUser(user) != null;
         } catch (Exception e) {
             session.setAttribute("msg", "Email already exists");
-            //logger.warning("User creation failed: " + e.getMessage());
+            logger.warning("User creation failed: " + e.getMessage());
         }
         if (bool) {
             session.setAttribute("msg", "Registered Successfully");
-            //logger.info("User created successfully: " + user);
+            logger.info("User created successfully: " + user);
         }
         return "redirect:/";
+    }
+
+    /**
+     * Checks if a string is a valid URL.
+     *
+     * @param urlStr The string to check.
+     * @return true if the string is a valid URL, false otherwise.
+     */
+    private static boolean isValidURL(String urlStr) {
+        try {
+            // Attempt to create a URL object
+            new URL(urlStr).toURI();
+            return true;
+        } catch (Exception e) {
+            // If an exception occurs, URL is not valid
+            return false;
+        }
     }
 
 
