@@ -1,7 +1,10 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
@@ -23,6 +26,8 @@ public class WebController {
 
     @Autowired
     private final Bart bart;
+    @Autowired
+    private UserServiceImpl userService;
 
     public WebController(Bart bart) {
         this.bart = bart;
@@ -78,6 +83,31 @@ public class WebController {
             // If an exception occurs, URL is not valid
             return false;
         }
+    }
+
+    /**
+     * Endpoint for creating a user.
+     *
+     * @param user    The user to create.
+     * @param session The current session.
+     * @return The name of the view to render.
+     */
+    @PostMapping("/createUser")
+    public String createUser(@ModelAttribute User user, HttpSession session) {
+        session.setAttribute("msg", "");
+        //logger.info("Received user creation request: " + user);
+        boolean bool = false;
+        try {
+            bool = userService.createUser(user) != null;
+        } catch (Exception e) {
+            session.setAttribute("msg", "Email already exists");
+            //logger.warning("User creation failed: " + e.getMessage());
+        }
+        if (bool) {
+            session.setAttribute("msg", "Registered Successfully");
+            //logger.info("User created successfully: " + user);
+        }
+        return "redirect:/";
     }
 
 
