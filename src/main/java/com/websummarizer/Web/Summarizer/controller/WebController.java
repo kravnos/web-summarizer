@@ -31,6 +31,11 @@ public class WebController {
         return "index";
     }
 
+    @RequestMapping("/shorten")
+    public String form() {
+        return "shorten.html";
+    }
+
     @PostMapping("/api/summary")
     public String getSummary(
             @RequestParam(value = "input") String input,
