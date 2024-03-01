@@ -22,6 +22,16 @@ CREATE TABLE history (
                          FOREIGN KEY(UID) REFERENCES users(UID)
 );
 
+CREATE TABLE custom_links (
+                         custom_link varchar(50) PRIMARY KEY NOT NULL,
+                         destination_link varchar(50) NOT NULL,
+                         UID integer,
+                         link varchar(200),
+                         upload_time timestamp,
+                         FOREIGN KEY(UID) REFERENCES users(UID)
+);
+
+
 INSERT INTO users (first_name, last_name, email, password, phone_number)
 SELECT
     substr(md5(random()::text), 0, 20) AS first_name,

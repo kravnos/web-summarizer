@@ -20,12 +20,10 @@ public class Bart {
     HttpHeaders headers;
 
     public Bart(){
-        //add code for connection handler
-        headers = new HttpHeaders();
-        headers.setBearerAuth(AUTH_TOKEN);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+
     }
     public String queryModel(@RequestParam String url){
+
 
         //  Gets URL from browser URL, extract paragraph values, then put into requestBody
         //  Example: localhost:8080/test?url=https://en.wikipedia.org/wiki/Brock_University  ==> can change this to other link to test
@@ -53,6 +51,11 @@ public class Bart {
     }
 
     public String queryModelText(String inputText){
+
+        //add code for connection handler
+        headers = new HttpHeaders();
+        headers.setBearerAuth(AUTH_TOKEN);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         String requestBody = "{\"inputs\": \"" + inputText + "\"}";
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
