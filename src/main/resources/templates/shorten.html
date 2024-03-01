@@ -73,9 +73,27 @@
                 <form>
                     <label for="fname">Custom URL</label><br>
                     <input type="text" id="fname" name="fname"><br>
-                    <label for="lname">Desstination URL</label><br>
+                    <label for="lname">Destination URL</label><br>
                     <input type="text" id="lname" name="lname">
                 </form>
+            </div>
+            <div class="input-group-append ms-2">
+                <button
+                        hx-trigger="click queue:none"
+                        hx-post="/api/summary"
+                        hx-include="[name='input']"
+                        hx-target="#summary-wrapper"
+                        hx-swap="beforeend"
+                        hx-disabled-elt="this"
+                        type="button"
+                        id="summary-button"
+                        class="btn btn-primary position-relative disabled"
+                        aria-disabled="true">
+                    <span id="summary-button-text">Create Link</span>
+                    <span id="summary-button-spinner"
+                          class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none"
+                          role="status" aria-hidden="true"></span>
+                </button><!-- multiple spam clicks will be ignored until response -->
             </div>
         </div>
     </div>
@@ -87,24 +105,7 @@
                 <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
                 <div class="input-group">
 
-                    <div class="input-group-append ms-2">
-                        <button
-                                hx-trigger="click queue:none"
-                                hx-post="/api/summary"
-                                hx-include="[name='input']"
-                                hx-target="#summary-wrapper"
-                                hx-swap="beforeend"
-                                hx-disabled-elt="this"
-                                type="button"
-                                id="summary-button"
-                                class="btn btn-primary position-relative disabled"
-                                aria-disabled="true">
-                            <span id="summary-button-text">Summarize</span>
-                            <span id="summary-button-spinner"
-                                  class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none"
-                                  role="status" aria-hidden="true"></span>
-                        </button><!-- multiple spam clicks will be ignored until response -->
-                    </div>
+
                 </div>
                 <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
             </div>
