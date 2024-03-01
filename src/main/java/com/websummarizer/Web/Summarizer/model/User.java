@@ -22,14 +22,14 @@ public class User {
 
     @Setter
     @Column(name = "first_name")
-    private String firstName;
+    private String first_name;
 
     @Setter
     @Column(name = "last_name")
-    private String LastName;
+    private String last_name;
 
     @Setter
-    @Column(name = "email")
+    @Column(name = "email" , unique = true)
     String email;
 
     @Setter
@@ -38,5 +38,17 @@ public class User {
 
     @Setter
     @Column(name = "phone_number")
-    String phoneNumber;
+    String phone_number;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phone_number='" + phone_number + '\'' +
+                '}';
+    }
 }
