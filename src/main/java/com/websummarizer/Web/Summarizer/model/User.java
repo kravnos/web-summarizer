@@ -29,7 +29,7 @@ public class User {
     private String last_name;
 
     @Setter
-    @Column(name = "email")
+    @Column(name = "email" , unique = true)
     String email;
 
     @Setter
