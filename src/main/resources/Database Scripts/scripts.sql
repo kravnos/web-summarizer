@@ -23,7 +23,8 @@ CREATE TABLE history (
 );
 
 CREATE TABLE custom_links (
-                         custom_link varchar(50) PRIMARY KEY NOT NULL,
+                         CID integer PRIMARY KEY NOT NULL,
+                         custom_link varchar(50) NOT NULL,
                          destination_link varchar(50) NOT NULL,
                          UID integer,
                          link varchar(200),
@@ -41,3 +42,4 @@ SELECT
     floor(random() * 10000000000)::bigint AS phone_number
 
 FROM generate_series(1, 10);
+
