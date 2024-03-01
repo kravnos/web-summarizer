@@ -150,3 +150,9 @@ $(window).on("load", function() { // when ALL content is loaded
         $("#wrapper").removeClass("opacity-0");
     });
 });
+
+function setURL(){
+    alert("Hey");
+    var twitter = document.getElementById("twitter");
+    twitter.setAttribute("data-url", "https://en.wikipedia.org/wiki/Main_Page");
+}

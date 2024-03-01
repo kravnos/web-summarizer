@@ -21,6 +21,11 @@
     <script th:src="@{/js/custom.js}" type="text/javascript"></script>
 </head>
 <body><!--class="overflow-hidden"-->
+
+<!-- This is needed for the facebook share button to work -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0&appId=3927654014133930" nonce="6CiZ74Gn"></script>
+
 <!-- loading -->
 <div id="loader"
      class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
@@ -103,6 +108,17 @@
                                   class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none"
                                   role="status" aria-hidden="true"></span>
                         </button><!-- multiple spam clicks will be ignored until response -->
+
+                        <!-- Twitter Share Button -->
+                        <a id="twitter" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-url="URL TO ADD" data-show-count="false" onclick="setURL()">Hello CLick Me</a>
+                        <script async th:src="@{/js/widgets.js}" type="text/javascript" charset="utf-8"></script>
+
+
+                        <!-- Facebook Share Button -->
+                        <div class="fb-share-button" data-href="URL TO ADD" data-layout="" data-size="">
+                            <a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
+                        </div>
+
                     </div>
                 </div>
                 <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
