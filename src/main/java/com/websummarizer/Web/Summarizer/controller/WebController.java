@@ -85,8 +85,9 @@ public class WebController {
 
         boolean isURL = isValidURL(input);
 
+        String url = "";
         if (isURL) {
-            model.addAttribute("url", input);
+            url = input;
             input = HTMLParser.parser(input);
         }
         else {
@@ -94,7 +95,7 @@ public class WebController {
             // Without a valid URL, the facebook button will open a window giving the user an error.
             // So, this else statement will set a temp url if the user instead inputs a block of text to parse.
             // If you come up with a better solution or if this is unnecessary, please feel free to edit/remove
-            model.addAttribute("url", "https://www.google.com/");
+            url = "https://www.google.com/";
         }
         try {
             output = bart.queryModel(input);
@@ -107,6 +108,11 @@ public class WebController {
         model.addAttribute("user", username);
         model.addAttribute("input", input);
         model.addAttribute("output", output);
+
+        // Share Button Attributes
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
 
         return "api/summary";
     }

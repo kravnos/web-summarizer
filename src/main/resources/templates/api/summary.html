@@ -18,19 +18,10 @@
 
 
 <!-- SHARE BUTTONS -->
-<!-- TO DO: Make Twitter and Facebook buttons look better in the future -->
-
-<!-- This is needed for the facebook share button to work -->
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0&appId=3927654014133930" nonce="6CiZ74Gn"></script>
-
+<!-- AddToAny BEGIN -->
 <div>
-    <!-- Twitter Share Button -->
-    <a id="twitter" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" th:attr="data-url=${url}" data-show-count="false">Hello CLick Me</a>
-    <script async src="https://platform.twitter.com/widgets.js" type="text/javascript" charset="utf-8"></script>
-
-    <!-- Facebook Share Button -->
-    <div class="fb-share-button" th:attr="data-href=${url}" data-layout="" data-size="">
-        <a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
-    </div>
+    <a th:href="${fb}" target="_blank"><img src="https://static.addtoany.com/buttons/facebook.svg" width="32" height="32" style="background-color:rgb(13 110 253)"></a>
+    <a th:href="${twitter}" target="_blank"><img src="https://static.addtoany.com/buttons/x.svg" width="32" height="32" style="background-color:rgb(13 110 253)"></a>
+    <a th:href="${email}" target="_blank"><img src="https://static.addtoany.com/buttons/email.svg" width="32" height="32" style="background-color:rgb(13 110 253)"></a>
 </div>
+<!-- AddToAny END -->
