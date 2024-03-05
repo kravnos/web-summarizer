@@ -17,10 +17,11 @@ public class ShortLinkController {
     @Autowired
     private HistoryService historyService;
 
-    // Get a short link for a summarize
+    // This controller method handles GET requests for a short link
     @GetMapping("/{shortlink}")
     public ResponseEntity<HistoryResAto> getShortLink(@PathVariable String shortlink) {
         log.info("Get history request received : " + shortlink);
+        // Call the historyService to get the HistoryResAto object for the given shortlink
         var historyResAto = historyService.getShortLink(shortlink);
         log.info("Get history request processed : " + historyResAto);
         return ResponseEntity.ok(historyResAto);
