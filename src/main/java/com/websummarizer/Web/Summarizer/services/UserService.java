@@ -5,4 +5,6 @@ import com.websummarizer.Web.Summarizer.model.User;
 
 public interface UserService {
     User createUser(User user);
+
+    void resetPassword(User user);
 }

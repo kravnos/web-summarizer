@@ -16,4 +16,9 @@ public class UserServiceImpl implements UserService{
         return userRepo.save(user);
     }
 
+    @Override
+    public void resetPassword(User user) {
+        userRepo.setEmail(user.getPassword(), user.getEmail());
+    }
+
 }

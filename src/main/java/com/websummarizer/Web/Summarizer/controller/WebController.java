@@ -19,6 +19,7 @@ import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -177,6 +178,7 @@ public class WebController {
         -Send email
      */
     @PostMapping("emailResetPW")
+    @Transactional
     public String resetPW(@ModelAttribute User user){
         /*  Check if the email address is valid
             Note: The email input box on the website strictly follows the email address convention.
@@ -205,6 +207,11 @@ public class WebController {
             logger.info("Error Message: " + m.getMessage());
             logger.info("Error Cause: " + m.getCause());
         }
+
+        // Change later: Change password
+        user.setPassword("NewPassword");
+        userService.resetPassword(user);
+
         return "redirect:/";
     }
 
