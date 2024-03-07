@@ -5,7 +5,10 @@ import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.mail.SendFailedException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
@@ -173,24 +176,36 @@ public class WebController {
         -Get email
         -Send email
      */
-    @PostMapping("resetPW")
-    @ResponseBody
+    @PostMapping("emailResetPW")
     public String resetPW(@ModelAttribute User user){
+        /*  Check if the email address is valid
+            Note: The email input box on the website strictly follows the email address convention.
+            As a result, it would be fairly difficult for the user to input an invalid email address format.
+            But, just in case, this is here as a backup.
+        */
+        boolean isEmailValid = EmailValidator.getInstance().isValid(user.getEmail());
+        if (!isEmailValid){
+            logger.info("Invalid Email: " + user.getEmail());
+            return "redirect:/";
+        }
+
+        //  Create email body
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@test.com");
         message.setTo(user.getEmail());
         message.setSubject("Test Email");
         message.setText("This is a test for a school project. Please delete if you got this by accident.");
+
+        //  Send email
         try{
             emailSender.send(message);
             logger.info("Email successfully sent to: " + user.getEmail());
-            return user.getEmail();
         } catch (MailParseException m){
             logger.info("There was an error sending the email");
             logger.info("Error Message: " + m.getMessage());
             logger.info("Error Cause: " + m.getCause());
         }
-        return "An error occurred";
+        return "redirect:/";
     }
 
 
