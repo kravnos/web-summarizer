@@ -4,6 +4,7 @@ import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import jakarta.mail.SendFailedException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.mail.MailParseException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,10 @@ public class WebController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private JavaMailSender emailSender;
+
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
     /**
@@ -158,6 +166,36 @@ public class WebController {
             return false;
         }
     }
+
+    // Temp: Reset Password
+    /*
+        TO-DO
+        -Get email
+        -Send email
+     */
+    @PostMapping("resetPW")
+    @ResponseBody
+    public String resetPW(@ModelAttribute User user){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("noreply@test.com");
+        message.setTo(user.getEmail());
+        message.setSubject("Test Email");
+        message.setText("This is a test for a school project. Please delete if you got this by accident.");
+        try{
+            emailSender.send(message);
+            logger.info("Email successfully sent to: " + user.getEmail());
+            return user.getEmail();
+        } catch (MailParseException m){
+            logger.info("There was an error sending the email");
+            logger.info("Error Message: " + m.getMessage());
+            logger.info("Error Cause: " + m.getCause());
+        }
+        return "An error occurred";
+    }
+
+
+
+
 
 
 //    @GetMapping("/")
