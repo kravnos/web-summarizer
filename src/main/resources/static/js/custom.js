@@ -3,7 +3,7 @@ function updateDark() {
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, .chat-text, #feedback-length").addClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, .ai, .chat-text, #feedback-length").addClass("text-white");
         $("nav, input").addClass("bg-dark");
         $(".chat").addClass("bg-dark").removeClass("bg-white");
         $(".date").addClass("text-white-50").removeClass("text-black-50");
@@ -20,11 +20,11 @@ $(document).ready(function() { // when DOM is ready
     const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
     let timeout;
 
-    updateDark(); // set dark mode state
+    updateDark(); // set dark mode initial state
 
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, .chat-text, #feedback-length").toggleClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, .ai, .chat-text, #feedback-length").toggleClass("text-white");
         $("nav, input").toggleClass("bg-dark");
         $(".chat").toggleClass("bg-dark").toggleClass("bg-white");
         $(".date").toggleClass("text-white-50").toggleClass("text-black-50");
@@ -50,10 +50,10 @@ $(document).ready(function() { // when DOM is ready
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
-            if ((value.length > 0) && ((!ai.length) || (ai.css("display") == "none"))) {
+            if ((value.length) && ((!ai.length) || (ai.css("display") == "none"))) {
                 $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
 
-                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf('www') >= 0) || (value.toLowerCase().indexOf('.c') >= 0)) {
+                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf("www") >= 0) || (value.toLowerCase().indexOf(".c") >= 0)) {
                     if (regex.test(value)) {
                         $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
                         $(".invalid-feedback").fadeOut(250);
@@ -91,7 +91,7 @@ $(document).ready(function() { // when DOM is ready
         $("#feedback-length").text("0/5000").addClass("opacity-0");
         $(".invalid-feedback").hide();
 
-        $("#summary-wrapper").addClass("opacity-0");
+        $("#main").addClass("opacity-0");
         $("#intro").hide();
         $("#loader").show();
     });
@@ -119,7 +119,7 @@ $(document).ready(function() { // when DOM is ready
                         scroller.scrollTop(scroller[0].scrollHeight);
                     }*/
                     div.html(summary.slice(0, i)); //(Math.random() * 50 | 0))
-                }, 10 * i);
+                }, 15 * i);
             }
         } else {
             $(".output-text").last().text("Request from server failed");
@@ -128,11 +128,11 @@ $(document).ready(function() { // when DOM is ready
         updateDark();
     });
 
-    $("#summary-wrapper").on("htmx:afterSettle", function() {
+    $("#main").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(250, function() {
             let scroller = $(".scroll-custom");
             scroller.scrollTop(scroller[0].scrollHeight);
-            $("#summary-wrapper").removeClass("opacity-0");
+            $("#main").removeClass("opacity-0");
         });
     });
 

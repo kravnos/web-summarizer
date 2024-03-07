@@ -82,13 +82,17 @@ public class WebController {
 
         String username = "You";
         String output;
+        String url;
 
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
-        String url = "";
+        //if (auth instanceof AnonymousAuthenticationToken) {
+        // set username to logged in name
+        //}
+
         if (isURL) {
-            url = input;
-            input = HTMLParser.parser(input);
+            url = HTMLParser.parser(input);
         }
         else {
             // Facebook needs a valid URL for the share function to work.
@@ -100,8 +104,8 @@ public class WebController {
         try {
             output = bart.queryModel(input);
         } catch (Exception e) {
-            output = "Error Occured";
-            System.out.println("catched");
+            output = "Error Occurred. Please try again.";
+            //System.out.println("catched");
         }
 
         model.addAttribute("date", dateFormat.format(date));
