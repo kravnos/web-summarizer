@@ -43,6 +43,8 @@ $(document).ready(function() { // when DOM is ready
     });
 
     $("#link-register, #link-login").on("click", function(event) {
+        event.preventDefault();
+
         $("#wrapper-register, #wrapper-login").toggleClass("d-none");
     });
 
