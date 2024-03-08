@@ -176,14 +176,13 @@ public class WebController {
         }
     }
 
-    // Temp: Reset Password
-    /*
-        TO-DO
-        -Get email
-        -Send email
+    /**
+     * Runs when a user selects "Forgot Password" and submits an email address
+     *
+     * @param user The string to check.
+     * @return redirect user back to the main page of the website
      */
     @PostMapping("emailResetPW")
-    @Transactional
     public String resetPW(@ModelAttribute User user){
         /*  Check if the email address is valid
             Note: The email input box on the website strictly follows the email address convention.
@@ -199,7 +198,7 @@ public class WebController {
         //  Build unique password reset URL
         String token = UUID.randomUUID().toString();
         String resetURL = webaddress + "password-reset?token=" + token;
-        int usersUpdated = userService.setPasswordResetToken(token, user);  // Should be either 0 or 1
+        int usersUpdated = userService.setPasswordRequestToken(token, user);  // Should be either 0 or 1
         if (usersUpdated <= 0 ^ usersUpdated > 1) {
             logger.info("There is no user in the database with this email: " + user.getEmail());
             return "redirect:/";
@@ -223,15 +222,16 @@ public class WebController {
             logger.info("Error Message: " + m.getMessage());
             logger.info("Error Cause: " + m.getCause());
         }
-
-        // Change later: Change password
-        //user.setPassword("NewPassword");
-        //userService.resetPassword(user);
-
         return "redirect:/";
     }
 
-
+    /**
+     * Ensure that the right user has actually made the request by checking the request token
+     *
+     * @param token The string used to identify the user that made the password reset request
+     * @param session Session to contain the valid user data
+     * @return redirect to main page if user with a specified token isn't found; redirect to password reset page otherwise
+     */
     @GetMapping("password-reset")
     public String resetPW(@RequestParam String token, HttpSession session){
         User userPWToChange = userService.getUserByPasswordResetToken(token);
@@ -244,12 +244,20 @@ public class WebController {
         return "password-reset";
     }
 
+    /**
+     * Successfully updates the specified user's password (and sets the request token column to null)
+     *
+     * @param newPW The password from the form data (Only value is newPW.getPassword())
+     * @param session Session containing the retrieved user whose password is being updated
+     * @return redirect to main page
+     */
     @PostMapping("saveNewPW")
     @Transactional
     public String saveNewPW(@ModelAttribute User newPW, HttpSession session){
         User user = (User) session.getAttribute("user");
         user.setPassword(newPW.getPassword());
-        userService.resetPassword(user);
+        userService.setPassword(user);
+        userService.setPasswordRequestToken(null, user);
         return "redirect:/";
     }
 

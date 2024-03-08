@@ -16,17 +16,17 @@ public class UserServiceImpl implements UserService{
         return userRepo.save(user);
     }
 
+    // These methods are used for: password and request token
     @Override
-    public void resetPassword(User user) {
+    public void setPassword(User user) {
         userRepo.setPassword(user.getPassword(), user.getEmail());
     }
-
     @Override
     public User getUserByPasswordResetToken(String token){
         return userRepo.getUserByResetToken(token);
     }
     @Override
-    public int setPasswordResetToken(String token, User user){
+    public int setPasswordRequestToken(String token, User user){
         return userRepo.setRequestToken(token, user.getEmail());
     }
 }
