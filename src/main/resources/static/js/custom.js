@@ -42,6 +42,10 @@ $(document).ready(function() { // when DOM is ready
         }
     });
 
+    $("#link-register, #link-login").on("click", function(event) {
+        $("#wrapper-register, #wrapper-login").toggleClass("d-none");
+    });
+
     $("#input-main").on("input keyup", function(event) {
         /*if (event.key == "Enter") {
             event.preventDefault();
