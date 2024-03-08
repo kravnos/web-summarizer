@@ -110,6 +110,7 @@
                             <label for="login-password" class="m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
                             <input type="password" class="form-control mb-3" name="password" id="login-password" required />
                         </form>
+                        <div class="text-center pt-4 pb-2">Don't have an account? <a id="link-register" href="#">Sign Up</a></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -117,15 +118,15 @@
                     </div>
                 </div>
                 <!-- Register Modal -->
-                <div id="wrapper-register">
+                <div id="wrapper-register" class="d-none">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modal-label-register">Register</h5>
+                        <h5 class="modal-title" id="modal-label-register">Create an Account</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <th:block th:if="${session.msg}">
+                        <!--<th:block th:if="${session.msg}">
                             <p class="text-center fs-7">[[${session.msg}]]</p>
-                        </th:block>
+                        </th:block>-->
 
                         <form action="createUser" method="post">
                             <label for="register-first-name" class="m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
@@ -137,10 +138,11 @@
                             <label for="register-password" class="m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
                             <input type="password" class="form-control mb-3" name="password" id="register-password" required />
                         </form>
+                        <div class="text-center pt-4 pb-2">Already have an account? <a id="link-login" href="#">Login</a></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
                     </div>
                 </div>
             </div>
