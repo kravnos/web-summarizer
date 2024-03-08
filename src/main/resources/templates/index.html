@@ -73,16 +73,16 @@
                     <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus />
                     <div class="input-group-append ms-2">
                         <button
-                                hx-trigger="click queue:none"
-                                hx-post="/api/summary"
-                                hx-include="[name='input']"
-                                hx-target="#wrapper-summary"
-                                hx-swap="beforeend"
-                                hx-disabled-elt="this"
-                                id="summary-button"
-                                class="btn btn-primary position-relative disabled"
-                                type="button"
-                                aria-disabled="true">
+                            hx-trigger="click queue:none"
+                            hx-post="/api/summary"
+                            hx-include="[name='input']"
+                            hx-target="#wrapper-summary"
+                            hx-swap="beforeend"
+                            hx-disabled-elt="this"
+                            id="summary-button"
+                            class="btn btn-primary position-relative disabled"
+                            type="button"
+                            aria-disabled="true">
                             <span id="summary-button-text">Summarize</span>
                             <span id="summary-button-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
                         </button><!-- multiple spam clicks will be ignored until response -->
