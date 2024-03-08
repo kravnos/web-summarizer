@@ -51,8 +51,14 @@ body {
     --bs-spinner-width: 0.5rem;
     --bs-spinner-height: 0.1rem;
 }
+.modal-dialog-scrollable {
+     height: 100%;
+}
 .modal-header, .modal-footer {
     border: 0;
+}
+.modal-body .modal-footer {
+    padding: 0;
 }
 .zindex-loader {
     z-index: 1100;
