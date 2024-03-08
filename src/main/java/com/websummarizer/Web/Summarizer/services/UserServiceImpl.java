@@ -21,4 +21,12 @@ public class UserServiceImpl implements UserService{
         userRepo.setEmail(user.getPassword(), user.getEmail());
     }
 
+    @Override
+    public User getUserByPasswordResetToken(String token){
+        return userRepo.getUserByResetToken(token);
+    }
+    @Override
+    public int setPasswordResetToken(String token, User user){
+        return userRepo.setRequestToken(token, user.getEmail());
+    }
 }

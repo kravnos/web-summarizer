@@ -12,4 +12,13 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.password = ?1 where u.email = ?2")
     void setEmail(String password, String email);
+
+    //  Run this method to get a user's reset token if they click the email link
+    @Query("select u from User u  where u.request_token = ?1")
+    User getUserByResetToken(String token);
+
+    //  Run this method to set a user's reset token if they select "Forgot Password"
+    @Modifying
+    @Query("update User u set u.request_token = ?1 where u.email = ?2")
+    int setRequestToken(String token, String email);
 }

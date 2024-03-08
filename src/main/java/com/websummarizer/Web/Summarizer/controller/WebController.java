@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -44,6 +46,9 @@ public class WebController {
 
     @Autowired
     private JavaMailSender emailSender;
+
+    @Value("${WEBADDRESS}")
+    private String webaddress;
 
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
@@ -191,12 +196,23 @@ public class WebController {
             return "redirect:/";
         }
 
+        //  Build unique password reset URL
+        String token = UUID.randomUUID().toString();
+        String resetURL = webaddress + "password-reset?token=" + token;
+        int usersUpdated = userService.setPasswordResetToken(token, user);  // Should be either 0 or 1
+        if (usersUpdated <= 0 ^ usersUpdated > 1) {
+            logger.info("There is no user in the database with this email: " + user.getEmail());
+            return "redirect:/";
+        }
+        logger.info("User with email: " + user.getEmail() + " has the following reset token saved: " + token);
+
         //  Create email body
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@test.com");
         message.setTo(user.getEmail());
         message.setSubject("Test Email");
         message.setText("This is a test for a school project. Please delete if you got this by accident.");
+        message.setText("Reset password link: " + resetURL);
 
         //  Send email
         try{
@@ -209,13 +225,23 @@ public class WebController {
         }
 
         // Change later: Change password
-        user.setPassword("NewPassword");
-        userService.resetPassword(user);
+        //user.setPassword("NewPassword");
+        //userService.resetPassword(user);
 
         return "redirect:/";
     }
 
 
+    @GetMapping("password-reset")
+    public String resetPW(@RequestParam String token){
+        User userPWToChange = userService.getUserByPasswordResetToken(token);
+        if (userPWToChange == null) {
+            logger.info("There is no user with the specified reset token in the database");
+            return "redirect:/";
+        }
+        logger.info("User successfully pulled: " + userPWToChange.toString());
+        return "password-reset";
+    }
 
 
 

@@ -9,8 +9,10 @@ CREATE TABLE users (
                        email varchar(50) NOT NULL,
                        password varchar(25) NOT NULL,
                        phone_number bigint,
+                       request_token varchar(50),
                        UNIQUE(email),
-                       UNIQUE(phone_number)
+                       UNIQUE(phone_number),
+                       UNIQUE(request_token)
 );
 
 CREATE TABLE history (
