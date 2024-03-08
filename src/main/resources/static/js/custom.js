@@ -3,11 +3,12 @@ function updateDark() {
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, .ai, .chat-text, #feedback-length").addClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, label, .ai, .chat-text, #feedback-length").addClass("text-white");
         $("nav, input").addClass("bg-dark");
         $(".chat").addClass("bg-dark").removeClass("bg-white");
         $(".date").addClass("text-white-50").removeClass("text-black-50");
         $("button").addClass("btn-dark");
+        $(".modal input").addClass("border-0");
         $(".form-check-input").addClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
         $("#loader, #wand, .htmx-indicator").removeClass("text-primary");
@@ -24,11 +25,12 @@ $(document).ready(function() { // when DOM is ready
 
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, .ai, .chat-text, #feedback-length").toggleClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, label, .ai, .chat-text, #feedback-length").toggleClass("text-white");
         $("nav, input").toggleClass("bg-dark");
         $(".chat").toggleClass("bg-dark").toggleClass("bg-white");
         $(".date").toggleClass("text-white-50").toggleClass("text-black-50");
         $("button").toggleClass("btn-dark");
+        $(".modal input").toggleClass("border-0");
         $(".form-check-input").toggleClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
         $("#loader, #wand, .htmx-indicator").toggleClass("text-primary");
@@ -53,7 +55,7 @@ $(document).ready(function() { // when DOM is ready
             if ((value.length) && ((!ai.length) || (ai.css("display") == "none"))) {
                 $("#feedback-length").text(value.length + "/5000").removeClass("opacity-0");
 
-                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf("www") >= 0) || (value.toLowerCase().indexOf(".c") >= 0)) {
+                if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf("www") >= 0)) {
                     if (regex.test(value)) {
                         $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
                         $(".invalid-feedback").fadeOut(250);
