@@ -37,6 +37,15 @@ body {
 .text-justify {
     text-align: justify;
 }
+.w-125 {
+    width: 1.25rem;
+}
+.h-125 {
+    height: 1.25rem;
+}
+.invert {
+    filter: invert(100%);
+}
 .bi-lock-fill-ms {
     margin-left: 2px;
 }
