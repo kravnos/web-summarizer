@@ -3,7 +3,7 @@ function updateDark() {
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, label, .ai, .chat-text, #feedback-length").addClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, label, .ai, .text-account, .text-chat, #feedback-length").addClass("text-white");
         $("nav, input").addClass("bg-dark");
         $(".chat").addClass("bg-dark").removeClass("bg-white");
         $(".date").addClass("text-white-50").removeClass("text-black-50");
@@ -11,6 +11,7 @@ function updateDark() {
         $(".modal input").addClass("border-0");
         $(".form-check-input").addClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
+        $(".links img").removeClass("invert");
         $("#loader, #wand, .htmx-indicator").removeClass("text-primary");
         $("#flexSwitchCheckDefault").each(function() { this.checked = true; });
     }
@@ -25,7 +26,7 @@ $(document).ready(function() { // when DOM is ready
 
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, label, .ai, .chat-text, #feedback-length").toggleClass("text-white");
+        $("h1, h2, h3, h4, h5, p, input, label, .ai, .text-account, .text-chat, #feedback-length").toggleClass("text-white");
         $("nav, input").toggleClass("bg-dark");
         $(".chat").toggleClass("bg-dark").toggleClass("bg-white");
         $(".date").toggleClass("text-white-50").toggleClass("text-black-50");
@@ -33,6 +34,7 @@ $(document).ready(function() { // when DOM is ready
         $(".modal input").toggleClass("border-0");
         $(".form-check-input").toggleClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
+        $(".links img").toggleClass("invert");
         $("#loader, #wand, .htmx-indicator").toggleClass("text-primary");
 
         if ($("#flexSwitchCheckDefault").is(":checked")) {
@@ -106,7 +108,7 @@ $(document).ready(function() { // when DOM is ready
 
     $("#summary-button").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
-            let div = $(".output-text").last();
+            let div = $(".text-output").last();
             let summary = div.html();
             let scroller = $(".scroll-custom");
             let height = 0;
@@ -130,7 +132,7 @@ $(document).ready(function() { // when DOM is ready
                 }, 15 * i);
             }
         } else {
-            $(".output-text").last().text("Request from server failed");
+            $(".text-output").last().text("Request from server failed");
         }
 
         updateDark();
