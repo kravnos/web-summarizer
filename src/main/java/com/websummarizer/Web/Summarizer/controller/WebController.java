@@ -191,7 +191,7 @@ public class WebController {
         */
         boolean isEmailValid = EmailValidator.getInstance().isValid(user.getEmail());
         if (!isEmailValid){
-            logger.info("Invalid Email: " + user.getEmail());
+            logger.warning("Invalid Email: " + user.getEmail());
             return "redirect:/";
         }
 
@@ -200,7 +200,7 @@ public class WebController {
         String resetURL = webaddress + "password-reset?token=" + token;
         int usersUpdated = userService.setPasswordRequestToken(token, user);  // Should be either 0 or 1
         if (usersUpdated <= 0 ^ usersUpdated > 1) {
-            logger.info("There is no user in the database with this email: " + user.getEmail());
+            logger.warning("There is no user in the database with this email: " + user.getEmail());
             return "redirect:/";
         }
         logger.info("User with email: " + user.getEmail() + " has the following reset token saved: " + token);
@@ -218,9 +218,9 @@ public class WebController {
             emailSender.send(message);
             logger.info("Email successfully sent to: " + user.getEmail());
         } catch (MailParseException m){
-            logger.info("There was an error sending the email");
-            logger.info("Error Message: " + m.getMessage());
-            logger.info("Error Cause: " + m.getCause());
+            logger.warning("There was an error sending the email");
+            logger.warning("Error Message: " + m.getMessage());
+            logger.warning("Error Cause: " + m.getCause());
         }
         return "redirect:/";
     }
@@ -236,7 +236,7 @@ public class WebController {
     public String resetPW(@RequestParam String token, HttpSession session){
         User userPWToChange = userService.getUserByPasswordResetToken(token);
         if (userPWToChange == null) {
-            logger.info("There is no user with the specified reset token in the database");
+            logger.warning("There is no user with the specified reset token in the database");
             return "redirect:/";
         }
         logger.info("User successfully pulled: " + userPWToChange.toString());
