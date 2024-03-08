@@ -233,17 +233,25 @@ public class WebController {
 
 
     @GetMapping("password-reset")
-    public String resetPW(@RequestParam String token){
+    public String resetPW(@RequestParam String token, HttpSession session){
         User userPWToChange = userService.getUserByPasswordResetToken(token);
         if (userPWToChange == null) {
             logger.info("There is no user with the specified reset token in the database");
             return "redirect:/";
         }
         logger.info("User successfully pulled: " + userPWToChange.toString());
+        session.setAttribute("user", userPWToChange);
         return "password-reset";
     }
 
-
+    @PostMapping("saveNewPW")
+    @Transactional
+    public String saveNewPW(@ModelAttribute User newPW, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        user.setPassword(newPW.getPassword());
+        userService.resetPassword(user);
+        return "redirect:/";
+    }
 
 
 //    @GetMapping("/")
