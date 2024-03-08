@@ -89,6 +89,7 @@ public class WebController {
 
         //if (auth instanceof AnonymousAuthenticationToken) {
         // set username to logged in name
+        // change login button text to account / logout
         //}
 
         if (isURL) {
