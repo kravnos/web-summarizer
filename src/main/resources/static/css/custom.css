@@ -29,13 +29,22 @@ body {
     margin-top: 3rem!important;
 }
 .chat {
-    max-width: 85%;
+    max-width: 80%;
 }
 .fit-content {
     width: fit-content;
 }
 .text-justify {
     text-align: justify;
+}
+.w-125 {
+    width: 1.25rem;
+}
+.h-125 {
+    height: 1.25rem;
+}
+.invert {
+    filter: invert(100%);
 }
 .bi-lock-fill-ms {
     margin-left: 2px;
@@ -51,8 +60,14 @@ body {
     --bs-spinner-width: 0.5rem;
     --bs-spinner-height: 0.1rem;
 }
+.modal-dialog-scrollable {
+     height: 100%;
+}
 .modal-header, .modal-footer {
     border: 0;
+}
+.modal-body .modal-footer {
+    padding: 0;
 }
 .zindex-loader {
     z-index: 1100;

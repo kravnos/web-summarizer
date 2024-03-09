@@ -49,9 +49,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/register")
-    public String register() {
-        return "index";
+    @PostMapping("/register")
+    public void register() {
+        //return "index";
     }
 
     /**
@@ -59,9 +59,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/signin")
-    public String signIn() {
-        return "index";
+    @PostMapping("/login")
+    public void login() {
+        //return "index";
     }
 
     /**
@@ -82,13 +82,18 @@ public class WebController {
 
         String username = "You";
         String output;
+        String url;
 
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
-        String url = "";
+        //if (auth instanceof AnonymousAuthenticationToken) {
+        // set username to logged in name
+        // change login button text to account / logout
+        //}
+
         if (isURL) {
-            url = input;
-            input = HTMLParser.parser(input);
+            url = HTMLParser.parser(input);
         }
         else {
             // Facebook needs a valid URL for the share function to work.
@@ -100,8 +105,8 @@ public class WebController {
         try {
             output = bart.queryModel(input);
         } catch (Exception e) {
-            output = "Error Occured";
-            System.out.println("catched");
+            output = "Error Occurred. Please try again.";
+            //System.out.println("catched");
         }
 
         model.addAttribute("date", dateFormat.format(date));
@@ -125,7 +130,7 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/createUser")
-    public String createUser(@ModelAttribute User user, HttpSession session) {
+    public void createUser(@ModelAttribute User user, HttpSession session) {
         session.setAttribute("msg", "");
         logger.info("Received user creation request: " + user);
         boolean bool = false;
@@ -139,7 +144,7 @@ public class WebController {
             session.setAttribute("msg", "Registered Successfully");
             logger.info("User created successfully: " + user);
         }
-        return "redirect:/";
+        //return "redirect:/";
     }
 
     /**
