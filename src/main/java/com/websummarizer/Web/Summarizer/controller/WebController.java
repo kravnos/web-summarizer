@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,9 +50,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @PostMapping("/register")
-    public void register() {
-        //return "index";
+    @PostMapping("/user/register")
+    public String register() {
+        return "user/register";
     }
 
     /**
@@ -59,9 +60,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @PostMapping("/login")
-    public void login() {
-        //return "index";
+    @PostMapping("/user/login")
+    public String login() {
+        return "user/login";
     }
 
     /**
@@ -126,26 +127,34 @@ public class WebController {
      * Endpoint for creating a user.
      *
      * @param user    The user to create.
-     * @param session The current session.
-     * @return The name of the view to render.
      */
-    @PostMapping("/createUser")
-    public void createUser(@ModelAttribute User user, HttpSession session) {
-        session.setAttribute("msg", "");
+    @PostMapping("/user/create")
+    public String createUser(
+            @RequestParam(value = "email") String email,
+            @ModelAttribute User user,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
         logger.info("Received user creation request: " + user);
-        boolean bool = false;
+        boolean isRegistered = false;
         try {
-            bool = userService.createUser(user) != null;
+            isRegistered = userService.createUser(user) != null;
         } catch (Exception e) {
-            session.setAttribute("msg", "Email already exists");
             logger.warning("User creation failed: " + e.getMessage());
         }
-        if (bool) {
-            session.setAttribute("msg", "Registered Successfully");
+        if (isRegistered) {
             logger.info("User created successfully: " + user);
+            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
+            model.addAttribute("isRegistered", true);
+            model.addAttribute("message", "<span class=\"bi bi-check-lg\">&nbsp;</span> User '" + email + "' created successfully.");
+            return "user/login";
         }
-        //return "redirect:/";
+        //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
+        model.addAttribute("isRegistered", false);
+        model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\">&nbsp;</span> Registration for '" + email + "' failed.");
+        return "user/register";
     }
+
 
     /**
      * Checks if a string is a valid URL.
