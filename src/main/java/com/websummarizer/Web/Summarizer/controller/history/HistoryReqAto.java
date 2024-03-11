@@ -1,9 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller.history;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Builder
+@AllArgsConstructor
 @ToString( onlyExplicitlyIncluded = true)
 public class HistoryReqAto {
 
