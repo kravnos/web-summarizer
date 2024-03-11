@@ -120,9 +120,11 @@ public class WebController {
             //System.out.println("catched");
         }
 
+        // Generate a short code for the given URL
         String ShortlinkCode = shortlink.codeShort(url);
+        // Create a new history request object with the generated short code
         HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
-
+        // Add the history request to the database and get the response
         var historyResAto = historyService.addHistory(historyReqAto);
 
         model.addAttribute("date", dateFormat.format(date));

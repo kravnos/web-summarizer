@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class ShortLinkController {
     @Autowired
     private HistoryService historyService;
-    // Add a new history record
+    // Get mapping to retrieve a short link record based on shortlink
     @GetMapping("/{shortlink}")
     public ResponseEntity<HistoryResAto> getShortLink(@PathVariable String shortlink) {
         log.info("Get history request received : " + shortlink);

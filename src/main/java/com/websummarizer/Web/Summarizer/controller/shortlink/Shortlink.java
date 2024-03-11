@@ -8,6 +8,7 @@ public class Shortlink {
 
     }
 
+    // Method to generate a short code for a given URL
     public String codeShort(String urlOg){
         int num = Math.abs(urlOg.hashCode());
         String dic = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
