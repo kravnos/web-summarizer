@@ -76,4 +76,14 @@ public class HistoryService {
         return HistoriesResAto.builder().histories(historys).build();
     }
 
+    // Get shortlink for a history
+    public HistoryResAto getShortLink(String shortlink) {
+        // Find the history in the repository by its shortlink
+        Optional<History> maybeFoundHistory = historyRepository.findHistoryByShortLink(shortlink);
+        // If the history is found, map it to a HistoryResAto object using HistoryMapper
+        // Otherwise, throw a CCNotFoundException
+        return maybeFoundHistory.map(HistoryMapper::mapHistoryEtoResAto)
+                .orElseThrow(CCNotFoundException::new);
+    }
+
 }
