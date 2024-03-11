@@ -3,17 +3,21 @@ function updateDark() {
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, label, .ai, .text-account, .text-chat, #feedback-length").addClass("text-white");
+        $("h1, h2, h3, h4, h5, p:not(.error):not(.success), input, label, .ai, .text-account, .text-chat, #feedback-length").addClass("text-white");
         $("nav, input").addClass("bg-dark");
         $(".chat").addClass("bg-dark").removeClass("bg-white");
         $(".date").addClass("text-white-50").removeClass("text-black-50");
         $("button").addClass("btn-dark");
         $(".modal input").addClass("border-0");
         $(".form-check-input").addClass("border-secondary");
-        $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
+        $(".form-check-label").addClass("bi-moon-fill").removeClass("bi-brightness-high-fill");
         $(".links img").removeClass("invert");
         $("#loader, #wand, .htmx-indicator").removeClass("text-primary");
-        $("#flexSwitchCheckDefault").each(function() { this.checked = true; });
+        $("#flexSwitchCheckDefault").each(function() {
+            if (!$(this).is(':checked')) {
+                this.checked = true;
+            }
+         });
     }
 }
 
@@ -26,7 +30,7 @@ $(document).ready(function() { // when DOM is ready
 
     $("#flexSwitchCheckDefault").on("change", function() {
         $("body, .modal-content, .form-check-input").toggleClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p, input, label, .ai, .text-account, .text-chat, #feedback-length").toggleClass("text-white");
+        $("h1, h2, h3, h4, h5, p:not(.error):not(.success), input, label, .ai, .text-account, .text-chat, #feedback-length").toggleClass("text-white");
         $("nav, input").toggleClass("bg-dark");
         $(".chat").toggleClass("bg-dark").toggleClass("bg-white");
         $(".date").toggleClass("text-white-50").toggleClass("text-black-50");
@@ -43,13 +47,13 @@ $(document).ready(function() { // when DOM is ready
             sessionStorage.removeItem("bDark");
         }
     });
-
+/*
     $("#link-register, #link-login").on("click", function(event) {
         event.preventDefault();
 
         $("#wrapper-register, #wrapper-login").toggleClass("d-none");
     });
-
+*/
     $("#input-main").on("input keyup", function(event) {
         /*if (event.key == "Enter") {
             event.preventDefault();
@@ -65,38 +69,38 @@ $(document).ready(function() { // when DOM is ready
 
                 if ((value.toLowerCase().startsWith("http") == true) || (value.toLowerCase().indexOf("www") >= 0)) {
                     if (regex.test(value)) {
-                        $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
+                        $("#button-summary").removeClass("disabled").removeAttr("aria-disabled");
                         $(".invalid-feedback").fadeOut(250);
                     } else {
-                        $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                        $("#button-summary").addClass("disabled").attr("aria-disabled", "true");
                         $(".invalid-feedback").text("Please enter a valid URL").fadeIn(250);
                     }
                 } else {
                     if (value.length >= 200) {
-                        $("#summary-button").removeClass("disabled").removeAttr("aria-disabled");
+                        $("#button-summary").removeClass("disabled").removeAttr("aria-disabled");
                         $(".invalid-feedback").fadeOut(250);
                     } else {
-                        $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                        $("#button-summary").addClass("disabled").attr("aria-disabled", "true");
                         $(".invalid-feedback").text("Please enter a minimum of 200 characters").fadeIn(250);
                     }
                 }
             } else {
-                $("#summary-button").addClass("disabled").attr("aria-disabled", "true");
+                $("#button-summary").addClass("disabled").attr("aria-disabled", "true");
                 $(".invalid-feedback").fadeOut(250);
 
                 $("#feedback-length").text("0/5000").addClass("opacity-0");
             }
 
-            if ((event.key == "Enter") && (!$("#summary-button").hasClass("disabled"))) {
-                $("#summary-button").trigger("click");
+            if ((event.key == "Enter") && (!$("#button-summary").hasClass("disabled"))) {
+                $("#button-summary").trigger("click");
             }
         }, 250);
     });
 
-    $("#summary-button").on("htmx:beforeRequest", function() {
+    $("#button-summary").on("htmx:beforeRequest", function() {
         $(this).addClass("disabled").attr("aria-disabled", "true");
-        $("#summary-button-text").addClass("opacity-0");
-        $("#summary-button-spinner").removeClass("d-none").removeAttr("aria-hidden");
+        $("#button-summary-text").addClass("opacity-0");
+        $("#button-summary-spinner").removeClass("d-none").removeAttr("aria-hidden");
         $("#input-main").val(null).focus();
         $("#feedback-length").text("0/5000").addClass("opacity-0");
         $(".invalid-feedback").hide();
@@ -106,7 +110,7 @@ $(document).ready(function() { // when DOM is ready
         $("#loader").show();
     });
 
-    $("#summary-button").on("htmx:afterRequest", function(event) {
+    $("#button-summary").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
             let div = $(".text-output").last();
             let summary = div.html();
@@ -117,8 +121,8 @@ $(document).ready(function() { // when DOM is ready
                 setTimeout(function() {
                     if (i == summary.length) {
                         $(".ai").last().hide();
-                        $("#summary-button-spinner").addClass("d-none").attr("aria-hidden", "true");
-                        $("#summary-button-text").removeClass("opacity-0");
+                        $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
+                        $("#button-summary-text").removeClass("opacity-0");
                         $("#input-main").trigger("input");
                     }
                     if ((i > 0) && (height < div.height())) {
@@ -132,10 +136,8 @@ $(document).ready(function() { // when DOM is ready
                 }, 15 * i);
             }
         } else {
-            $(".text-output").last().text("Request from server failed");
+            $(".text-output").last().text("Request from server failed.");
         }
-
-        updateDark();
     });
 
     $("#main").on("htmx:afterSettle", function() {
@@ -144,6 +146,30 @@ $(document).ready(function() { // when DOM is ready
             scroller.scrollTop(scroller[0].scrollHeight);
             $("#main").removeClass("opacity-0");
         });
+    });
+
+    $("#wrapper-login").on("htmx:afterRequest", function() {
+     /*   $("#link-login, #link-register").on("htmx:beforeRequest", function() {
+            alert("#link-login, #link-register /// htmx:beforeRequest");
+            $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
+
+            $("#wrapper-login").addClass("opacity-0");
+            $("#loader").show();
+        });
+
+        $("#button-login, #button-register").on("htmx:beforeRequest", function() {
+            alert("#button-login, #button-register /// htmx:beforeRequest");
+            $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
+            $("#button-login-text, #button-register-text").addClass("opacity-0");
+            $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
+
+            $(".modal-body").addClass("opacity-0");
+            $("#loader").show();
+        });*/
+    });
+
+    $("body").on("htmx:afterSettle", function() {
+        updateDark();
     });
 
     $("body").on("htmx:configRequest", function(event) {
