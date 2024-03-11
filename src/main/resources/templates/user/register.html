@@ -1,0 +1,58 @@
+<div class="modal-header">
+    <h5 id="modal-label-register" class="modal-title">Create an Account</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <th:block th:if="${isRegistered == false}">
+        <p class="error fs-7 px-4 py-2" th:utext="${message}"></p>
+    </th:block>
+    <fieldset class="field-set">
+        <div class="field required mb-3">
+            <label for="register-first-name" class="label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
+            <input id="register-first-name" class="form-control" name="first_name" type="text" hx-preserve required />
+        </div>
+        <div class="field required mb-3">
+            <label for="register-last-name" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
+            <input id="register-last-name" class="form-control mb-3" name="last_name" type="text" hx-preserve required />
+        </div>
+        <div class="field required mb-3">
+            <label for="register-email" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+            <input id="register-email" class="form-control mb-3" name="email" type="email" hx-preserve required />
+        </div>
+        <div class="field required mb-3">
+            <label for="register-password" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+            <input id="register-password" class="form-control mb-3" name="password" type="password" required />
+        </div>
+        <div class="field mb-3">
+            <label for="register-phone-number" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
+            <input id="register-phone-number" class="form-control mb-3" name="phone_number" type="tel" hx-preserve />
+        </div>
+    </fieldset>
+    <div class="text-account text-center pt-4 pb-2">Already have an account? <a
+                                                                                hx-trigger="click queue:none"
+                                                                                hx-post="/user/login"
+                                                                                hx-target="#wrapper-login"
+                                                                                hx-swap="innerHTML"
+                                                                                hx-disabled-elt="this"
+                                                                                id="link-login"
+                                                                                class="text-account"
+                                                                                href="#">Login
+                                                                             </a>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button
+            hx-trigger="click queue:none"
+            hx-post="/user/create"
+            hx-target="#wrapper-login"
+            hx-swap="innerHTML"
+            hx-include="[name='first_name'], [name='last_name'], [name='email'], [name='password'], [name='phone_number']"
+            hx-disabled-elt="this"
+            id="button-register"
+            class="btn btn-primary"
+            type="button">
+            <span id="button-register-text">Create</span>
+            <span id="button-register-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+    </button>
+</div>
