@@ -147,26 +147,33 @@ $(document).ready(function() { // when DOM is ready
             $("#main").removeClass("opacity-0");
         });
     });
-/*
-    $("#wrapper-login").on("htmx:afterRequest", function() {
-        $("#link-login, #link-register").on("htmx:beforeRequest", function() {
-            alert("#link-login, #link-register /// htmx:beforeRequest");
-            $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
 
-            $("#wrapper-login").addClass("opacity-0");
-            $("#loader").show();
+    $("#wrapper-login").on("htmx:beforeRequest", "#link-login, #link-register", function() {
+        $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
+
+        $("#wrapper-login").addClass("opacity-0");
+        $("#loader").show();
+    });
+
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function() {
+        $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
+        $("#button-login-text, #button-register-text").addClass("opacity-0");
+        $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
+
+        $(".modal-body").addClass("opacity-0");
+        $("#loader").show();
+    });
+
+    $("#wrapper-login").on("htmx:afterSettle", function() {
+        $("#loader").fadeOut(250, function() {
+            $("#wrapper-login, .modal-body").removeClass("opacity-0");
+            $("#link-login, #link-register, #button-login, #button-register").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-login, #button-login-text, #button-register-text, .modal-body").removeClass("opacity-0");
+            $("#button-login-spinner, #button-register-spinner").addClass("d-none").attr("aria-hidden", "true");
+
+            //$("#login-email").focus();
         });
-
-        $("#button-login, #button-register").on("htmx:beforeRequest", function() {
-            alert("#button-login, #button-register /// htmx:beforeRequest");
-            $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
-            $("#button-login-text, #button-register-text").addClass("opacity-0");
-            $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
-
-            $(".modal-body").addClass("opacity-0");
-            $("#loader").show();
-        });
-    });*/
+    });
 
     $("body").on("htmx:afterSettle", function() {
         updateDark();
