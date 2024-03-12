@@ -8,8 +8,10 @@
     <th:block th:replace="fragments/meta.html :: meta"></th:block>
 </head>
 <body>
+
     <!-- Main Wrapper -->
     <div id="wrapper" class="rounded-0 transition-0 opacity-0">
+
         <!-- Header -->
         <nav id="header" class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
             <div class="container container-custom">
@@ -53,7 +55,7 @@
                         <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
                         <h3 class="mt-2">What would you like to summarize?</h3>
                     </div>
-                    <div id="wrapper-summary" class="text-break text-justify transition-0"><!-- Summarized Text --></div>
+                    <div id="wrapper-summary" class="text-break text-justify transition-0" hx-sync="this"><!-- Summarized Text --></div>
                 </div>
             </div>
         </div>
@@ -65,7 +67,7 @@
                     <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
                     <div class="input-group">
                         <!--<span class="input-group-text">http(s)://</span>-->
-                        <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus />
+                        <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
                         <div class="input-group-append ms-2">
                             <button
                                 hx-trigger="click queue:none"
@@ -102,7 +104,7 @@
     <div id="modal-login" class="modal fade modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div id="wrapper-login"></div>
+                <div id="wrapper-login" class="transition-0 opacity-0" hx-sync="this"></div>
             </div>
         </div>
     </div>
