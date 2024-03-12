@@ -146,7 +146,7 @@ public class WebController {
             logger.info("User created successfully: " + user);
             //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
             model.addAttribute("isRegistered", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-lg\">&nbsp;</span> User '" + email + "' created successfully.");
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\">&nbsp;</span> User '" + email + "' created successfully. Please login.");
             return "user/login";
         }
         //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
