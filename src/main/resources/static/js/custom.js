@@ -147,9 +147,9 @@ $(document).ready(function() { // when DOM is ready
             $("#main").removeClass("opacity-0");
         });
     });
-
+/*
     $("#wrapper-login").on("htmx:afterRequest", function() {
-     /*   $("#link-login, #link-register").on("htmx:beforeRequest", function() {
+        $("#link-login, #link-register").on("htmx:beforeRequest", function() {
             alert("#link-login, #link-register /// htmx:beforeRequest");
             $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
 
@@ -165,8 +165,8 @@ $(document).ready(function() { // when DOM is ready
 
             $(".modal-body").addClass("opacity-0");
             $("#loader").show();
-        });*/
-    });
+        });
+    });*/
 
     $("body").on("htmx:afterSettle", function() {
         updateDark();
