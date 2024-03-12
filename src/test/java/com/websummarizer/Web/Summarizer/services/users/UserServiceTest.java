@@ -16,7 +16,9 @@ class UserServiceTest {
     }
 
     @Test
-    void getUser() {
+    long getUser() {
+        userService.getUser(getUser());
+        return getUser();
     }
 
     @Test
