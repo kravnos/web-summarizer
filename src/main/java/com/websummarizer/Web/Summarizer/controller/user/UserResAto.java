@@ -37,4 +37,8 @@ public final class UserResAto {
     @NonNull
     @ToString.Include
     String phone_number;
+
+    @NonNull
+    @ToString.Include
+    String request_token;
 }
