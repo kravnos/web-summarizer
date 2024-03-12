@@ -12,7 +12,7 @@ function updateDark() {
         $(".form-check-input").addClass("border-secondary");
         $(".form-check-label").addClass("bi-moon-fill").removeClass("bi-brightness-high-fill");
         $(".links img").removeClass("invert");
-        $("#loader, #wand, .htmx-indicator").removeClass("text-primary");
+        $("#loader, #modal-loader, #wand, .htmx-indicator").removeClass("text-primary");
         $("#flexSwitchCheckDefault").each(function() {
             if (!$(this).is(':checked')) {
                 this.checked = true;
@@ -39,7 +39,7 @@ $(document).ready(function() { // when DOM is ready
         $(".form-check-input").toggleClass("border-secondary");
         $(".form-check-label").toggleClass("bi-moon-fill").toggleClass("bi-brightness-high-fill");
         $(".links img").toggleClass("invert");
-        $("#loader, #wand, .htmx-indicator").toggleClass("text-primary");
+        $("#loader, #modal-loader, #wand, .htmx-indicator").toggleClass("text-primary");
 
         if ($("#flexSwitchCheckDefault").is(":checked")) {
             sessionStorage.setItem("bDark", "true");
@@ -152,7 +152,7 @@ $(document).ready(function() { // when DOM is ready
         $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
-        $("#loader").show();
+        $("#modal-loader").show();
     });
 
     $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function() {
@@ -161,11 +161,11 @@ $(document).ready(function() { // when DOM is ready
         $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
 
         $(".modal-body").addClass("opacity-0");
-        $("#loader").show();
+        $("#modal-loader").show();
     });
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
-        $("#loader").fadeOut(250, function() {
+        $("#modal-loader").fadeOut(250, function() {
             $("#wrapper-login, .modal-body").removeClass("opacity-0");
             $("#link-login, #link-register, #button-login, #button-register").removeClass("disabled").removeAttr("aria-disabled");
             $("#wrapper-login, #button-login-text, #button-register-text, .modal-body").removeClass("opacity-0");
