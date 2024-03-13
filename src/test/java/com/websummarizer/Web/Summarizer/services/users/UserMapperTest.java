@@ -17,15 +17,27 @@ class UserMapperTest {
 
 
     @Test
-     void mapUserReqAtoToEto() {
-        //test = UserMapper.mapUserEtoToResAto(User.builder().first_name());
+     void mapUserReqAtoToEto() { //initialize all variables
+        test.setFirst_name("TEst");
+        test.setLast_name("Attempt");
+        test.setEmail("testemail@gmail.com");
+        test.setPassword("12345");
+        test.setPhone_number("9051112222");
+        test.setId(12345);
     }
 
     @Test
     void mapUserEtoToResAto() {
+        test.getFirst_name();
+        test.getLast_name();
+        test.getPhone_number();
+        test.getId();
+        test.getPassword();
+        test.getPhone_number();
     }
 
     @Test
     void updateUser() {
+
     }
 }
