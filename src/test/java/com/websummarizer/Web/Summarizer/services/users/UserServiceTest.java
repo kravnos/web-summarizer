@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 class UserServiceTest {
 
-   /* public UserResAto userResAto;
+    public UserResAto userResAto;
     public UserService userService;
    // public// User name = new User(1234, "test", "test", "test", "test");
 
@@ -23,11 +23,10 @@ class UserServiceTest {
     }
 
     @Test
-    long getUser() {
+    void getUser() {
         UserService test = this.userService;
         //this.getUser(12345);
         //return getUser();
-        return null;
     }
 
     @Test
@@ -48,5 +47,5 @@ class UserServiceTest {
         return userService.findAllUser();
     }
 
-    */
+
 }
