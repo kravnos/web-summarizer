@@ -47,13 +47,7 @@ $(document).ready(function() { // when DOM is ready
             sessionStorage.removeItem("bDark");
         }
     });
-/*
-    $("#link-register, #link-login").on("click", function(event) {
-        event.preventDefault();
 
-        $("#wrapper-register, #wrapper-login").toggleClass("d-none");
-    });
-*/
     $("#input-main").on("input keyup", function(event) {
         /*if (event.key == "Enter") {
             event.preventDefault();
@@ -155,13 +149,29 @@ $(document).ready(function() { // when DOM is ready
         $("#modal-loader").show();
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function() {
-        $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
-        $("#button-login-text, #button-register-text").addClass("opacity-0");
-        $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function(event) {
+        let isValid = true;
 
-        $(".modal-body").addClass("opacity-0");
-        $("#modal-loader").show();
+        $("#wrapper-login input").each(function() {
+            if ($(this).prop("required")) {
+                isValid = this.reportValidity();
+
+                if (!isValid) {
+                    return false;
+                }
+            }
+        });
+
+        if (isValid) {
+            $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
+            $("#button-login-text, #button-register-text").addClass("opacity-0");
+            $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
+
+            $(".modal-body").addClass("opacity-0");
+            $("#modal-loader").show();
+        } else {
+            event.preventDefault();
+        }
     });
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
