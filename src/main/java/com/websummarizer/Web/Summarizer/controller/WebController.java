@@ -151,7 +151,7 @@ public class WebController {
         }
         //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
         model.addAttribute("isRegistered", false);
-        model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\">&nbsp;</span> Registration for '" + email + "' failed. Try again.");
+        model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\">&nbsp;</span> Registration for '" + email + "' failed. Please try again.");
         return "user/register";
     }
 
