@@ -10,11 +10,11 @@
         <fieldset class="field-set">
             <div class="field required mb-3">
                 <label for="login-email" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                <input id="login-email" class="form-control" name="login-email" type="email" hx-preserve="true" autofocus required />
+                <input id="login-email" class="form-control" name="login-email" type="email" hx-validate="true" hx-preserve="true" autofocus required />
             </div>
             <div class="field required mb-3">
                 <label for="login-password" class="label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                <input id="login-password" class="form-control" name="login-password" type="password" required />
+                <input id="login-password" class="form-control" name="login-password" type="password" hx-validate="true" required />
             </div>
         </fieldset>
         <div class="text-account text-center pt-4 pb-2">Don't have an account? <a
@@ -42,7 +42,7 @@
                 hx-disabled-elt="this"
                 id="button-login"
                 class="btn btn-primary position-relative"
-                type="button">
+                type="submit">
                 <span id="button-login-text">Login</span>
                 <span id="button-login-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
