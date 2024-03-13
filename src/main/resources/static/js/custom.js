@@ -153,7 +153,7 @@ $(document).ready(function() { // when DOM is ready
         let isValid = true;
 
         $("#wrapper-login input").each(function() {
-            if ($(this).prop("required")) {
+            if (($(this).prop("required")) || (($(this).attr("type")) && ($(this).attr("type") != "text"))) {
                 isValid = this.reportValidity();
 
                 if (!isValid) {
@@ -170,7 +170,10 @@ $(document).ready(function() { // when DOM is ready
             $(".modal-body").addClass("opacity-0");
             $("#modal-loader").show();
         } else {
+            $(".field-set").addClass("was-validated");
+
             event.preventDefault();
+            event.stopPropagation();
         }
     });
 
