@@ -47,6 +47,7 @@ body {
     max-width: 80%;
 }
 .fit-content {
+    display: table; /* fix firefox bug */
     width: fit-content;
 }
 .text-justify {
