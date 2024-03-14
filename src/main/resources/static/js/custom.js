@@ -142,6 +142,14 @@ $(document).ready(function() { // when DOM is ready
         });
     });
 
+    $("#wrapper-login").on("input keydown", "input", function(event) {
+        if (event.key == "Enter") {
+            $("#button-login, #button-register").trigger("click");
+        } else {
+            $(this).parent().addClass("was-validated");
+        }
+    });
+
     $("#wrapper-login").on("htmx:beforeRequest", "#link-login, #link-register", function() {
         $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
 
@@ -151,12 +159,17 @@ $(document).ready(function() { // when DOM is ready
 
     $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function(event) {
         let isValid = true;
+        let successMessage;
+        let errorMessage;
 
         $("#wrapper-login input").each(function() {
             if (($(this).prop("required")) || (($(this).attr("type")) && ($(this).attr("type") != "text"))) {
-                isValid = this.reportValidity();
+                isValid = this.checkValidity();
 
                 if (!isValid) {
+                    errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
+                    errorMessage += $("label[for='" + $(this).attr('id') + "']").text() + " error. " + this.validationMessage;
+
                     return false;
                 }
             }
@@ -170,6 +183,7 @@ $(document).ready(function() { // when DOM is ready
             $(".modal-body").addClass("opacity-0");
             $("#modal-loader").show();
         } else {
+            $(".modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
             $(".field-set").addClass("was-validated");
 
             event.preventDefault();
@@ -178,13 +192,28 @@ $(document).ready(function() { // when DOM is ready
     });
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
+        let message = $(".modal-message");
+        let text = message.text();
+
+        if (text) {
+            if (text.indexOf("success") !== -1) {
+                message.addClass("success").removeClass("error, d-none");
+            } else if (text.indexOf("error") !== -1) {
+                message.removeClass("success, d-none").addClass("error");
+            }
+        }
+
+        $("#wrapper-login input").each(function() {
+            if ($(this).val()) {
+                $(this).parent().addClass("was-validated");
+            }
+        });
+
         $("#modal-loader").fadeOut(250, function() {
             $("#wrapper-login, .modal-body").removeClass("opacity-0");
             $("#link-login, #link-register, #button-login, #button-register").removeClass("disabled").removeAttr("aria-disabled");
             $("#wrapper-login, #button-login-text, #button-register-text, .modal-body").removeClass("opacity-0");
             $("#button-login-spinner, #button-register-spinner").addClass("d-none").attr("aria-hidden", "true");
-
-            //$("#login-email").focus();
         });
     });
 
