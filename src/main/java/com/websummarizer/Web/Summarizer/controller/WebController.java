@@ -146,12 +146,12 @@ public class WebController {
             logger.info("User created successfully: " + user);
             //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
             model.addAttribute("isRegistered", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\">&nbsp;</span> User '" + email + "' created successfully. Please login.");
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
             return "user/login";
         }
         //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
         model.addAttribute("isRegistered", false);
-        model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\">&nbsp;</span> Registration for '" + email + "' failed. Please try again.");
+        model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for user '" + email + "'. Please try again.");
         return "user/register";
     }
 
