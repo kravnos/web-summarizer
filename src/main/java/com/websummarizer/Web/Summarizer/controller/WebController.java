@@ -1,12 +1,14 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.mail.SendFailedException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class WebController {
     @Value("${WEBADDRESS}")
     private String webaddress;
 
-    private static final Logger logger = Logger.getLogger(Bart.class.getName());
+    private static final Logger logger = Logger.getLogger("WebController");
 
     /**
      * Constructor for WebController.
@@ -183,7 +185,8 @@ public class WebController {
      * @return redirect user back to the main page of the website
      */
     @PostMapping("emailResetPW")
-    public String resetPW(@ModelAttribute User user){
+    @Transactional
+    public String resetPW(@ModelAttribute User user, HttpServletResponse response){
         /*  Check if the email address is valid
             Note: The email input box on the website strictly follows the email address convention.
             As a result, it would be fairly difficult for the user to input an invalid email address format.
@@ -192,7 +195,8 @@ public class WebController {
         boolean isEmailValid = EmailValidator.getInstance().isValid(user.getEmail());
         if (!isEmailValid){
             logger.warning("Invalid Email: " + user.getEmail());
-            return "redirect:/";
+            response.setStatus(PasswordResetHTTPStatus.INVALID_EMAIL());
+            return "index";
         }
 
         //  Build unique password reset URL
@@ -201,15 +205,15 @@ public class WebController {
         int usersUpdated = userService.setPasswordRequestToken(token, user);  // Should be either 0 or 1
         if (usersUpdated <= 0 ^ usersUpdated > 1) {
             logger.warning("There is no user in the database with this email: " + user.getEmail());
-            return "redirect:/";
+            response.setStatus(PasswordResetHTTPStatus.EMAIL_NOT_FOUND());
+            return "index";
         }
         logger.info("User with email: " + user.getEmail() + " has the following reset token saved: " + token);
 
         //  Create email body
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@test.com");
         message.setTo(user.getEmail());
-        message.setSubject("Test Email");
+        message.setSubject("Password Reset");
         message.setText("This is a test for a school project. Please delete if you got this by accident.");
         message.setText("Reset password link: " + resetURL);
 
@@ -217,12 +221,14 @@ public class WebController {
         try{
             emailSender.send(message);
             logger.info("Email successfully sent to: " + user.getEmail());
+            response.setStatus(PasswordResetHTTPStatus.OK());
         } catch (MailParseException m){
             logger.warning("There was an error sending the email");
             logger.warning("Error Message: " + m.getMessage());
             logger.warning("Error Cause: " + m.getCause());
+            response.setStatus(PasswordResetHTTPStatus.EMAIL_PARSE_ERROR());
         }
-        return "redirect:/";
+        return "index";
     }
 
     /**
