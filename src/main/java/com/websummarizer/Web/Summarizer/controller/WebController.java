@@ -1,9 +1,12 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +37,13 @@ public class WebController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private Shortlink shortlink;
+
+    @Autowired
+    private HistoryService historyService;
+
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
     /**
@@ -109,10 +120,18 @@ public class WebController {
             //System.out.println("catched");
         }
 
+        // Generate a short code for the given URL
+        String ShortlinkCode = shortlink.codeShort(url);
+        // Create a new history request object with the generated short code
+        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
+        // Add the history request to the database and get the response
+        var historyResAto = historyService.addHistory(historyReqAto);
+
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output);
+        model.addAttribute("output", output + " : " + ShortlinkCode);
+
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
