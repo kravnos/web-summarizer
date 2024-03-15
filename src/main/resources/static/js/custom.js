@@ -144,7 +144,7 @@ $(document).ready(function() { // when DOM is ready
 
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
-            $("#button-login, #button-register").trigger("click");
+            $("#button-login, #button-register, #button-account").trigger("click");
         } else {
             $(this).parent().addClass("was-validated");
         }
@@ -157,7 +157,7 @@ $(document).ready(function() { // when DOM is ready
         $("#modal-loader").show();
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register", function(event) {
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register, #button-account", function(event) {
         let isValid = true;
         let successMessage;
         let errorMessage;
@@ -176,9 +176,9 @@ $(document).ready(function() { // when DOM is ready
         });
 
         if (isValid) {
-            $("#button-login, #button-register").addClass("disabled").attr("aria-disabled", "true");
-            $("#button-login-text, #button-register-text").addClass("opacity-0");
-            $("#button-login-spinner, #button-register-spinner").removeClass("d-none").removeAttr("aria-hidden");
+            $("#button-login, #button-register, #button-account").addClass("disabled").attr("aria-disabled", "true");
+            $("#button-login-text, #button-register-text, #button-account-text").addClass("opacity-0");
+            $("#button-login-spinner, #button-register-spinner, #button-account-spinner").removeClass("d-none").removeAttr("aria-hidden");
 
             $(".modal-body").addClass("opacity-0");
             $("#modal-loader").show();
@@ -211,9 +211,9 @@ $(document).ready(function() { // when DOM is ready
 
         $("#modal-loader").fadeOut(250, function() {
             $("#wrapper-login, .modal-body").removeClass("opacity-0");
-            $("#link-login, #link-register, #button-login, #button-register").removeClass("disabled").removeAttr("aria-disabled");
-            $("#wrapper-login, #button-login-text, #button-register-text, .modal-body").removeClass("opacity-0");
-            $("#button-login-spinner, #button-register-spinner").addClass("d-none").attr("aria-hidden", "true");
+            $("#link-login, #link-register, #link-account, #button-login, #button-register, #button-account").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-login, #button-login-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
+            $("#button-login-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
         });
     });
 
