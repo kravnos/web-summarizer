@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.http.HttpResponse;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -182,6 +183,7 @@ public class WebController {
      * Runs when a user selects "Forgot Password" and submits an email address
      *
      * @param user The string to check.
+     * @param response HTTP Response code
      * @return redirect user back to the main page of the website
      */
     @PostMapping("emailResetPW")
@@ -236,17 +238,20 @@ public class WebController {
      *
      * @param token The string used to identify the user that made the password reset request
      * @param session Session to contain the valid user data
+     * @param response HTTP Response code
      * @return redirect to main page if user with a specified token isn't found; redirect to password reset page otherwise
      */
     @GetMapping("password-reset")
-    public String resetPW(@RequestParam String token, HttpSession session){
+    public String checkRequestToken(@RequestParam String token, HttpSession session, HttpServletResponse response){
         User userPWToChange = userService.getUserByPasswordResetToken(token);
         if (userPWToChange == null) {
             logger.warning("There is no user with the specified reset token in the database");
-            return "redirect:/";
+            response.setStatus(PasswordResetHTTPStatus.INVALID_TOKEN());
+            return "index";
         }
-        logger.info("User successfully pulled: " + userPWToChange.toString());
+        logger.info("User successfully pulled: " + userPWToChange);
         session.setAttribute("user", userPWToChange);
+        response.setStatus(PasswordResetHTTPStatus.SUCCESS_REDIRECT_TO_RESET_FORM());
         return "password-reset";
     }
 
