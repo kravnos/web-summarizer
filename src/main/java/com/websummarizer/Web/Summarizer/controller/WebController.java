@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,23 +57,45 @@ public class WebController {
     }
 
     /**
-     * Endpoint for user registration.
-     *
-     * @return The name of the view to render.
-     */
-    @PostMapping("/register")
-    public void register() {
-        //return "index";
-    }
-
-    /**
      * Endpoint for user sign in.
      *
      * @return The name of the view to render.
      */
-    @PostMapping("/login")
-    public void login() {
-        //return "index";
+    @PostMapping("/user/login")
+    public String login() {
+        /* TODO:
+            check session/boolean/token/method if user is logged in or not
+            see user/auth below.
+            if logged in then goto user/account endpoint, else goto user/login
+         */
+
+        boolean isLoggedIn = false; // update this logic
+
+        if (isLoggedIn) {
+            return "user/account";
+        } else {
+            return "user/login";
+        }
+    }
+
+    /**
+     * Endpoint for user registration.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/register")
+    public String register() {
+        return "user/register";
+    }
+
+    /**
+     * Endpoint for user account settings.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/account")
+    public String account() {
+        return "user/account";
     }
 
     /**
@@ -100,13 +123,15 @@ public class WebController {
 
         //if (auth instanceof AnonymousAuthenticationToken) {
         // set username to logged in name
-        // change login button text to account / logout
         //}
 
         if (isURL) {
             url = HTMLParser.parser(input);
-        }
-        else {
+        } else {
+            /* TODO:
+                urls are not shown in the social links
+                Please revise
+             */
             // Facebook needs a valid URL for the share function to work.
             // Without a valid URL, the facebook button will open a window giving the user an error.
             // So, this else statement will set a temp url if the user instead inputs a block of text to parse.
@@ -117,7 +142,6 @@ public class WebController {
             output = bart.queryModel(input);
         } catch (Exception e) {
             output = "Error Occurred. Please try again.";
-            //System.out.println("catched");
         }
 
         // Generate a short code for the given URL
@@ -145,25 +169,71 @@ public class WebController {
      * Endpoint for creating a user.
      *
      * @param user    The user to create.
-     * @param session The current session.
-     * @return The name of the view to render.
      */
-    @PostMapping("/createUser")
-    public void createUser(@ModelAttribute User user, HttpSession session) {
-        session.setAttribute("msg", "");
+    @PostMapping("/user/create")
+    public String createUser(
+            @RequestParam(value = "email") String email,
+            @ModelAttribute User user,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
         logger.info("Received user creation request: " + user);
-        boolean bool = false;
+        boolean isRegistered = false;
+
         try {
-            bool = userService.createUser(user) != null;
+            isRegistered = userService.createUser(user) != null;
         } catch (Exception e) {
-            session.setAttribute("msg", "Email already exists");
             logger.warning("User creation failed: " + e.getMessage());
         }
-        if (bool) {
-            session.setAttribute("msg", "Registered Successfully");
+
+        if (isRegistered) {
             logger.info("User created successfully: " + user);
+            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
+            model.addAttribute("isRegistered", true);
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+            return "user/login";
+        } else {
+            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
+            model.addAttribute("isRegistered", false);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+            return "user/register";
         }
-        //return "redirect:/";
+    }
+
+    /**
+     * Endpoint for validating the login of a user.
+     */
+    @PostMapping("/user/auth")
+    public String authUser(
+            @RequestParam(value = "login-email") String email,
+            @RequestParam(value = "login-password") String password,
+            Model model
+    ) {
+        /* TODO:
+            Please add logic for db check of user credentials for login etc
+            Currently accepting all logins to test account settings page.
+            Also require a session/boolean/token/method to check if user is now logged in
+            to not auth again and bypass login modal
+         */
+
+        Boolean isValidLogin = true;
+        Boolean isLoggedIn;
+
+        if (isValidLogin) {
+            isLoggedIn = true;
+
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' logged in successfully.");
+
+            return "user/account";
+        } else {
+            isLoggedIn = false;
+
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Login auth error for '" + email + "'. Please try again.");
+
+            return "user/login";
+        }
     }
 
     /**
