@@ -3,7 +3,7 @@ function updateDark() {
 
     if (bDark == "true") {
         $("body, .modal-content, .form-check-input").addClass("bg-secondary");
-        $("h1, h2, h3, h4, h5, p:not(.error):not(.success), input, label, .ai, .text-account, .text-chat, #feedback-length").addClass("text-white");
+        $("h1, h2, h3, h4, h5, p:not(.modal-message), input, label, .ai, .text-account, .text-chat, #feedback-length").addClass("text-white");
         $("nav, input").addClass("bg-dark");
         $(".chat").addClass("bg-dark").removeClass("bg-white");
         $(".date").addClass("text-white-50").removeClass("text-black-50");
