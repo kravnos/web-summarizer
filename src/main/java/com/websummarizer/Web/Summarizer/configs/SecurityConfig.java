@@ -14,13 +14,19 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .authorizeHttpRequests(auth -> {
-                    //currently we are permitting all user to access all pages, later we will change it
-                    auth.requestMatchers("/**").permitAll();
-                })
-                .oauth2Login(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf ->csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
+//        return httpSecurity
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(auth -> {
+//                    //currently we are permitting all user to access all pages, later we will change it
+//                    auth.requestMatchers("/**").permitAll();
+//                })
+//                .oauth2Login(Customizer.withDefaults())
+//                .formLogin(Customizer.withDefaults())
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .build();
+//    }
 }
