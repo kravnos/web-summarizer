@@ -1,6 +1,14 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+
+import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
+import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+
 import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
@@ -28,11 +36,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.http.HttpResponse;
+
+import java.time.LocalDateTime;
+
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
+import java.net.http.HttpResponse;
 import java.util.logging.Logger;
 
 /**
@@ -48,12 +59,19 @@ public class WebController {
     private UserServiceImpl userService;
 
     @Autowired
+    private Shortlink shortlink;
+
+    @Autowired
+    private HistoryService historyService;
+
     private JavaMailSender emailSender;
 
     @Value("${WEBADDRESS}")
     private String webaddress;
 
     private static final Logger logger = Logger.getLogger("WebController");
+  
+    //private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
     /**
      * Constructor for WebController.
@@ -69,9 +87,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/register")
-    public String register() {
-        return "index";
+    @PostMapping("/register")
+    public void register() {
+        //return "index";
     }
 
     /**
@@ -79,9 +97,9 @@ public class WebController {
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/signin")
-    public String signIn() {
-        return "index";
+    @PostMapping("/login")
+    public void login() {
+        //return "index";
     }
 
     /**
@@ -102,13 +120,18 @@ public class WebController {
 
         String username = "You";
         String output;
+        String url;
 
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
-        String url = "";
+        //if (auth instanceof AnonymousAuthenticationToken) {
+        // set username to logged in name
+        // change login button text to account / logout
+        //}
+
         if (isURL) {
-            url = input;
-            input = HTMLParser.parser(input);
+            url = HTMLParser.parser(input);
         }
         else {
             // Facebook needs a valid URL for the share function to work.
@@ -120,14 +143,22 @@ public class WebController {
         try {
             output = bart.queryModel(input);
         } catch (Exception e) {
-            output = "Error Occured";
-            System.out.println("catched");
+            output = "Error Occurred. Please try again.";
+            //System.out.println("catched");
         }
+
+        // Generate a short code for the given URL
+        String ShortlinkCode = shortlink.codeShort(url);
+        // Create a new history request object with the generated short code
+        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
+        // Add the history request to the database and get the response
+        var historyResAto = historyService.addHistory(historyReqAto);
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output);
+        model.addAttribute("output", output + " : " + ShortlinkCode);
+
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
@@ -145,7 +176,7 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/createUser")
-    public String createUser(@ModelAttribute User user, HttpSession session) {
+    public void createUser(@ModelAttribute User user, HttpSession session) {
         session.setAttribute("msg", "");
         logger.info("Received user creation request: " + user);
         boolean bool = false;
@@ -159,7 +190,7 @@ public class WebController {
             session.setAttribute("msg", "Registered Successfully");
             logger.info("User created successfully: " + user);
         }
-        return "redirect:/";
+        //return "redirect:/";
     }
 
     /**
