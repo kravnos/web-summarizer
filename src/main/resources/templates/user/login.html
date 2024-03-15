@@ -20,7 +20,6 @@
                                                                                     hx-post="/user/register"
                                                                                     hx-target="#wrapper-login"
                                                                                     hx-swap="innerHTML"
-                                                                                    hx-preserve="true"
                                                                                     hx-disabled-elt="this"
                                                                                     id="link-register"
                                                                                     class="text-account"
@@ -29,14 +28,13 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary me-auto" hx-preserve="true">Reset Password</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" hx-preserve="true">Close</button>
+        <button type="button" class="btn btn-secondary me-auto">Reset Password</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button
                 hx-trigger="click queue:none"
                 hx-post="/user/auth"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-preserve="true"
                 hx-include="[name='login-email'], [name='login-password']"
                 hx-disabled-elt="this"
                 id="button-login"

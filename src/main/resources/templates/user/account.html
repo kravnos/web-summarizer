@@ -10,14 +10,13 @@
         <br /><br /><br /><br /><br /><br />
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary me-auto" hx-preserve="true">Logout</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" hx-preserve="true">Cancel</button>
+        <button type="button" class="btn btn-secondary me-auto">Logout</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button
                 hx-trigger="click queue:none"
                 hx-post="/user/account"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-preserve="true"
                 hx-include=""
                 hx-disabled-elt="this"
                 id="button-account"
