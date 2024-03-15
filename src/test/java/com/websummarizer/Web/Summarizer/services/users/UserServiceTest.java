@@ -25,6 +25,8 @@ class UserServiceTest {
     @Test
     void getUser() {
         UserService test = this.userService;
+        User user = new User();
+        createUser(user);
         //this.getUser(12345);
         //return getUser();
     }
@@ -48,4 +50,15 @@ class UserServiceTest {
     }
 
 
+    @Test
+    public User createUser(User user) {
+        user.setFirst_name("Test");
+        user.setLast_name("Attempt");
+        System.out.println("test");
+        user.setEmail("test@gmail.com");
+        user.setId(12345);
+        user.setPassword("12345");
+        System.out.println(user.getLast_name());
+        return user;
+    }
 }
