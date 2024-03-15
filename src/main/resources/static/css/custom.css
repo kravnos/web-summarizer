@@ -22,6 +22,12 @@ body {
 .btn, .form-control, .shadow-google {
     padding: 0.375rem 1.5rem;
 }
+.modal .btn-helper {
+    padding: 0;
+}
+.modal .btn-helper:focus {
+    box-shadow: none!important;
+}
 .field.required .form-label:after {
     content: ' *';
     color: #e02b27;
