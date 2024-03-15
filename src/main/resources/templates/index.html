@@ -28,7 +28,7 @@
                                 id="login"
                                 class="nav-link"
                                 href="#"
-                                th:text="${isLoggedIn} ? 'Account' : 'Login'"
+                                th:text="${isLoggedIn == true} ? 'Account' : 'Login'"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-login">
                             </a>
