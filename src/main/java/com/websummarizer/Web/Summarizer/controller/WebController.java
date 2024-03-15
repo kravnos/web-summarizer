@@ -6,7 +6,7 @@ import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+//import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -42,8 +42,8 @@ public class WebController {
     @Autowired
     private Shortlink shortlink;
 
-    @Autowired
-    private HistoryService historyService;
+    //@Autowired
+    //private HistoryService historyService;
 
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
@@ -149,7 +149,7 @@ public class WebController {
         // Create a new history request object with the generated short code
         HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
         // Add the history request to the database and get the response
-        var historyResAto = historyService.addHistory(historyReqAto);
+        //var historyResAto = historyService.addHistory(historyReqAto);
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
