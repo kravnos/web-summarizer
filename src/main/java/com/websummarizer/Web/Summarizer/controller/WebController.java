@@ -181,7 +181,7 @@ public class WebController {
         boolean isRegistered = false;
 
         try {
-            isRegistered = userService.createUser(user) != null;
+            //isRegistered = userService.createUser(user) != null;
         } catch (Exception e) {
             logger.warning("User creation failed: " + e.getMessage());
         }
