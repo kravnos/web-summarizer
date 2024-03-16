@@ -16,8 +16,8 @@ import java.util.Set;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-//    @Autowired
-//    private UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,13 +27,8 @@ public class UserServiceImpl implements UserDetailsService {
 //    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("in the user service impl class");
-        if(!username.equals("Ethan Singh")) throw new UsernameNotFoundException("NOT ETHAN");
-        Set<Role> roles = new HashSet<>();
-        roles.add(new Role(1,"USER"));
-
-        return new User(1,"Ethan","Singh","email",passwordEncoder.encode("password"),"phone",roles);
-
+        return userRepo.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User is not valid"));
     }
 }
