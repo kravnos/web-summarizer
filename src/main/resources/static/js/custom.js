@@ -1,4 +1,7 @@
-$(document).ready(function() { // when DOM is ready
+/*
+    when DOM is ready
+*/
+$(document).ready(function() {
     const csrfHeaderName = $("meta[name='_csrf_header']").attr("content");
     const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
     const sleep = 250;
@@ -7,6 +10,9 @@ $(document).ready(function() { // when DOM is ready
     let timeout;
     let isDark = sessionStorage.getItem("isDark");
 
+    /*
+        Dark Mode
+    */
     if (isDark == "true") {
         $("body").attr("data-bs-theme", "dark");
 
@@ -27,6 +33,9 @@ $(document).ready(function() { // when DOM is ready
         }
     });
 
+    /*
+        Main
+    */
     $("#input-main").on("input keyup", function(event) {
         let val = $("#input-main").val();
         let ai = $(".ai").last();
@@ -116,6 +125,9 @@ $(document).ready(function() { // when DOM is ready
         });
     });
 
+    /*
+        Modals
+    */
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
             $("#button-login, #button-register, #button-account").trigger("click");
@@ -137,14 +149,16 @@ $(document).ready(function() { // when DOM is ready
         let errorMessage;
 
         $("#wrapper-login input").each(function() {
-            if (($(this).prop("required")) || (($(this).attr("type")) && ($(this).attr("type") != "text"))) {
+            let element = $(this);
+
+            if ((element.prop("required")) || ((element.attr("type")) && (element.attr("type") != "text"))) {
                 isValid = this.checkValidity();
 
                 if (!isValid) {
-                    $(this).focus();
+                    element.focus();
 
                     errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
-                    errorMessage += $("label[for='" + $(this).attr('id') + "']").text() + " error. " + this.validationMessage;
+                    errorMessage += $("label[for='" + element.attr('id') + "']").text() + " error. " + this.validationMessage;
 
                     return false;
                 }
@@ -171,6 +185,7 @@ $(document).ready(function() { // when DOM is ready
         let message = $(".modal-message");
 
         if (event.detail.successful == true) {
+            let inputs = $("#wrapper-login input");
             let text = message.text().toLowerCase();
 
             if (text) {
@@ -181,15 +196,15 @@ $(document).ready(function() { // when DOM is ready
                 }
             }
 
-            $("#wrapper-login input").each(function() {
-                if ($(this).prop("autofocus")) {
-                    $(this).focus();
-                }
+            inputs.first().focus();
 
-                if ($(this).val()) {
-                    $(this).parent().addClass("was-validated");
-                } else if ($(this).prop("required")) {
-                    $(this).focus();
+            $(inputs.get().reverse()).each(function() {
+                let element = $(this);
+
+                if (element.val()) {
+                    element.parent().addClass("was-validated");
+                } else if (element.prop("required")) {
+                    element.focus();
                 }
             });
         } else {
@@ -206,6 +221,9 @@ $(document).ready(function() { // when DOM is ready
         });
     });
 
+    /*
+        Spring Security Tokens
+    */
     $("body").on("htmx:configRequest", function(event) {
         event.detail.headers["accept"] = "text/html-partial";
 
@@ -215,7 +233,10 @@ $(document).ready(function() { // when DOM is ready
     });
 });
 
-$(window).on("load", function() { // when ALL content is loaded
+/*
+    when ALL content is loaded
+*/
+$(window).on("load", function() {
     $("#loader").fadeOut(750, function() {
         $("#wrapper").removeClass("opacity-0");
     });
