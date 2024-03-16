@@ -4,14 +4,14 @@
         <h4 class="d-inline-block mt-0 me-1 mb-0 ms-0 bi bi-person-circle"></h4>
         <h3 class="d-inline-block m-0" th:text="${user}"></h3>
     </div>
-    <div class="chat input fit-content shadow-google bg-white border-0 ms-auto me-0 my-2">
+    <div class="chat input fit-content shadow-google border-0 ms-auto me-0 my-2">
         <span class="text-chat text-input" th:text="${input}"></span>
     </div>
     <div class="bot fit-content ms-0 me-auto my-2 px-4">
         <h3 class="d-inline-block m-0">Jarvis</h3>
         <h4 class="d-inline-block mt-0 me-0 mb-0 ms-1 bi bi-robot"></h4>
     </div>
-    <div class="chat output fit-content shadow-google bg-white border-0 me-auto ms-0 my-2">
+    <div class="chat output fit-content shadow-google border-0 me-auto ms-0 my-2">
         <span class="text-chat text-output" th:utext="${output}"></span>
         <span class="ai spinner-grow spinner-grow-xs"></span>
     </div>
