@@ -110,7 +110,7 @@ public class WebController {
         input = input.trim();
         boolean isURL = isValidURL(input);
 
-        //if (auth instanceof AnonymousAuthenticationToken) {
+        //if (isLoggedIn) {
         // set username to logged in name
         //}
 
