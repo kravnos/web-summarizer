@@ -118,6 +118,9 @@ body[data-bs-theme=dark] ::-webkit-scrollbar-thumb:hover {
 body[data-bs-theme=dark] .invert {
     filter: invert(25%);
 }
+body[data-bs-theme=dark] .bi-moon-fill::before {
+    content: "\f1d1";
+}
 /* custom htmx loader */
 /*.htmx-indicator {
     opacity: 0;
