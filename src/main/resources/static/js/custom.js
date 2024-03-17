@@ -17,14 +17,14 @@ $(document).ready(function() {
         $("body").attr("data-bs-theme", "dark");
 
         $("#flexSwitchCheckDefault").each(function() {
-            if (!$(this).is(':checked')) {
+            if (!$(this).is(":checked")) {
                 this.checked = true;
             }
          });
     }
 
     $("#flexSwitchCheckDefault").on("change", function() {
-        if ($("#flexSwitchCheckDefault").is(":checked")) {
+        if ($(this).is(":checked")) {
             $("body").attr("data-bs-theme", "dark");
             sessionStorage.setItem("isDark", "true");
         } else {
