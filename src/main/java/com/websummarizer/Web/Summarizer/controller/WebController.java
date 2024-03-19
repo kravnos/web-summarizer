@@ -45,7 +45,7 @@ public class WebController {
     //@Autowired
     //private HistoryService historyService;
 
-    private static final Logger logger = Logger.getLogger(Bart.class.getName());
+    private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
     /**
      * Constructor for WebController.
@@ -170,35 +170,34 @@ public class WebController {
      *
      * @param user    The user to create.
      */
-    @PostMapping("/user/create")
-    public String createUser(
-            @RequestParam(value = "email") String email,
-            @ModelAttribute User user,
-            RedirectAttributes redirectAttributes,
-            Model model
-    ) {
-        logger.info("Received user creation request: " + user);
-        boolean isRegistered = false;
-
-        try {
-            //isRegistered = userService.createUser(user) != null;
-        } catch (Exception e) {
-            logger.warning("User creation failed: " + e.getMessage());
-        }
-
-        if (isRegistered) {
-            logger.info("User created successfully: " + user);
-            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
-            model.addAttribute("isRegistered", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
-            return "user/login";
-        } else {
-            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
-            model.addAttribute("isRegistered", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
-            return "user/register";
-        }
-    }
+//    @PostMapping("/create")
+//    public String createUser(
+//            @RequestParam(value = "email") String email,
+//            @ModelAttribute User user,
+//            Model model
+//    ) {
+//        logger.info("Received user creation request: " + user);
+//        boolean isRegistered = false;
+//
+//        try {
+//            isRegistered = userService.createUser(user) != null;
+//        } catch (Exception e) {
+//            logger.warning("User creation failed: " + e.getMessage());
+//        }
+//
+//        if (isRegistered) {
+//            logger.info("User created successfully: " + user);
+//            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
+//            model.addAttribute("isRegistered", true);
+//            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+//            return "user/login";
+//        } else {
+//            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
+//            model.addAttribute("isRegistered", false);
+//            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+//            return "user/register";
+//        }
+//    }
 
     /**
      * Endpoint for validating the login of a user.
