@@ -19,8 +19,8 @@ class UserMapperTest{
     public User test;
 
 
-    //@Test
-    /* void mapUserReqAtoToEto() { //initialize all variables
+    @Test
+     void mapUserReqAtoToEto() { //initialize all variables
         User test = this.test;
         test.setFirst_name("TEst");
         test.setLast_name("Attempt");
@@ -28,7 +28,7 @@ class UserMapperTest{
         test.setPassword("12345");
         test.setPhone_number("9051112222");
         test.setId(12345);
-    } */
+    }
 
     @Test
     @Autowired

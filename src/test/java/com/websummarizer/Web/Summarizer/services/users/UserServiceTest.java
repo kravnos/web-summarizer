@@ -51,7 +51,7 @@ class UserServiceTest {
 
 
     @Test
-    public User createUser(User user) {
+    public User createUser(User user) { //Test creating user
         user.setFirst_name("Test");
         user.setLast_name("Attempt");
         System.out.println("test");
