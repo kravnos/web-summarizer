@@ -4,7 +4,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body transition-0 opacity-0">
-        <p class="modal-message fs-7 px-4 py-2 d-none" th:utext="${message != null} ? ${message}"></p>
+        <p class="modal-message fs-7 px-4 py-2 d-none" th:if="${message}" th:utext="${message}"></p>
+        <p class="modal-message fs-7 px-4 py-2 d-none" th:unless="${message}"></p>
         <fieldset class="field-set">
             <div class="field required mb-3">
                 <label for="login-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
