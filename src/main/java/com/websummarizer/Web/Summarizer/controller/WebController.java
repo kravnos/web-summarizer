@@ -93,7 +93,7 @@ public class WebController {
 
         String username = "You";
         String output;
-        String url;
+        String url = null;
 
         input = input.trim();
         boolean isURL = isValidURL(input);
