@@ -26,27 +26,6 @@ class HistoryServiceTest {
     }
 
     @Test
-    void addHistory() {
-        historyService.addHistory(historyReqAto);
-    }
-
-    @Test
-    void getHistory() {
-    }
-
-    @Test
-    void updateHistory() {
-    }
-
-    @Test
-    void deleteHistory() {
-    }
-
-    @Test
-    void findAllHistory() {
-    }
-
-    @Test
     public History createhistory(History history){
         history.setHistoryContent("Enter history set here");
         history.setUser(user);
@@ -54,4 +33,31 @@ class HistoryServiceTest {
         history.setUploadTime(dateTime);
         return history;
     }
+
+    @Test
+    void addHistory() {
+        historyService.addHistory(historyReqAto);
+    }
+
+    @Test
+    void getHistory() {
+        historyService.getHistory(user.getId());
+    }
+
+    @Test
+    void updateHistory() {
+        historyService.updateHistory(user.getId(), historyReqAto);
+    }
+
+    @Test
+    void deleteHistory() {
+        historyService.deleteHistory(user.getId());
+    }
+
+    @Test
+    void findAllHistory() {
+        historyService.findAllHistory();
+    }
+
+
 }
