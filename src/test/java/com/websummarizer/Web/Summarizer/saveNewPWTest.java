@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.EmailPasswordResetTests.MVC;
+package com.websummarizer.Web.Summarizer;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.controller.WebController;
