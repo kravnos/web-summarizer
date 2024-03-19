@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryMapperTest {
 
+    public HistoryMapper history;
+
     @Test
     void mapHistoryReqAtoToEto() {
+
     }
 
     @Test
@@ -16,5 +19,6 @@ class HistoryMapperTest {
 
     @Test
     void updateHistory() {
+
     }
 }
