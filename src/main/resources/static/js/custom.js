@@ -172,7 +172,7 @@ $(document).ready(function() {
             $(".modal-body").addClass("opacity-0");
             $("#modal-loader").show();
         } else {
-            $(".modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
+            $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
             $(".field-set").addClass("was-validated");
 
             event.preventDefault();
@@ -181,20 +181,8 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
-        let message = $(".modal-message");
-
         if (event.detail.successful == true) {
             let inputs = $("#wrapper-login input");
-            let text = message.text().toLowerCase();
-
-            if (text) {
-                if (text.indexOf("success") !== -1) {
-                    message.addClass("success").removeClass("error, d-none");
-                } else if (text.indexOf("error") !== -1) {
-                    message.removeClass("success, d-none").addClass("error");
-                }
-            }
-
             inputs.first().focus();
 
             $(inputs.get().reverse()).each(function() {
@@ -207,7 +195,7 @@ $(document).ready(function() {
                 }
             });
         } else {
-            message.removeClass("success, d-none").addClass("error").html("<span class='bi bi-exclamation-triangle-fill'></span> Error. Request from server failed.");
+            $("#modal-message").removeClass("success, d-none").addClass("error").html("<span class='bi bi-exclamation-triangle-fill'></span> Error. Request from server failed.");
         }
     });
 

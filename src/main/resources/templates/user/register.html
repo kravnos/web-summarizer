@@ -4,8 +4,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body transition-0 opacity-0">
-        <p class="modal-message fs-7 px-4 py-2 d-none" th:if="${message}" th:utext="${message}"></p>
-        <p class="modal-message fs-7 px-4 py-2 d-none" th:unless="${message}"></p>
+        <div id="wrapper-message" class="fs-7">
+            <p class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${message}"></p>
+            <p class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${message}"></p>
+            <p id="modal-message" class="px-4 py-2 d-none" th:unless="${message}"></p>
+        </div>
         <fieldset class="field-set">
             <div class="field required mb-3">
                 <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>

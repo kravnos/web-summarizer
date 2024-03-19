@@ -170,12 +170,12 @@ public class WebController {
         if (isRegistered) {
             logger.info("User created successfully: " + user);
             //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
-            model.addAttribute("isRegistered", true);
+            model.addAttribute("isValid", true);
             model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
             return "user/login";
         } else {
             //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
-            model.addAttribute("isRegistered", false);
+            model.addAttribute("isValid", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
             return "user/register";
         }
@@ -198,19 +198,14 @@ public class WebController {
          */
 
         Boolean isValidLogin = true;
-        Boolean isLoggedIn;
 
         if (isValidLogin) {
-            isLoggedIn = true;
-
-            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("isValid", true);
             model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' logged in successfully.");
 
             return "user/account";
         } else {
-            isLoggedIn = false;
-
-            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("isValid", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Login auth error for '" + email + "'. Please try again.");
 
             return "user/login";
