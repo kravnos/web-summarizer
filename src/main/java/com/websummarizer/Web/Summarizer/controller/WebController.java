@@ -104,7 +104,22 @@ public class WebController {
         //}
 
         if (isURL) {
-            url = HTMLParser.parser(input);
+            try {
+                url = HTMLParser.parser(input);
+            } catch (Exception e) {
+                output = "Error Occurred. Please try again.";
+                model.addAttribute("date", dateFormat.format(date));
+                model.addAttribute("user", username);
+                model.addAttribute("input", input);
+                model.addAttribute("output", output);
+
+                // Share Button Attributes
+                model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+                model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+                model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+
+                return "api/summary";
+            }
         }
         else {
             // Facebook needs a valid URL for the share function to work.
