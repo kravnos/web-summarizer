@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserDetailsService {
+
+
+    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     @Autowired
     private UserRepo userRepo;
@@ -22,13 +26,10 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    public User createUser(User user) {
-//        return userRepo.save(user);
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("in the user service impl class");
+        logger.info("in the user service impl class");
+        logger.info("returning the following "+userRepo.findByEmail(email));
         return userRepo.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User is not valid"));
     }
 }
