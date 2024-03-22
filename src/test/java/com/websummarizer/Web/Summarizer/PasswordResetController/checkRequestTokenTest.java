@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer;
+package com.websummarizer.Web.Summarizer.PasswordResetController;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.controller.PasswordResetController;
