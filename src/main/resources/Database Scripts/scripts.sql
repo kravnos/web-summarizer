@@ -7,7 +7,7 @@ CREATE TABLE users (
                        first_name varchar(25) NOT NULL,
                        last_name varchar(25) NOT NULL,
                        email varchar(50) NOT NULL,
-                       password varchar(25) NOT NULL,
+                       password varchar(255) NOT NULL,
                        phone_number bigint,
                        request_token varchar(50),
                        UNIQUE(email),

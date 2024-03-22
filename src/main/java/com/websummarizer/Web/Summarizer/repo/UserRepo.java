@@ -8,6 +8,18 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
 public interface UserRepo extends JpaRepository<User, Long> {
+
+
+
+
+
+
+
+
+
+
+
+
     //  Run this method to update a user's password based on the user's email
     @Modifying
     @Query("update User u set u.password = ?1 where u.email = ?2")

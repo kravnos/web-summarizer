@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.controller.PasswordResetController;
 import com.websummarizer.Web.Summarizer.controller.WebController;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
@@ -22,7 +23,7 @@ import java.util.Enumeration;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@WebMvcTest(WebController.class)
+@WebMvcTest(PasswordResetController.class)
 @AutoConfigureMockMvc(addFilters = false)   // Disallow SecurityConfig from messing up the tests
 public class saveNewPWTest {
     //  Needed to mock the behaviour of this method
