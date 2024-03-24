@@ -19,7 +19,7 @@ $(document).ready(function() {
             if (!$(this).is(":checked")) {
                 this.checked = true;
             }
-         });
+        });
     }
 
     $("#flexSwitchCheckDefault").on("change", function() {
@@ -129,7 +129,7 @@ $(document).ready(function() {
     */
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
-            $("#button-login, #button-register, #button-account").trigger("click");
+            $("#button-login, #button-pro, #button-register, #button-account").trigger("click");
         } else {
             $(this).parent().addClass("was-validated");
         }
@@ -139,10 +139,10 @@ $(document).ready(function() {
         $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
-        $("#modal-loader").show();
+        $("#modal-login-loader").show();
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-register, #button-account", function(event) {
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-pro, #button-register, #button-account", function(event) {
         let isValid = true;
         let successMessage;
         let errorMessage;
@@ -165,14 +165,23 @@ $(document).ready(function() {
         });
 
         if (isValid) {
-            $("#button-login, #button-register, #button-account").addClass("disabled").attr("aria-disabled", "true");
-            $("#button-login-text, #button-register-text, #button-account-text").addClass("opacity-0");
-            $("#button-login-spinner, #button-register-spinner, #button-account-spinner").removeClass("d-none").removeAttr("aria-hidden");
+            $("#button-login, #button-pro, #button-register, #button-account").addClass("disabled").attr("aria-disabled", "true");
+            $("#button-login-text, #button-pro-text, #button-register-text, #button-account-text").addClass("opacity-0");
+            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").removeClass("d-none").removeAttr("aria-hidden");
 
             $(".modal-body").addClass("opacity-0");
-            $("#modal-loader").show();
+            $("#modal-login-loader").show();
         } else {
-            $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
+            let element = $("#modal-message");
+
+            if (element.length > 0) {
+                element.removeClass("success, d-none").addClass("error").html(errorMessage);
+            } else {
+                $("#modal-message-success, #modal-message-error").remove();
+                $("#wrapper-message").html("<p id='modal-message' class='px-4 py-2 d-none'></p>");
+                $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
+            }
+
             $(".field-set").addClass("was-validated");
 
             event.preventDefault();
@@ -200,16 +209,16 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
-        $("#modal-loader").fadeOut(sleep, function() {
+        $("#modal-login-loader").fadeOut(sleep, function() {
             $("#wrapper-login, .modal-body").removeClass("opacity-0");
-            $("#link-login, #link-register, #link-account, #button-login, #button-register, #button-account").removeClass("disabled").removeAttr("aria-disabled");
-            $("#wrapper-login, #button-login-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
-            $("#button-login-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
+            $("#link-login, #link-register, #link-account, #button-login, #button-pro, #button-register, #button-account").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
+            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
         });
     });
 
     /*
-        Spring Security Tokens
+        CSRF Security Tokens
     */
     $("body").on("htmx:configRequest", function(event) {
         event.detail.headers["accept"] = "text/html-partial";
