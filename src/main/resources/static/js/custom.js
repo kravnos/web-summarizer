@@ -4,6 +4,7 @@
 $(document).ready(function() {
     const regex = /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
     const sleep = 250;
+    const messageTimer = 10000;
     const minLength = 200;
     const maxLength = 5000;
     let timeout;
@@ -182,6 +183,14 @@ $(document).ready(function() {
                 $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
             }
 
+            $("#wrapper-message").fadeIn(sleep * 3, function() {
+                clearTimeout(timeout);
+
+                timeout = setTimeout(function() {
+                    $("#wrapper-message").fadeOut(sleep * 3);
+                }, messageTimer);
+            });
+
             $(".field-set").addClass("was-validated");
 
             event.preventDefault();
@@ -190,6 +199,9 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
+        let successMessage;
+        let errorMessage;
+
         if (event.detail.successful == true) {
             let inputs = $("#wrapper-login input");
             inputs.first().focus();
@@ -204,7 +216,10 @@ $(document).ready(function() {
                 }
             });
         } else {
-            $("#modal-message").removeClass("success, d-none").addClass("error").html("<span class='bi bi-exclamation-triangle-fill'></span> Error. Request from server failed.");
+            errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
+            errorMessage += "Error. Request from server failed.";
+
+            $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
         }
     });
 
@@ -214,6 +229,11 @@ $(document).ready(function() {
             $("#link-login, #link-register, #link-account, #button-login, #button-pro, #button-register, #button-account").removeClass("disabled").removeAttr("aria-disabled");
             $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
             $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
+
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                $("#wrapper-message").fadeOut(sleep * 3);
+            }, messageTimer);
         });
     });
 

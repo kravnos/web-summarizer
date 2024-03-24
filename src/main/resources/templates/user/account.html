@@ -1,12 +1,12 @@
 <div class="wrapper-account">
     <div class="modal-header">
-        <h5 id="modal-label-account" class="modal-title" hx-preserve="true">Account Settings</h5>
+        <h5 id="modal-label-account" class="modal-title">Account Settings</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body transition-0 opacity-0">
-        <div id="wrapper-message" class="fs-7">
-            <p id="modal-message-success" class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${message}"></p>
-            <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${message}"></p>
+        <div id="wrapper-message" class="fs-7 transition-0">
+            <p id="modal-message-success" class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${html + ' ' + message}"></p>
+            <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${html + ' ' + message}"></p>
             <p id="modal-message" class="px-4 py-2 d-none" th:unless="${message}"></p>
         </div>
     </div>
