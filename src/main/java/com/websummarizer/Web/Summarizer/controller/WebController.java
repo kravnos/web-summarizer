@@ -91,7 +91,8 @@ public class WebController {
             return "user/pro";
         } else {
             model.addAttribute("isValid", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Please login to unlock or purchase pro features.");
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Please login to unlock or purchase pro features.");
             model.addAttribute("source", source);
 
             return "user/login";
@@ -111,12 +112,14 @@ public class WebController {
 
         if (isValidPurchase) {
             model.addAttribute("isValid", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> Payment successful. Thank you for your purchase.");
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "Payment successful. Thank you for your purchase.");
 
             return "user/purchase";
         } else {
             model.addAttribute("isValid", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Payment error. Please try again.");
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Payment processing failed. Please try again.");
 
             return "user/pro";
         }
@@ -150,10 +153,12 @@ public class WebController {
 
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> Account settings for '<email>' successfully updated.");
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "Account settings for '<email>' successfully updated.");
         } else {
             model.addAttribute("isValid", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Update error for '<email>'. Please try again.");
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Update error for '<email>'. Please try again.");
         }
 
         return "user/account";
@@ -243,12 +248,14 @@ public class WebController {
 
         if (isRegistered) {
             model.addAttribute("isValid", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "User '" + email + "' created successfully. Please login.");
 
             return "user/login";
         } else {
             model.addAttribute("isValid", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Registration error for '" + email + "'. Please try again.");
 
             return "user/register";
         }
@@ -275,7 +282,8 @@ public class WebController {
 
         if (isValidLogin) {
             model.addAttribute("isValid", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' logged in successfully.");
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "User '" + email + "' logged in successfully.");
 
             if (source.equals("pro")) {
                 return "user/pro";
@@ -284,7 +292,8 @@ public class WebController {
             }
         } else {
             model.addAttribute("isValid", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Login auth error for '" + email + "'. Please try again.");
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Login auth error for '" + email + "'. Please try again.");
             model.addAttribute("source", source);
 
             return "user/login";
