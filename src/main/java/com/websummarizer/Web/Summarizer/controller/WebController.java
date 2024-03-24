@@ -4,7 +4,6 @@ import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URL;
@@ -51,7 +49,10 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/user/login")
-    public String login() {
+    public String login(
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
         /* TODO:
             check session/boolean/token/method if user is logged in or not
             see user/auth below.
@@ -61,9 +62,63 @@ public class WebController {
         boolean isLoggedIn = false; // update this logic
 
         if (isLoggedIn) {
-            return "user/account";
+            if (source.equals("pro")) {
+                return "user/pro";
+            } else {
+                return "user/account";
+            }
         } else {
+            model.addAttribute("source", source);
+
             return "user/login";
+        }
+    }
+
+    @PostMapping("/user/pro")
+    public String pro(
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
+        /* TODO:
+            check session/boolean/token/method if user is logged in or not
+            if not logged in, then show login form
+            if logged in, then show pro purchase form
+         */
+
+        boolean isLoggedIn = false; // update this logic
+
+        if (isLoggedIn) {
+            return "user/pro";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Please login to unlock or purchase pro features.");
+            model.addAttribute("source", source);
+
+            return "user/login";
+        }
+    }
+
+    /**
+     * Endpoint for purchasing pro features.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/purchase")
+    public String purchase(
+            Model model
+    ) {
+        boolean isValidPurchase = false;
+
+        if (isValidPurchase) {
+            model.addAttribute("isValid", true);
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> Payment successful. Thank you for your purchase.");
+
+            return "user/purchase";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Payment error. Please try again.");
+
+            return "user/pro";
         }
     }
 
@@ -73,7 +128,12 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/user/register")
-    public String register() {
+    public String register(
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
+        model.addAttribute("source", source);
+
         return "user/register";
     }
 
@@ -83,7 +143,19 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/user/account")
-    public String account() {
+    public String account(
+        Model model
+    ) {
+        boolean isValidUpdate = false;
+
+        if (isValidUpdate) {
+            model.addAttribute("isValid", true);
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> Account settings for '<email>' successfully updated.");
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Update error for '<email>'. Please try again.");
+        }
+
         return "user/account";
     }
 
@@ -154,8 +226,8 @@ public class WebController {
     @PostMapping("/user/create")
     public String createUser(
             @RequestParam(value = "email") String email,
+            @RequestParam(value = "source") String source,
             @ModelAttribute User user,
-            RedirectAttributes redirectAttributes,
             Model model
     ) {
         logger.info("Received user creation request: " + user);
@@ -167,16 +239,17 @@ public class WebController {
             logger.warning("User creation failed: " + e.getMessage());
         }
 
+        model.addAttribute("source", source);
+
         if (isRegistered) {
-            logger.info("User created successfully: " + user);
-            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
             model.addAttribute("isValid", true);
             model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+
             return "user/login";
         } else {
-            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
             model.addAttribute("isValid", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+
             return "user/register";
         }
     }
@@ -186,8 +259,9 @@ public class WebController {
      */
     @PostMapping("/user/auth")
     public String authUser(
-            @RequestParam(value = "login-email") String email,
-            @RequestParam(value = "login-password") String password,
+            @RequestParam(value = "login_email") String email,
+            @RequestParam(value = "login_password") String password,
+            @RequestParam(value = "source") String source,
             Model model
     ) {
         /* TODO:
@@ -197,16 +271,21 @@ public class WebController {
             to not auth again and bypass login modal
          */
 
-        Boolean isValidLogin = true;
+        boolean isValidLogin = true;
 
         if (isValidLogin) {
             model.addAttribute("isValid", true);
             model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' logged in successfully.");
 
-            return "user/account";
+            if (source.equals("pro")) {
+                return "user/pro";
+            } else {
+                return "user/account";
+            }
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Login auth error for '" + email + "'. Please try again.");
+            model.addAttribute("source", source);
 
             return "user/login";
         }
