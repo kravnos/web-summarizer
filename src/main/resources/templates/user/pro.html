@@ -1,13 +1,85 @@
 <div class="wrapper-pro">
     <div class="modal-header">
-        <h5 id="modal-label-pro" class="modal-title" hx-preserve="true">Pro Features</h5>
+        <h5 id="modal-label-pro" class="modal-title">Pro Features</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body transition-0 opacity-0">
-        <div id="wrapper-message" class="fs-7">
-            <p id="modal-message-success" class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${message}"></p>
-            <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${message}"></p>
+        <div id="wrapper-message" class="fs-7 transition-0">
+            <p id="modal-message-success" class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${html + ' ' + message}"></p>
+            <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${html + ' ' + message}"></p>
             <p id="modal-message" class="px-4 py-2 d-none" th:unless="${message}"></p>
+        </div>
+        <div class="wrapper-list">
+            <ol class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Summarize text or URL</div>
+                        Use NLP or LLMs to summarize the content of text or a website link
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Free</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Short Link Creation</div>
+                        Create a short link to a summary
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Free</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Customization</div>
+                        Manage short links, and modify account settings
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Free</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Summary History</div>
+                        Save and access your summaries in your account
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">$4.99 / mo</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Social Media</div>
+                        Integration with social media platforms for authentication and sharing
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">$4.99 / mo</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">API Access</div>
+                        Get access to use our backend in your own projects
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">$4.99 / mo</span>
+                </li>
+            </ol>
+        </div>
+        <h6 class="modal-title border-top border-secondary-subtle pt-3 pb-4 rounded-0">Payment Details</h6>
+        <fieldset class="field-set overflow-none rounded-0">
+            <div class="row mb-3">
+                <div class="field required col-12">
+                    <label for="pro-card-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Card Holder Name</label>
+                    <input id="pro-card-name" class="form-control" name="pro_card_name" type="text" hx-validate="true" hx-preserve="true" required />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="field required col-6">
+                    <label for="pro-card-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Card Number</label>
+                    <input id="pro-card-number" class="form-control" name="pro_card_number" type="text" hx-validate="true" required />
+                </div>
+                <div class="field required col-3">
+                    <label for="pro-exp-date" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Exp</label>
+                    <input id="pro-exp-date" class="form-control" name="pro_exp_date" type="text" hx-validate="true" required />
+                </div>
+                <div class="field required col-3">
+                    <label for="pro-cvv" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">CVV</label>
+                    <input id="pro-cvv" class="form-control" name="pro_cvv" type="text" hx-validate="true" required />
+                </div>
+            </div>
+        </fieldset>
+        <div class="wrapper-payment text-center overflow-hidden mt-2 rounded-0">
+            <img src="images/safe-checkout.png" class="payment-options rounded-0" alt="Payment Options" />
         </div>
     </div>
     <div class="modal-footer">
@@ -17,7 +89,7 @@
                 hx-post="/user/purchase"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-include=""
+                hx-include="[name='pro_card_name'], [name='pro_card_number'], [name='pro_exp_date'], [name='pro_cvv']"
                 hx-disabled-elt="this"
                 id="button-pro"
                 class="btn btn-primary position-relative"

@@ -62,6 +62,9 @@ body {
 .text-justify {
     text-align: justify;
 }
+.w-60 {
+    width: 60%;
+}
 .w-125 {
     width: 1.25rem;
 }
@@ -76,6 +79,12 @@ body {
 }
 .fs-7 {
     font-size: 0.75rem;
+}
+.fs-8 {
+    font-size: 0.625rem;
+}
+.fs-9 {
+    font-size: 0.5rem;
 }
 .spinner-border-lg {
     width: 2.75rem;
@@ -96,6 +105,10 @@ body {
 }
 .zindex-intro {
     z-index: 990;
+}
+.payment-options {
+    height: 44px;
+    width: auto;
 }
 /* custom darkmode */
 body[data-bs-theme=dark] .form-check-input:checked {
