@@ -9,9 +9,6 @@
             <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${message}"></p>
             <p id="modal-message" class="px-4 py-2 d-none" th:unless="${message}"></p>
         </div>
-        <br /><br /><br /><br /><br /><br />
-        <br /><br /><br /><br /><br /><br />
-        <br /><br /><br /><br /><br /><br />
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary me-auto">Logout</button>
@@ -26,8 +23,8 @@
                 id="button-account"
                 class="btn btn-primary position-relative"
                 type="submit">
-            <span id="button-account-text">Update</span>
-            <span id="button-account-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                <span id="button-account-text">Save</span>
+                <span id="button-account-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
     </div>
 </div>
