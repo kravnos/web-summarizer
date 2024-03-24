@@ -1,0 +1,29 @@
+<div class="wrapper-pro">
+    <div class="modal-header">
+        <h5 id="modal-label-pro" class="modal-title" hx-preserve="true">Pro Features</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body transition-0 opacity-0">
+        <div id="wrapper-message" class="fs-7">
+            <p id="modal-message-success" class="px-4 py-2 success" th:if="${message} and ${isValid}" th:utext="${message}"></p>
+            <p id="modal-message-error" class="px-4 py-2 error" th:if="${message} and ${!isValid}" th:utext="${message}"></p>
+            <p id="modal-message" class="px-4 py-2 d-none" th:unless="${message}"></p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button
+                hx-trigger="click queue:none"
+                hx-post="/user/purchase"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-include=""
+                hx-disabled-elt="this"
+                id="button-pro"
+                class="btn btn-primary position-relative"
+                type="submit">
+                <span id="button-pro-text">Purchase</span>
+                <span id="button-pro-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
