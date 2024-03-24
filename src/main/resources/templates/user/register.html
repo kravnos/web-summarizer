@@ -36,6 +36,7 @@
                                                                                     hx-post="/user/login"
                                                                                     hx-target="#wrapper-login"
                                                                                     hx-swap="innerHTML"
+                                                                                    th:hx-vals='|{"source": "${source}"}|'
                                                                                     hx-disabled-elt="this"
                                                                                     id="link-login"
                                                                                     class="text-account"
@@ -51,6 +52,7 @@
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='first_name'], [name='last_name'], [name='email'], [name='password'], [name='phone_number']"
+                th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-register"
                 class="btn btn-primary position-relative"
