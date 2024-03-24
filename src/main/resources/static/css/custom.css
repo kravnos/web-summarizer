@@ -71,8 +71,8 @@ body {
 .invert {
     filter: invert(100%);
 }
-.bi-lock-fill-ms {
-    margin-left: 2px;
+.ms-125 {
+    margin-left: 0.125rem;
 }
 .fs-7 {
     font-size: 0.75rem;
