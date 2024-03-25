@@ -86,9 +86,14 @@ public class WebController {
          */
 
         boolean isLoggedIn = false; // update this logic
+        boolean isProUser = false;
 
         if (isLoggedIn) {
-            return "user/pro";
+            if (isProUser) {
+                return "user/thankyou";
+            } else {
+                return "user/pro";
+            }
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
@@ -108,14 +113,14 @@ public class WebController {
     public String purchase(
             Model model
     ) {
-        boolean isValidPurchase = false;
+        boolean isValidPurchase = true;
 
         if (isValidPurchase) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Payment successful. Thank you for your purchase.");
 
-            return "user/purchase";
+            return "user/thankyou";
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
@@ -147,7 +152,7 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-        Model model
+            Model model
     ) {
         boolean isValidUpdate = false;
 
@@ -216,9 +221,9 @@ public class WebController {
         model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
 
         return "api/summary";
     }
@@ -226,7 +231,7 @@ public class WebController {
     /**
      * Endpoint for creating a user.
      *
-     * @param user    The user to create.
+     * @param user The user to create.
      */
     @PostMapping("/user/create")
     public String createUser(
@@ -279,6 +284,7 @@ public class WebController {
          */
 
         boolean isValidLogin = true;
+        boolean isProUser = false;
 
         if (isValidLogin) {
             model.addAttribute("isValid", true);
@@ -286,7 +292,11 @@ public class WebController {
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
 
             if (source.equals("pro")) {
-                return "user/pro";
+                if (isProUser) {
+                    return "user/thankyou";
+                } else {
+                    return "user/pro";
+                }
             } else {
                 return "user/account";
             }
@@ -316,21 +326,4 @@ public class WebController {
             return false;
         }
     }
-
-
-//    @GetMapping("/")
-//    String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//
-//        // If the user is actively logged in, automatically redirect to pro features site
-//        // https://stackoverflow.com/questions/13131122/spring-security-redirect-if-already-logged-in
-//        if (!(auth instanceof AnonymousAuthenticationToken)) {
-//            model.addAttribute("loginText", "Logout"); // data to send to html page
-//            model.addAttribute("loginURL", "/logout");
-//            return "index";
-//        }
-//        model.addAttribute("loginText", "Login"); // data to send to html page
-//        model.addAttribute("loginURL", "/login");
-//        return "index"; // webpage name
-//    }
 }

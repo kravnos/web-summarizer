@@ -137,8 +137,8 @@ $(document).ready(function() {
         }
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#link-login, #link-register", function() {
-        $("#link-login, #link-register").addClass("disabled").attr("aria-disabled", "true");
+    $("#wrapper-login").on("htmx:beforeRequest", "#link-login, #link-register, #link-account", function() {
+        $("#link-login, #link-register, #link-account").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
         $("#modal-login-loader").show();

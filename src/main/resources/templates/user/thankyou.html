@@ -1,0 +1,72 @@
+<div class="wrapper-thank-you">
+    <div class="modal-header">
+        <h5 id="modal-label-thank-you" class="modal-title">Thank You</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body transition-0 opacity-0">
+        <!-- Messages Fragment -->
+        <th:block th:replace="fragments/message.html :: message"></th:block>
+        <div class="wrapper-list">
+            <ol class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Summarize text or URL</div>
+                        Use NLP or LLMs to summarize the content of text or a website link
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Short Link Creation</div>
+                        Create a short link to a summary
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Customization</div>
+                        Manage short links, and modify account settings
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Summary History</div>
+                        Save and access your summaries in your account
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">Social Media</div>
+                        Integration with social media platforms for authentication and sharing
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <div class="me-auto fs-8">
+                        <div class="fs-7 text-uppercase fw-bold">API Access</div>
+                        Get access to use our backend in your own projects
+                    </div>
+                    <span class="badge text-bg-primary rounded-pill">Active</span>
+                </li>
+            </ol>
+        </div>
+        <h6 class="modal-title border-top border-secondary-subtle pt-3 pb-4 rounded-0">Membership Details</h6>
+        <div class="text-account text-center py-2">All pro features are unlocked and active for your <a
+                hx-trigger="click queue:none"
+                hx-post="/user/login"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-vals='{"source": "link"}'
+                hx-disabled-elt="this"
+                id="link-account"
+                class="text-account"
+                href="#">Account</a>.
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary me-auto">Cancel Membership</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</div>
