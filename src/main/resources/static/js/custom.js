@@ -184,9 +184,8 @@ $(document).ready(function() {
                 $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
             }
 
+            clearTimeout(timeout);
             $("#wrapper-message").css({"display": "none"}).fadeIn(longSleep, function() {
-                clearTimeout(timeout);
-
                 timeout = setTimeout(function() {
                     $("#wrapper-message").fadeOut(longSleep);
                 }, messageTimer);
@@ -231,9 +230,8 @@ $(document).ready(function() {
             $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
             $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
 
+            clearTimeout(timeout);
             $("#wrapper-message").css({"display": "none"}).fadeIn(longSleep, function() {
-                clearTimeout(timeout);
-
                 timeout = setTimeout(function() {
                     $("#wrapper-message").fadeOut(longSleep);
                 }, messageTimer);
