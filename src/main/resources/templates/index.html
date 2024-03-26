@@ -36,18 +36,18 @@
                         </li>
                         <li class="nav-item">
                             <a
-                                    hx-trigger="click queue:none"
-                                    hx-post="/user/pro"
-                                    hx-target="#wrapper-login"
-                                    hx-swap="innerHTML"
-                                    hx-vals='{"source": "pro"}'
-                                    hx-disabled-elt="this"
-                                    id="nav-pro"
-                                    class="nav-link"
-                                    href="#"
-                                    th:utext="${isProUser == true} ? '<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>' : '<span class=\'bi bi-lock-fill\'><span class=\'ms-125\'>Pro</span>'"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-login">
+                                hx-trigger="click queue:none"
+                                hx-post="/user/pro"
+                                hx-target="#wrapper-login"
+                                hx-swap="innerHTML"
+                                hx-vals='{"source": "pro"}'
+                                hx-disabled-elt="this"
+                                id="nav-pro"
+                                class="nav-link"
+                                href="#"
+                                th:utext="${isProUser == true} ? '<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>' : '<span class=\'bi bi-lock-fill\'><span class=\'ms-125\'>Pro</span>'"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-login">
                             </a>
                         </li>
                         <li class="nav-item">
