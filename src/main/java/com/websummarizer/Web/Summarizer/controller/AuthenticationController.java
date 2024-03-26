@@ -56,13 +56,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String loginUser(@ModelAttribute UserDTO body){
-        logger.info("User login request for : "+body.getEmail()+ " password: "+body.getPassword());
-        LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getEmail(),body.getPassword());
+        logger.info("User login request for : "+body.getLogin_email()+ " password: "+body.getLogin_password());
+        LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(),body.getLogin_password());
 
         if(loginResponseDTO!=null && loginResponseDTO.getJwt()!=null){
             return "user/login";
         }else {
-            return "User logged in";
+            return "user";
         }
     }
 
