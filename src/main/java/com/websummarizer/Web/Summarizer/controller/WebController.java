@@ -81,15 +81,6 @@ public class WebController {
         return "user/register";
     }
 
-    /**
-     * Endpoint for user registration.
-     *
-     * @return The name of the view to render.
-     */
-    @PostMapping("/user/reset")
-    public String reset() {
-        return "reset";
-    }
 
     /**
      * Endpoint for user account settings.
@@ -180,7 +171,7 @@ public class WebController {
         // Generate a short code for the given URL
         String ShortlinkCode = shortlink.codeShort(url);
         // Create a new history request object with the generated short code
-        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
+        //HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
         // Add the history request to the database and get the response
         //var historyResAto = historyService.addHistory(historyReqAto);
 

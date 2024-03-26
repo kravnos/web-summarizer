@@ -5,20 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import java.util.Optional;
 
 @RepositoryRestResource
 public interface UserRepo extends JpaRepository<User, Long> {
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Retrieves a user by its email address.
+     *
+     * @param username The email address of the user.
+     * @return Optional containing the user with the given email, if found.
+     */
+    Optional<User> findByEmail(String username);
 
     //  Run this method to update a user's password based on the user's email
     @Modifying
