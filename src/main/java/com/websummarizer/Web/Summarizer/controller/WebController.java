@@ -1,38 +1,26 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
-import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
-import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
-import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import jakarta.mail.SendFailedException;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.apache.commons.validator.routines.EmailValidator;
+//import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.authentication.AnonymousAuthenticationToken;
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailParseException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -45,9 +33,12 @@ public class WebController {
     private final Bart bart;
 
     @Autowired
-    private UserServiceImpl userService;
+    private Shortlink shortlink;
 
-    private static final Logger logger = Logger.getLogger("WebController");
+    //@Autowired
+    //private HistoryService historyService;
+
+    private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
     /**
      * Constructor for WebController.
@@ -59,23 +50,55 @@ public class WebController {
     }
 
     /**
-     * Endpoint for user registration.
-     *
-     * @return The name of the view to render.
-     */
-    @GetMapping("/register")
-    public String register() {
-        return "index";
-    }
-
-    /**
      * Endpoint for user sign in.
      *
      * @return The name of the view to render.
      */
-    @GetMapping("/signin")
-    public String signIn() {
-        return "index";
+    @PostMapping("/user/login")
+    public String login() {
+        /* TODO:
+            check session/boolean/token/method if user is logged in or not
+            see user/auth below.
+            if logged in then goto user/account endpoint, else goto user/login
+         */
+
+        boolean isLoggedIn = false; // update this logic
+
+        if (isLoggedIn) {
+            return "user/account";
+        } else {
+            return "user/login";
+        }
+    }
+
+    /**
+     * Endpoint for user registration.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/register")
+    public String register() {
+        return "user/register";
+    }
+
+    /**
+     * Endpoint for user registration.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/reset")
+    public String reset() {
+        return "reset";
+    }
+
+    /**
+     * Endpoint for user account settings.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/account")
+    public String account() {
+        return "user/account";
     }
 
     /**
@@ -96,15 +119,52 @@ public class WebController {
 
         String username = "You";
         String output;
+        String url = null;
 
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
-        String url = "";
+        //if (auth instanceof AnonymousAuthenticationToken) {
+        // set username to logged in name
+        //}
+
+        logger.info("The given input is URL:"+isURL);
+
         if (isURL) {
-            url = input;
-            input = HTMLParser.parser(input);
-        }
-        else {
+            try {
+                logger.info("Trying to fetch HTML data");
+                String htmlParserOutput = HTMLParser.parser(input);
+                output = bart.queryModel(htmlParserOutput);
+                model.addAttribute("date", dateFormat.format(date));
+                model.addAttribute("user", username);
+                model.addAttribute("input", input);
+                model.addAttribute("output", output);
+
+                // Share Button Attributes
+                model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+                model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+                model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+
+                return "api/summary";
+            } catch (Exception e) {
+                output = "Error Occurred. Please try again.";
+                model.addAttribute("date", dateFormat.format(date));
+                model.addAttribute("user", username);
+                model.addAttribute("input", input);
+                model.addAttribute("output", output);
+
+                // Share Button Attributes
+                model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+                model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+                model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+
+                return "api/summary";
+            }
+        } else {
+            /* TODO:
+                urls are not shown in the social links
+                Please revise
+             */
             // Facebook needs a valid URL for the share function to work.
             // Without a valid URL, the facebook button will open a window giving the user an error.
             // So, this else statement will set a temp url if the user instead inputs a block of text to parse.
@@ -114,14 +174,21 @@ public class WebController {
         try {
             output = bart.queryModel(input);
         } catch (Exception e) {
-            output = "Error Occured";
-            System.out.println("catched");
+            output = "Error Occurred. Please try again.";
         }
+
+        // Generate a short code for the given URL
+        String ShortlinkCode = shortlink.codeShort(url);
+        // Create a new history request object with the generated short code
+        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
+        // Add the history request to the database and get the response
+        //var historyResAto = historyService.addHistory(historyReqAto);
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output);
+        model.addAttribute("output", output + " : " + ShortlinkCode);
+
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
@@ -132,28 +199,39 @@ public class WebController {
     }
 
     /**
-     * Endpoint for creating a user.
-     *
-     * @param user    The user to create.
-     * @param session The current session.
-     * @return The name of the view to render.
+     * Endpoint for validating the login of a user.
      */
-    @PostMapping("/createUser")
-    public String createUser(@ModelAttribute User user, HttpSession session) {
-        session.setAttribute("msg", "");
-        logger.info("Received user creation request: " + user);
-        boolean bool = false;
-        try {
-            bool = userService.createUser(user) != null;
-        } catch (Exception e) {
-            session.setAttribute("msg", "Email already exists");
-            logger.warning("User creation failed: " + e.getMessage());
+    @PostMapping("/user/auth")
+    public String authUser(
+            @RequestParam(value = "login-email") String email,
+            @RequestParam(value = "login-password") String password,
+            Model model
+    ) {
+        /* TODO:
+            Please add logic for db check of user credentials for login etc
+            Currently accepting all logins to test account settings page.
+            Also require a session/boolean/token/method to check if user is now logged in
+            to not auth again and bypass login modal
+         */
+
+        Boolean isValidLogin = true;
+        Boolean isLoggedIn;
+
+        if (isValidLogin) {
+            isLoggedIn = true;
+
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' logged in successfully.");
+
+            return "user/account";
+        } else {
+            isLoggedIn = false;
+
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Login auth error for '" + email + "'. Please try again.");
+
+            return "user/login";
         }
-        if (bool) {
-            session.setAttribute("msg", "Registered Successfully");
-            logger.info("User created successfully: " + user);
-        }
-        return "redirect:/";
     }
 
     /**
@@ -172,21 +250,6 @@ public class WebController {
             return false;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
