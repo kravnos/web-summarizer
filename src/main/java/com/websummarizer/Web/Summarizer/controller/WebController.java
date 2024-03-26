@@ -122,9 +122,24 @@ public class WebController {
         // set username to logged in name
         //}
 
+        logger.info("The given input is URL:"+isURL);
+
         if (isURL) {
             try {
-                url = HTMLParser.parser(input);
+                logger.info("Trying to fetch HTML data");
+                String htmlParserOutput = HTMLParser.parser(input);
+                output = bart.queryModel(htmlParserOutput);
+                model.addAttribute("date", dateFormat.format(date));
+                model.addAttribute("user", username);
+                model.addAttribute("input", input);
+                model.addAttribute("output", output);
+
+                // Share Button Attributes
+                model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+                model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+                model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+
+                return "api/summary";
             } catch (Exception e) {
                 output = "Error Occurred. Please try again.";
                 model.addAttribute("date", dateFormat.format(date));
