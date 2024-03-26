@@ -25,12 +25,26 @@ class HistoryServiceTest {
         return historyReqAto;
     }
 
+
+    @Test
+    public User createUser(User user) { //Test creating user
+        user.setFirst_name("Test");
+        user.setLast_name("Attempt");
+        System.out.println("test");
+        user.setEmail("test@gmail.com");
+        user.setId(12345);
+        user.setPassword("12345");
+        System.out.println(user.getLast_name());
+        return user;
+    }
+
     @Test
     public History createhistory(History history){
         history.setHistoryContent("Enter history set here");
         history.setUser(user);
         history.setShortLink("shortlink.go");
         history.setUploadTime(dateTime);
+        System.out.println(history.getShortLink());
         return history;
     }
 
