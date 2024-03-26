@@ -197,21 +197,4 @@ public class WebController {
             return false;
         }
     }
-
-
-//    @GetMapping("/")
-//    String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//
-//        // If the user is actively logged in, automatically redirect to pro features site
-//        // https://stackoverflow.com/questions/13131122/spring-security-redirect-if-already-logged-in
-//        if (!(auth instanceof AnonymousAuthenticationToken)) {
-//            model.addAttribute("loginText", "Logout"); // data to send to html page
-//            model.addAttribute("loginURL", "/logout");
-//            return "index";
-//        }
-//        model.addAttribute("loginText", "Login"); // data to send to html page
-//        model.addAttribute("loginURL", "/login");
-//        return "index"; // webpage name
-//    }
 }
