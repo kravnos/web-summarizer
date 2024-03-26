@@ -1,26 +1,18 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
-import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
-import com.websummarizer.Web.Summarizer.controller.user.UsersResAto;
-import com.websummarizer.Web.Summarizer.services.users.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 @Slf4j
 @CrossOrigin("*")
 public final class UserController {
 
-//    @Autowired
-//    private UserService userService;
-
     @GetMapping("/")
     public String helloUser(){
-        return "USer level access";
+        return "User level access";
     }
 
 //    @PostMapping

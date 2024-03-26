@@ -39,7 +39,6 @@ public class AuthenticationService {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Assuming you have a default role for users
         Role userRole = roleRepo.findByAuthority("USER")
                 .orElseThrow(() -> new IllegalStateException("Default role not found"));
 

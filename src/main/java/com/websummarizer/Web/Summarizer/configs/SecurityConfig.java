@@ -74,15 +74,4 @@ public class SecurityConfig {
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
     }
-//        return httpSecurity
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> {
-//                    //currently we are permitting all user to access all pages, later we will change it
-//                    auth.requestMatchers("/**").permitAll();
-//                })
-//                .oauth2Login(Customizer.withDefaults())
-//                .formLogin(Customizer.withDefaults())
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .build();
-//    }
 }
