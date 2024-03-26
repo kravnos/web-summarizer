@@ -131,16 +131,67 @@ public class WebController {
     }
 
     /**
+     * Endpoint for reset password.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/password")
+    public String password(
+            @RequestParam(value = "login_email") String email,
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
+        model.addAttribute("source", source);
+        model.addAttribute("email", email);
+
+        return "user/reset";
+    }
+
+    /**
+     * Endpoint for reset password.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/reset")
+    public String reset(
+            @RequestParam(value = "reset_email") String email,
+            @RequestParam(value = "reset_password") String password,
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
+        boolean isValidAccount = true;
+
+        model.addAttribute("source", source);
+
+        if (isValidAccount) {
+            model.addAttribute("email", email);
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "Password for account '" + email + "' has been reset. Please login.");
+
+            return "user/login";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
+
+            return "user/reset";
+        }
+    }
+
+    /**
      * Endpoint for user registration.
      *
      * @return The name of the view to render.
      */
     @PostMapping("/user/register")
     public String register(
+            @RequestParam(value = "login_email") String email,
             @RequestParam(value = "source") String source,
             Model model
     ) {
         model.addAttribute("source", source);
+        model.addAttribute("email", email);
 
         return "user/register";
     }
@@ -252,6 +303,7 @@ public class WebController {
         model.addAttribute("source", source);
 
         if (isRegistered) {
+            model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' created successfully. Please login.");

@@ -90,9 +90,10 @@ $(document).ready(function() {
     });
 
     $("#button-summary").on("htmx:afterRequest", function(event) {
+        let div = $(".text-output").last();
+
         if (event.detail.successful == true) {
             const typeSpeed = 15;
-            let div = $(".text-output").last();
             let summary = div.html();
             let scroller = $(".scroll-custom");
             let height = 0;
@@ -114,7 +115,7 @@ $(document).ready(function() {
                 }, typeSpeed * i);
             }
         } else {
-            $(".text-output").last().text("Error. Request from server failed.");
+            div.text("Error. Request from server failed.");
         }
     });
 
@@ -131,7 +132,7 @@ $(document).ready(function() {
     */
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
-            $("#button-login, #button-pro, #button-register, #button-account").trigger("click");
+            $("#button-login, #button-pro, #button-register, #button-account, #button-reset").trigger("click");
         } else {
             $(this).parent().addClass("was-validated");
         }
@@ -144,7 +145,7 @@ $(document).ready(function() {
         $("#modal-login-loader").show();
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-pro, #button-register, #button-account", function(event) {
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset", function(event) {
         let isValid = true;
         let successMessage;
         let errorMessage;
@@ -166,10 +167,10 @@ $(document).ready(function() {
             }
         });
 
-        if (isValid) {
-            $("#button-login, #button-pro, #button-register, #button-account").addClass("disabled").attr("aria-disabled", "true");
-            $("#button-login-text, #button-pro-text, #button-register-text, #button-account-text").addClass("opacity-0");
-            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").removeClass("d-none").removeAttr("aria-hidden");
+        if ((isValid) || (this.id == "button-password")) {
+            $("#button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset").addClass("disabled").attr("aria-disabled", "true");
+            $("#button-login-text, #button-pro-text, #button-register-text, #button-account-text, #button-password-text, #button-reset-text").addClass("opacity-0");
+            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner, #button-password-spinner, #button-reset-spinner").removeClass("d-none").removeAttr("aria-hidden");
 
             $(".modal-body").addClass("opacity-0");
             $("#modal-login-loader").show();
@@ -226,9 +227,9 @@ $(document).ready(function() {
     $("#wrapper-login").on("htmx:afterSettle", function() {
         $("#modal-login-loader").fadeOut(sleep, function() {
             $("#wrapper-login, .modal-body").removeClass("opacity-0");
-            $("#link-login, #link-register, #link-account, #button-login, #button-pro, #button-register, #button-account").removeClass("disabled").removeAttr("aria-disabled");
-            $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, .modal-body").removeClass("opacity-0");
-            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner").addClass("d-none").attr("aria-hidden", "true");
+            $("#link-login, #link-register, #link-account, #button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, #button-password-text, #button-reset-text, .modal-body").removeClass("opacity-0");
+            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner, #button-password-spinner, #button-reset-spinner").addClass("d-none").attr("aria-hidden", "true");
 
             clearTimeout(timeout);
             $("#wrapper-message").css({"display": "none"}).fadeIn(longSleep, function() {
