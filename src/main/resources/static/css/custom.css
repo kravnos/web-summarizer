@@ -22,6 +22,27 @@ body {
 .btn, .form-control, .shadow-google {
     padding: 0.375rem 1.5rem;
 }
+.modal .btn-helper {
+    padding: 0;
+}
+.modal .btn-helper:focus {
+    box-shadow: none!important;
+}
+.field.required .form-label:after {
+    content: ' *';
+    color: #e02b27;
+}
+.was-validated .form-control:invalid, .was-validated .form-control:invalid:focus, .was-validated .form-control:valid, .was-validated .form-control:valid:focus {
+    border-color: #ced4da;
+}
+.success {
+    background: #e5efe5;
+    color: #006400;
+}
+.error {
+    background-color: #fae5e5;
+    color: #e02b27;
+}
 .shadow-google {
     box-shadow: 0 1px 6px 0 #20212447;
 }
@@ -29,13 +50,23 @@ body {
     margin-top: 3rem!important;
 }
 .chat {
-    max-width: 85%;
+    max-width: 80%;
 }
 .fit-content {
+    display: table; /* fix firefox bug */
     width: fit-content;
 }
 .text-justify {
     text-align: justify;
+}
+.w-125 {
+    width: 1.25rem;
+}
+.h-125 {
+    height: 1.25rem;
+}
+.invert {
+    filter: invert(100%);
 }
 .bi-lock-fill-ms {
     margin-left: 2px;
@@ -51,8 +82,14 @@ body {
     --bs-spinner-width: 0.5rem;
     --bs-spinner-height: 0.1rem;
 }
+.modal-dialog-scrollable {
+     height: 100%;
+}
 .modal-header, .modal-footer {
     border: 0;
+}
+.modal-body .modal-footer {
+    padding: 0;
 }
 .zindex-loader {
     z-index: 1100;
