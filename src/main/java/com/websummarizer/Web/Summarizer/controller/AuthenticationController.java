@@ -1,17 +1,17 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.model.LoginDTO;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
-import com.websummarizer.Web.Summarizer.model.RegistrationDTO;
+import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthenticationController {
@@ -55,35 +55,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@ModelAttribute RegistrationDTO body){
-        logger.info("User login request for : "+body.getLogin_email()+ " password: "+body.getLogin_password());
-        return authenticationService.loginUser(body.getLogin_email(),body.getLogin_password());
-    }
+    public String loginUser(@ModelAttribute UserDTO body){
+        logger.info("User login request for : "+body.getEmail()+ " password: "+body.getPassword());
+        LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getEmail(),body.getPassword());
 
-//    @PostMapping("/login")
-//    public String loginUser(//@RequestParam(value = "login-email") String email,
-//                            @ModelAttribute LoginResponseDTO user) {
-//        logger.info("Received user login request: " + user.getUser());
-//        boolean isLoggedIn = false;
-//
-//        try {
-//            isLoggedIn = authenticationService.loginUser(user.getEmail(), user.getPassword()) != null;
-//        } catch (Exception e) {
-//            logger.warning("User login failed: " + e.getMessage());
-//        }
-//
-//        if (isLoggedIn) {
-//            logger.info("User logged in successfully: " + email);
-//            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
-//            //model.addAttribute("isRegistered", true);
-//            //model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
-//            return "user/login";
-//        } else {
-//            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
-//            //model.addAttribute("isRegistered", false);
-//            // model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
-//            return "user/register";
-//        }
-//    }
+        if(loginResponseDTO!=null && loginResponseDTO.getJwt()!=null){
+            return "user/login";
+        }else {
+            return "User logged in";
+        }
+    }
 
 }
