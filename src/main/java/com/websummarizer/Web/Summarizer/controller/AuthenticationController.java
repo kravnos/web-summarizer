@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+/**
+ * Controller class for handling authentication-related endpoints.
+ */
 @Controller
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthenticationController {
+
     private static final Logger logger = Logger.getLogger(AuthenticationController.class.getName());
 
     @Autowired
@@ -23,7 +27,10 @@ public class AuthenticationController {
     /**
      * Endpoint for creating a user.
      *
-     * @param user The user to create.
+     * @param email The email of the user to be created.
+     * @param user The User object containing user details.
+     * @param model The Model object for adding attributes.
+     * @return The view name for user creation status.
      */
     @PostMapping("/create")
     public String createUser(
@@ -42,18 +49,22 @@ public class AuthenticationController {
 
         if (isRegistered) {
             logger.info("User created successfully: " + user);
-            //redirectAttributes.addFlashAttribute("success", "User '" + email + "' created successfully.");
             model.addAttribute("isRegistered", true);
             model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
             return "user/login";
         } else {
-            //redirectAttributes.addFlashAttribute("error", "Registration for '" + email + "' failed.");
             model.addAttribute("isRegistered", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
             return "user/register";
         }
     }
 
+    /**
+     * Endpoint for user login.
+     *
+     * @param body UserDTO object containing login credentials.
+     * @return The view name for login status.
+     */
     @PostMapping("/login")
     public String loginUser(@ModelAttribute UserDTO body){
         logger.info("User login request for : "+body.getLogin_email()+ " password: "+body.getLogin_password());
@@ -62,7 +73,7 @@ public class AuthenticationController {
         if(loginResponseDTO!=null && loginResponseDTO.getJwt()!=null){
             return "user/login";
         }else {
-            return "user";
+            return "redirect:/";
         }
     }
 

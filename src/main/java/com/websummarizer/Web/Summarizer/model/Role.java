@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * Domain object representing a role.
+ */
 @Entity
 @Table(name = "roles")
 @Data
@@ -13,6 +16,10 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "role_id")
     private long roleId;
+
+    /**
+     * Authority string representing the role.
+     */
     private String authority;
 
     public Role(Integer roleId, String authority) {

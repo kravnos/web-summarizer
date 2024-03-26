@@ -26,21 +26,40 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration class for security-related beans and configurations.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final RSAKeyProperties keyProperties;
 
+    /**
+     * Constructor for SecurityConfig.
+     *
+     * @param keyProperties RSAKeyProperties object containing RSA key properties.
+     */
     public SecurityConfig(RSAKeyProperties keyProperties) {
         this.keyProperties = keyProperties;
     }
 
+    /**
+     * Provides a PasswordEncoder bean for encoding passwords.
+     *
+     * @return BCryptPasswordEncoder instance.
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provides an AuthenticationManager bean for authentication purposes.
+     *
+     * @param detailsService UserDetailsService implementation for retrieving user details.
+     * @return AuthenticationManager instance.
+     */
     @Bean
     public AuthenticationManager authManager(UserDetailsService detailsService){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -49,6 +68,13 @@ public class SecurityConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
+    /**
+     * Configures security filter chain.
+     *
+     * @param httpSecurity HttpSecurity object for configuring security.
+     * @return SecurityFilterChain instance.
+     * @throws Exception if configuration fails.
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -63,11 +89,22 @@ public class SecurityConfig {
                 .build();
 
     }
+
+    /**
+     * Provides a JwtDecoder bean for decoding JWT tokens.
+     *
+     * @return NimbusJwtDecoder instance configured with the RSA public key.
+     */
     @Bean
     public JwtDecoder jwtDecoder(){
         return NimbusJwtDecoder.withPublicKey(keyProperties.getPublicKey()).build();
     }
 
+    /**
+     * Provides a JwtEncoder bean for encoding JWT tokens.
+     *
+     * @return NimbusJwtEncoder instance configured with RSA key pair.
+     */
     @Bean
     public JwtEncoder jwtEncoder(){
         JWK jwk = new RSAKey.Builder(keyProperties.getPublicKey()).privateKey(keyProperties.getPrivateKey()).build();

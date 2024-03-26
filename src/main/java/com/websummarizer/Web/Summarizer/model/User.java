@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Domain object for Affiliate (represents a row in table "users")
+ * Domain object representing a user.
  */
 @Entity
 @Table(name = "users")
@@ -23,16 +23,40 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uid")
     private long id;
+
+    /**
+     * First name of the user.
+     */
     @Column(name = "first_name")
     private String first_name;
+
+    /**
+     * Last name of the user.
+     */
     @Column(name = "last_name")
     private String last_name;
+
+    /**
+     * Email address of the user (unique).
+     */
     @Column(name = "email", unique = true)
     private String email;
+
+    /**
+     * Password of the user.
+     */
     @Column(name = "password")
     private String password;
+
+    /**
+     * Phone number of the user.
+     */
     @Column(name = "phone_number")
     private String phone_number;
+
+    /**
+     * Set of roles assigned to the user.
+     */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role_junction",

@@ -1,12 +1,10 @@
 package com.websummarizer.Web.Summarizer.services;
 
-import com.websummarizer.Web.Summarizer.controller.AuthenticationController;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.Role;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.RoleRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Service class for handling user authentication-related operations.
+ */
 @Service
 @Transactional
 public class AuthenticationService {
@@ -34,7 +35,15 @@ public class AuthenticationService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private TokenService tokenService;
+
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
+
+    /**
+     * Registers a new user.
+     *
+     * @param user The user to register.
+     * @return The registered user.
+     */
     public User registerUser(User user) {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -50,15 +59,20 @@ public class AuthenticationService {
         return userRepo.save(user);
     }
 
+    /**
+     * Logs in a user.
+     *
+     * @param email The email of the user to log in.
+     * @param password The password of the user to log in.
+     * @return LoginResponseDTO containing user information and JWT token.
+     */
     public LoginResponseDTO loginUser(String email, String password){
         try {
 
             logger.info("in loginUser method in authentication service class" + email+ " "+password);
-            logger.info("everything fine upto 0");
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
             );
-            logger.info("everything fine upto 1");
             String token = tokenService.generateJwt(authentication);
             logger.info("everything fine upto 2");
             LoginResponseDTO loginResponseDTO = new LoginResponseDTO(userRepo.findByEmail(email).get(), token);
@@ -69,5 +83,4 @@ public class AuthenticationService {
             return new LoginResponseDTO(null,"");
         }
     }
-
 }
