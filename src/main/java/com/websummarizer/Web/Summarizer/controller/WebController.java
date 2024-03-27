@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,10 @@ public class WebController {
 
     //@Autowired
     //private HistoryService historyService;
+
+    //  The address of the website. CURRENTLY: 'http://localhost:8080/' Change when our program is hosted on an actual server
+    @Value("${WEBADDRESS}")
+    private String webURL;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -122,6 +127,7 @@ public class WebController {
         logger.info("The given input is URL:"+isURL);
 
         if (isURL) {
+            url = input;
             try {
                 logger.info("Trying to fetch HTML data");
                 String htmlParserOutput = HTMLParser.parser(input);
@@ -144,10 +150,10 @@ public class WebController {
                 model.addAttribute("input", input);
                 model.addAttribute("output", output);
 
-                // Share Button Attributes
-                model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
-                model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
-                model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
+                // Share Button Attributes (NOT NEEDED IF AN ERROR OCCURRED)
+                //model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl="+url);
+                //model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl="+url);
+                //model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
 
                 return "api/summary";
             }
@@ -160,7 +166,7 @@ public class WebController {
             // Without a valid URL, the facebook button will open a window giving the user an error.
             // So, this else statement will set a temp url if the user instead inputs a block of text to parse.
             // If you come up with a better solution or if this is unnecessary, please feel free to edit/remove
-            url = "https://www.google.com/";
+            url = webURL;
         }
         try {
             output = bart.queryModel(input);
