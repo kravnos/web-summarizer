@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class NewUserTest {
+class UserDiffblueTest {
     /**
      * Method under test: {@link User#toString()}
      */

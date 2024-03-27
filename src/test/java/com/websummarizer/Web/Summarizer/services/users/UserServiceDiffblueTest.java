@@ -3,6 +3,7 @@ package com.websummarizer.Web.Summarizer.services.users;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
@@ -32,7 +33,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {UserService.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class NewUserServiceTest {
+class UserServiceDiffblueTest {
   @MockBean
   private UserRepository userRepository;
 
@@ -65,7 +66,7 @@ class NewUserServiceTest {
     UserResAto actualAddUserResult = userService.addUser(reqSto);
 
     // Assert
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).save(isA(User.class));
     assertEquals("6625550144", actualAddUserResult.getPhone_number());
     assertEquals("Doe", actualAddUserResult.getLast_name());
     assertEquals("Jane", actualAddUserResult.getFirst_name());
@@ -124,7 +125,7 @@ class NewUserServiceTest {
     verify(user).setLast_name(eq("Doe"));
     verify(user).setPassword(eq("iloveyou"));
     verify(user).setPhone_number(eq("6625550144"));
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).save(isA(User.class));
     assertEquals("6625550144", actualAddUserResult.getPhone_number());
     assertEquals("Doe", actualAddUserResult.getLast_name());
     assertEquals("Jane", actualAddUserResult.getFirst_name());
@@ -181,7 +182,7 @@ class NewUserServiceTest {
     verify(user).setLast_name(eq("Doe"));
     verify(user).setPassword(eq("iloveyou"));
     verify(user).setPhone_number(eq("6625550144"));
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).save(isA(User.class));
   }
 
   /**
@@ -203,7 +204,7 @@ class NewUserServiceTest {
     verify(reqSto, atLeast(1)).getFirst_name();
     verify(reqSto).getPassword();
     verify(reqSto).getPhone_number();
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).save(isA(User.class));
   }
 
   /**
@@ -226,7 +227,7 @@ class NewUserServiceTest {
     UserResAto actualUser = userService.getUser(1L);
 
     // Assert
-    verify(userRepository).findById(Mockito.<Long>any());
+    verify(userRepository).findById(isA(Long.class));
     assertEquals("6625550144", actualUser.getPhone_number());
     assertEquals("Doe", actualUser.getLast_name());
     assertEquals("Jane", actualUser.getFirst_name());
@@ -279,7 +280,7 @@ class NewUserServiceTest {
     verify(user).setLast_name(eq("Doe"));
     verify(user).setPassword(eq("iloveyou"));
     verify(user).setPhone_number(eq("6625550144"));
-    verify(userRepository).findById(Mockito.<Long>any());
+    verify(userRepository).findById(isA(Long.class));
     assertEquals("6625550144", actualUser.getPhone_number());
     assertEquals("Doe", actualUser.getLast_name());
     assertEquals("Jane", actualUser.getFirst_name());
@@ -330,7 +331,7 @@ class NewUserServiceTest {
     verify(user).setLast_name(eq("Doe"));
     verify(user).setPassword(eq("iloveyou"));
     verify(user).setPhone_number(eq("6625550144"));
-    verify(userRepository).findById(Mockito.<Long>any());
+    verify(userRepository).findById(isA(Long.class));
   }
 
   /**
@@ -343,7 +344,7 @@ class NewUserServiceTest {
 
     // Act and Assert
     assertThrows(CCNotFoundException.class, () -> userService.updateUser(1L, null));
-    verify(userRepository).findById(Mockito.<Long>any());
+    verify(userRepository).findById(isA(Long.class));
   }
 
   /**
@@ -382,8 +383,8 @@ class NewUserServiceTest {
     UserResAto actualUpdateUserResult = userService.updateUser(1L, userReqAto);
 
     // Assert
-    verify(userRepository).findById(Mockito.<Long>any());
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).findById(isA(Long.class));
+    verify(userRepository).save(isA(User.class));
     assertEquals("6625550144", actualUpdateUserResult.getPhone_number());
     assertEquals("Doe", actualUpdateUserResult.getLast_name());
     assertEquals("Jane", actualUpdateUserResult.getFirst_name());
@@ -418,8 +419,8 @@ class NewUserServiceTest {
 
     // Act and Assert
     assertThrows(CCNotFoundException.class, () -> userService.updateUser(1L, userReqAto));
-    verify(userRepository).findById(Mockito.<Long>any());
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).findById(isA(Long.class));
+    verify(userRepository).save(isA(User.class));
   }
 
   /**
@@ -482,8 +483,8 @@ class NewUserServiceTest {
     verify(user, atLeast(1)).setLast_name(eq("Doe"));
     verify(user, atLeast(1)).setPassword(eq("iloveyou"));
     verify(user, atLeast(1)).setPhone_number(eq("6625550144"));
-    verify(userRepository).findById(Mockito.<Long>any());
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).findById(isA(Long.class));
+    verify(userRepository).save(isA(User.class));
     assertEquals("6625550144", actualUpdateUserResult.getPhone_number());
     assertEquals("Doe", actualUpdateUserResult.getLast_name());
     assertEquals("Jane", actualUpdateUserResult.getFirst_name());
@@ -550,8 +551,8 @@ class NewUserServiceTest {
     verify(user, atLeast(1)).setLast_name(eq("Doe"));
     verify(user, atLeast(1)).setPassword(eq("iloveyou"));
     verify(user, atLeast(1)).setPhone_number(eq("6625550144"));
-    verify(userRepository).findById(Mockito.<Long>any());
-    verify(userRepository).save(Mockito.<User>any());
+    verify(userRepository).findById(isA(Long.class));
+    verify(userRepository).save(isA(User.class));
   }
 
   /**
@@ -567,8 +568,8 @@ class NewUserServiceTest {
     userService.deleteUser(1L);
 
     // Assert that nothing has changed
-    verify(userRepository).deleteById(Mockito.<Long>any());
-    verify(userRepository).existsById(Mockito.<Long>any());
+    verify(userRepository).deleteById(isA(Long.class));
+    verify(userRepository).existsById(isA(Long.class));
   }
 
   /**
@@ -582,8 +583,8 @@ class NewUserServiceTest {
 
     // Act and Assert
     assertThrows(CCNotFoundException.class, () -> userService.deleteUser(1L));
-    verify(userRepository).deleteById(Mockito.<Long>any());
-    verify(userRepository).existsById(Mockito.<Long>any());
+    verify(userRepository).deleteById(isA(Long.class));
+    verify(userRepository).existsById(isA(Long.class));
   }
 
   /**
@@ -596,7 +597,7 @@ class NewUserServiceTest {
 
     // Act and Assert
     assertThrows(CCNotFoundException.class, () -> userService.deleteUser(1L));
-    verify(userRepository).existsById(Mockito.<Long>any());
+    verify(userRepository).existsById(isA(Long.class));
   }
 
   /**
@@ -605,15 +606,14 @@ class NewUserServiceTest {
   @Test
   void testFindAllUser() {
     // Arrange
-    ArrayList<User> userList = new ArrayList<>();
-    when(userRepository.findAll()).thenReturn(userList);
+    when(userRepository.findAll()).thenReturn(new ArrayList<>());
 
     // Act
     UsersResAto actualFindAllUserResult = userService.findAllUser();
 
     // Assert
     verify(userRepository).findAll();
-    assertEquals(userList, actualFindAllUserResult.getUsers());
+    assertEquals(0, actualFindAllUserResult.getTotalCount());
   }
 
   /**
@@ -786,4 +786,5 @@ class NewUserServiceTest {
     verify(user).setPhone_number(eq("6625550144"));
     verify(userRepository).findAll();
   }
+
 }

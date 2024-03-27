@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {HistoryService.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class NewHistoryServiceTest {
+class HistoryServiceDiffblueTest {
   @MockBean
   private HistoryRepository historyRepository;
 
