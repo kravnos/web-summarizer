@@ -156,14 +156,16 @@ public class WebController {
     public String reset(
             @RequestParam(value = "reset_email") String email,
             @RequestParam(value = "reset_password") String password,
+            @RequestParam(value = "reset_code") String code,
             @RequestParam(value = "source") String source,
             Model model
     ) {
-        boolean isValidAccount = true;
+        boolean isValidEmail = true;
+        boolean isValidCode = true;
 
         model.addAttribute("source", source);
 
-        if (isValidAccount) {
+        if ((isValidEmail) && (isValidCode)) {
             model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");

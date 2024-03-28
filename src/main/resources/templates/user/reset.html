@@ -9,11 +9,17 @@
         <fieldset class="field-set">
             <div class="field required mb-3">
                 <label for="reset-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                <input id="reset-email" class="form-control" name="reset_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                <input id="reset-email" class="form-control disabled" name="reset_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
             </div>
             <div class="field required mb-3">
-                <label for="reset-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+                <label for="reset-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">New Password</label>
                 <input id="reset-password" class="form-control" name="reset_password" type="password" hx-validate="true" required />
+            </div>
+            <div class="row mb-3">
+                <div class="field required col-3">
+                    <label for="reset-code" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Security Code</label>
+                    <input id="reset-code" class="form-control" name="reset_code" type="text" hx-validate="true" required />
+                </div>
             </div>
         </fieldset>
     </div>
@@ -24,14 +30,14 @@
                 hx-post="/user/reset"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-include="[name='reset_email'], [name='reset_password']"
+                hx-include="[name='reset_email'], [name='reset_password'], [name='reset_code']"
                 th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-reset"
-                class="btn btn-primary position-relative"
+                class="btn btn-primary btn-request position-relative"
                 type="submit">
-            <span id="button-reset-text">Reset</span>
-            <span id="button-reset-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+            <span id="button-reset-text" class="button-text">Reset</span>
+            <span id="button-reset-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
     </div>
 </div>
