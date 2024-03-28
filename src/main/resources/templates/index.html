@@ -27,7 +27,7 @@
                                 hx-vals='{"source": "login"}'
                                 hx-disabled-elt="this"
                                 id="nav-login"
-                                class="nav-link"
+                                class="nav-link nav-request"
                                 href="#"
                                 th:text="${isLoggedIn == true} ? 'Account' : 'Login'"
                                 data-bs-toggle="modal"
@@ -43,7 +43,7 @@
                                 hx-vals='{"source": "pro"}'
                                 hx-disabled-elt="this"
                                 id="nav-pro"
-                                class="nav-link"
+                                class="nav-link nav-request"
                                 href="#"
                                 th:utext="${isProUser == true} ? '<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>' : '<span class=\'bi bi-lock-fill\'><span class=\'ms-125\'>Pro</span>'"
                                 data-bs-toggle="modal"
@@ -91,11 +91,12 @@
                                 hx-swap="beforeend"
                                 hx-disabled-elt="this"
                                 id="button-summary"
-                                class="btn btn-primary position-relative disabled"
+                                class="btn btn-primary btn-request position-relative disabled"
                                 type="submit"
+                                tabindex="-1"
                                 aria-disabled="true">
-                                <span id="button-summary-text">Summarize</span>
-                                <span id="button-summary-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                                <span id="button-summary-text" class="button-text">Summarize</span>
+                                <span id="button-summary-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
                             </button><!-- multiple spam clicks will be ignored until response -->
                         </div>
                     </div>

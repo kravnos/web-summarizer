@@ -25,7 +25,7 @@
                                                                                     th:hx-vals='|{"source": "${source}"}|'
                                                                                     hx-disabled-elt="this"
                                                                                     id="link-register"
-                                                                                    class="text-account"
+                                                                                    class="text-account link-request"
                                                                                     href="#">Sign Up
                                                                                </a>
         </div>
@@ -40,10 +40,10 @@
                 th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-password"
-                class="btn btn-secondary position-relative me-auto"
+                class="btn btn-secondary btn-request position-relative me-auto"
                 type="button">
-            <span id="button-password-text">Reset Password</span>
-            <span id="button-password-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+            <span id="button-password-text" class="button-text">Reset Password</span>
+            <span id="button-password-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button
@@ -55,10 +55,10 @@
                 th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-login"
-                class="btn btn-primary position-relative"
+                class="btn btn-primary btn-request position-relative"
                 type="submit">
-                <span id="button-login-text">Login</span>
-                <span id="button-login-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                <span id="button-login-text" class="button-text">Login</span>
+                <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
     </div>
 </div>

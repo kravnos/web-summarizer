@@ -37,7 +37,7 @@
                                                                                     th:hx-vals='|{"source": "${source}"}|'
                                                                                     hx-disabled-elt="this"
                                                                                     id="link-login"
-                                                                                    class="text-account"
+                                                                                    class="text-account link-request"
                                                                                     href="#">Login
                                                                                  </a>
         </div>
@@ -53,10 +53,10 @@
                 th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-register"
-                class="btn btn-primary position-relative"
+                class="btn btn-primary btn-request position-relative"
                 type="submit">
-                <span id="button-register-text">Create</span>
-                <span id="button-register-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                <span id="button-register-text" class="button-text">Create</span>
+                <span id="button-register-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
     </div>
 </div>

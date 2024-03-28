@@ -102,8 +102,8 @@ $(document).ready(function() {
                 setTimeout(function() {
                     if (i == summary.length) {
                         $(".ai").hide();
-                        $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
                         $("#button-summary-text").removeClass("opacity-0");
+                        $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
                         $("#input-main").trigger("input");
                     }
                     if ((i > 0) && (height < div.height())) {
@@ -132,20 +132,26 @@ $(document).ready(function() {
     */
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
-            $("#button-login, #button-pro, #button-register, #button-account, #button-reset").trigger("click");
+            $("#wrapper-login .btn-request").each(function() {
+                if (this.id != "button-password") { // add 'Cancel Membership' button ID && 'Logout' button ID here
+                    $(this).trigger("click");
+
+                    return false;
+                }
+            });
         } else {
             $(this).parent().addClass("was-validated");
         }
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#link-login, #link-register, #link-account", function() {
-        $("#link-login, #link-register, #link-account").addClass("disabled").attr("aria-disabled", "true");
+    $("#wrapper-login").on("htmx:beforeRequest", ".link-request", function() {
+        $("#wrapper-login .link-request").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
         $("#modal-login-loader").show();
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", "#button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset", function(event) {
+    $("#wrapper-login").on("htmx:beforeRequest", ".btn-request", function(event) {
         let isValid = true;
         let successMessage;
         let errorMessage;
@@ -168,11 +174,9 @@ $(document).ready(function() {
         });
 
         if ((isValid) || (this.id == "button-password")) {
-            $("#button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset").addClass("disabled").attr("aria-disabled", "true");
-            $("#button-login-text, #button-pro-text, #button-register-text, #button-account-text, #button-password-text, #button-reset-text").addClass("opacity-0");
-            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner, #button-password-spinner, #button-reset-spinner").removeClass("d-none").removeAttr("aria-hidden");
-
-            $(".modal-body").addClass("opacity-0");
+            $("#wrapper-login .btn-request").addClass("disabled").attr("aria-disabled", "true");
+            $("#wrapper-login .button-text", "#wrapper-login .modal-body").addClass("opacity-0");
+            $("#wrapper-login .button-spinner").removeClass("d-none").removeAttr("aria-hidden");
             $("#modal-login-loader").show();
         } else {
             let element = $("#modal-message");
@@ -192,14 +196,14 @@ $(document).ready(function() {
                 }, messageTimer);
             });
 
-            $(".field-set").addClass("was-validated");
+            $("#wrapper-login .field-set").addClass("was-validated");
 
             event.preventDefault();
             event.stopPropagation();
         }
     });
 
-    $("#wrapper-login").on("htmx:afterRequest", function(event) {
+    $("#wrapper-login").on("htmx:afterRequest", ".link-request, .btn-request", function(event) {
         let successMessage;
         let errorMessage;
 
@@ -226,10 +230,9 @@ $(document).ready(function() {
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
         $("#modal-login-loader").fadeOut(sleep, function() {
-            $("#wrapper-login, .modal-body").removeClass("opacity-0");
-            $("#link-login, #link-register, #link-account, #button-login, #button-pro, #button-register, #button-account, #button-password, #button-reset").removeClass("disabled").removeAttr("aria-disabled");
-            $("#wrapper-login, #button-login-text, #button-pro-text, #button-register-text, #button-account-text, #button-password-text, #button-reset-text, .modal-body").removeClass("opacity-0");
-            $("#button-login-spinner, #button-pro-spinner, #button-register-spinner, #button-account-spinner, #button-password-spinner, #button-reset-spinner").addClass("d-none").attr("aria-hidden", "true");
+            $("#wrapper-login, #wrapper-login .modal-body, #wrapper-login .button-text").removeClass("opacity-0");
+            $("#wrapper-login .link-request, #wrapper-login .btn-request").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-login .button-spinner").addClass("d-none").attr("aria-hidden", "true");
 
             clearTimeout(timeout);
             $("#wrapper-message").css({"display": "none"}).fadeIn(longSleep, function() {
