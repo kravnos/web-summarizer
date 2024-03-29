@@ -116,6 +116,7 @@ $(document).ready(function() {
             }
         } else {
             div.text("Error. Request from server failed.");
+            $("#main").trigger("htmx:afterSettle");
         }
     });
 
@@ -175,7 +176,7 @@ $(document).ready(function() {
 
         if ((isValid) || (this.id == "button-password")) {
             $("#wrapper-login .btn-request").addClass("disabled").attr("aria-disabled", "true");
-            $("#wrapper-login .button-text", "#wrapper-login .modal-body").addClass("opacity-0");
+            $("#wrapper-login .button-text, #wrapper-login .modal-body").addClass("opacity-0");
             $("#wrapper-login .button-spinner").removeClass("d-none").removeAttr("aria-hidden");
             $("#modal-login-loader").show();
         } else {
@@ -225,6 +226,7 @@ $(document).ready(function() {
             errorMessage += "Error. Request from server failed.";
 
             $("#modal-message").removeClass("success, d-none").addClass("error").html(errorMessage);
+            $("#wrapper-login").trigger("htmx:afterSettle");
         }
     });
 
