@@ -248,7 +248,7 @@ public class WebController {
         }
     }
 
-
+  
     /**
      * Endpoint for user to send an email for password reset.
      *
