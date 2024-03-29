@@ -204,7 +204,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#wrapper-login").on("htmx:afterRequest", ".link-request, .btn-request", function(event) {
+    $("#wrapper-login").on("htmx:afterRequest", function(event) {
         let successMessage;
         let errorMessage;
 
