@@ -131,12 +131,12 @@ public class WebController {
     }
 
     /**
-     * Endpoint for reset password.
+     * Endpoint for send authentication code.
      *
      * @return The name of the view to render.
      */
-    @PostMapping("/user/password")
-    public String password(
+    @PostMapping("/user/code")
+    public String code(
             @RequestParam(value = "login_email") String email,
             @RequestParam(value = "source") String source,
             Model model
@@ -144,7 +144,38 @@ public class WebController {
         model.addAttribute("source", source);
         model.addAttribute("email", email);
 
-        return "user/reset";
+        return "user/code";
+    }
+
+    /**
+     * Endpoint for send authentication code.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/send")
+    public String send(
+            @RequestParam(value = "code_email") String email,
+            @RequestParam(value = "source") String source,
+            Model model
+    ) {
+        boolean isValidEmail = true;
+
+        model.addAttribute("source", source);
+        model.addAttribute("email", email);
+
+        if (isValidEmail) {
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
+
+            return "user/reset";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
+
+            return "user/code";
+        }
     }
 
     /**
@@ -175,7 +206,7 @@ public class WebController {
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
+            model.addAttribute("message", "Authentication error for '" + email + "'. Please try again.");
 
             return "user/reset";
         }
@@ -212,11 +243,11 @@ public class WebController {
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for '<email>' successfully updated.");
+            model.addAttribute("message", "Account settings for 'email' successfully updated.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Update error for '<email>'. Please try again.");
+            model.addAttribute("message", "Could not save settings for 'email'. Please try again.");
         }
 
         return "user/account";
