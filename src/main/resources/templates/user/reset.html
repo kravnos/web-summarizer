@@ -9,15 +9,15 @@
         <fieldset class="field-set">
             <div class="field required mb-3">
                 <label for="reset-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                <input id="reset-email" class="form-control disabled" name="reset_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                <input id="reset-email" class="form-control" name="reset_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
             </div>
             <div class="field required mb-3">
                 <label for="reset-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">New Password</label>
                 <input id="reset-password" class="form-control" name="reset_password" type="password" hx-validate="true" required />
             </div>
             <div class="row mb-3">
-                <div class="field required col-3">
-                    <label for="reset-code" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Security Code</label>
+                <div class="field required col-6">
+                    <label for="reset-code" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Authentication Code</label>
                     <input id="reset-code" class="form-control" name="reset_code" type="text" hx-validate="true" required />
                 </div>
             </div>
