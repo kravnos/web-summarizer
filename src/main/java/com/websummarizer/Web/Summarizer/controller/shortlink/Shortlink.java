@@ -13,7 +13,7 @@ public class Shortlink {
     // Method to generate a short code for a given URL
     public String codeShort(String urlOg){
         Random rand = new Random();
-        urlOg = urlOg + rand.hashCode();
+        urlOg = urlOg + rand.hashCode(); //add random avoiding duplicate code
         int num = Math.abs(urlOg.hashCode());
         String dic = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String out = "";
