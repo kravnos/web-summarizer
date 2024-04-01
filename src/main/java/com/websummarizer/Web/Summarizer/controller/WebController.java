@@ -44,47 +44,87 @@ public class WebController {
     }
 
     /**
+     * Endpoint for getting a summary.
+     *
+     * @param input The input from the user.
+     * @param model The model to use.
+     * @return The name of the view to render.
+     * @throws IOException If an I/O error occurs.
+     */
+    @PostMapping("/api/summary")
+    public String getSummary(
+            @RequestParam(value = "input") String input,
+            Model model
+    ) throws IOException {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
+
+        String username = "You";
+        String output;
+        String url;
+
+        input = input.trim();
+        boolean isURL = isValidURL(input);
+
+        //if (isLoggedIn) {
+        // set username to logged in name
+        //}
+
+        if (isURL) {
+            url = HTMLParser.parser(input);
+        } else {
+            /* TODO:
+                urls are not shown in the social links
+                Please revise
+            */
+            url = "https://www.google.com/";
+        }
+        try {
+            output = bart.queryModel(input);
+        } catch (Exception e) {
+            output = "Error Occurred. Please try again.";
+        }
+
+        model.addAttribute("date", dateFormat.format(date));
+        model.addAttribute("user", username);
+        model.addAttribute("input", input);
+        model.addAttribute("output", output);
+
+        // Share Button Attributes
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
+
+        return "api/summary";
+    }
+
+    /**
      * Endpoint for user sign in.
      *
      * @return The name of the view to render.
      */
     @PostMapping("/user/login")
     public String login(
-            @RequestParam(value = "source") String source,
+            @RequestParam(value = "path", required = false) String path,
             Model model
     ) {
-        /* TODO:
-            check session/boolean/token/method if user is logged in or not
-            see user/auth below.
-            if logged in then goto user/account endpoint, else goto user/login
-         */
-
         boolean isLoggedIn = false; // update this logic
 
         if (isLoggedIn) {
-            if (source.equals("pro")) {
+            if (path.equals("pro")) {
                 return "user/pro";
             } else {
                 return "user/account";
             }
         } else {
-            model.addAttribute("source", source);
-
             return "user/login";
         }
     }
 
     @PostMapping("/user/pro")
     public String pro(
-            @RequestParam(value = "source") String source,
             Model model
     ) {
-        /* TODO:
-            check session/boolean/token/method if user is logged in or not
-            if not logged in, then show login form
-            if logged in, then show pro purchase form
-         */
-
         boolean isLoggedIn = false; // update this logic
         boolean isProUser = false;
 
@@ -98,7 +138,6 @@ public class WebController {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Please login to unlock or purchase pro features.");
-            model.addAttribute("source", source);
 
             return "user/login";
         }
@@ -138,10 +177,8 @@ public class WebController {
     @PostMapping("/user/code")
     public String code(
             @RequestParam(value = "login_email") String email,
-            @RequestParam(value = "source") String source,
             Model model
     ) {
-        model.addAttribute("source", source);
         model.addAttribute("email", email);
 
         return "user/code";
@@ -155,12 +192,10 @@ public class WebController {
     @PostMapping("/user/send")
     public String send(
             @RequestParam(value = "code_email") String email,
-            @RequestParam(value = "source") String source,
             Model model
     ) {
         boolean isValidEmail = true;
 
-        model.addAttribute("source", source);
         model.addAttribute("email", email);
 
         if (isValidEmail) {
@@ -188,13 +223,10 @@ public class WebController {
             @RequestParam(value = "reset_email") String email,
             @RequestParam(value = "reset_password") String password,
             @RequestParam(value = "reset_code") String code,
-            @RequestParam(value = "source") String source,
             Model model
     ) {
         boolean isValidEmail = true;
         boolean isValidCode = true;
-
-        model.addAttribute("source", source);
 
         if ((isValidEmail) && (isValidCode)) {
             model.addAttribute("email", email);
@@ -220,10 +252,8 @@ public class WebController {
     @PostMapping("/user/register")
     public String register(
             @RequestParam(value = "login_email") String email,
-            @RequestParam(value = "source") String source,
             Model model
     ) {
-        model.addAttribute("source", source);
         model.addAttribute("email", email);
 
         return "user/register";
@@ -236,9 +266,12 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
+            @RequestParam(value = "isLoggedIn") String isLoggedIn,
             Model model
     ) {
         boolean isValidUpdate = false;
+
+        model.addAttribute("isLoggedIn", isLoggedIn);
 
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
@@ -254,65 +287,6 @@ public class WebController {
     }
 
     /**
-     * Endpoint for getting a summary.
-     *
-     * @param input The input from the user.
-     * @param model The model to use.
-     * @return The name of the view to render.
-     * @throws IOException If an I/O error occurs.
-     */
-    @PostMapping("/api/summary")
-    public String getSummary(
-            @RequestParam(value = "input") String input,
-            Model model
-    ) throws IOException {
-        Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
-
-        String username = "You";
-        String output;
-        String url;
-
-        input = input.trim();
-        boolean isURL = isValidURL(input);
-
-        //if (isLoggedIn) {
-        // set username to logged in name
-        //}
-
-        if (isURL) {
-            url = HTMLParser.parser(input);
-        } else {
-            /* TODO:
-                urls are not shown in the social links
-                Please revise
-             */
-            // Facebook needs a valid URL for the share function to work.
-            // Without a valid URL, the facebook button will open a window giving the user an error.
-            // So, this else statement will set a temp url if the user instead inputs a block of text to parse.
-            // If you come up with a better solution or if this is unnecessary, please feel free to edit/remove
-            url = "https://www.google.com/";
-        }
-        try {
-            output = bart.queryModel(input);
-        } catch (Exception e) {
-            output = "Error Occurred. Please try again.";
-        }
-
-        model.addAttribute("date", dateFormat.format(date));
-        model.addAttribute("user", username);
-        model.addAttribute("input", input);
-        model.addAttribute("output", output);
-
-        // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
-
-        return "api/summary";
-    }
-
-    /**
      * Endpoint for creating a user.
      *
      * @param user The user to create.
@@ -320,7 +294,6 @@ public class WebController {
     @PostMapping("/user/create")
     public String createUser(
             @RequestParam(value = "email") String email,
-            @RequestParam(value = "source") String source,
             @ModelAttribute User user,
             Model model
     ) {
@@ -332,8 +305,6 @@ public class WebController {
         } catch (Exception e) {
             logger.warning("User creation failed: " + e.getMessage());
         }
-
-        model.addAttribute("source", source);
 
         if (isRegistered) {
             model.addAttribute("email", email);
@@ -358,25 +329,19 @@ public class WebController {
     public String authUser(
             @RequestParam(value = "login_email") String email,
             @RequestParam(value = "login_password") String password,
-            @RequestParam(value = "source") String source,
+            @RequestParam(value = "path", required = false) String path,
             Model model
     ) {
-        /* TODO:
-            Please add logic for db check of user credentials for login etc
-            Currently accepting all logins to test account settings page.
-            Also require a session/boolean/token/method to check if user is now logged in
-            to not auth again and bypass login modal
-         */
-
         boolean isValidLogin = true;
         boolean isProUser = false;
 
         if (isValidLogin) {
+            model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
 
-            if (source.equals("pro")) {
+            if (path.equals("pro")) {
                 if (isProUser) {
                     return "user/thankyou";
                 } else {
@@ -389,7 +354,6 @@ public class WebController {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Login auth error for '" + email + "'. Please try again.");
-            model.addAttribute("source", source);
 
             return "user/login";
         }

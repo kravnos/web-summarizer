@@ -58,11 +58,12 @@
                 hx-post="/user/login"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-vals='{"source": "link"}'
+                hx-vals="js:{path: getPath()}"
                 hx-disabled-elt="this"
                 id="link-account"
                 class="text-account link-request"
-                href="#">Account</a>.
+                href="#login"
+                data-ws-path="login">Account</a>.
         </div>
     </div>
     <div class="modal-footer">

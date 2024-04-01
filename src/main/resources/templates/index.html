@@ -24,12 +24,13 @@
                                 hx-post="/user/login"
                                 hx-target="#wrapper-login"
                                 hx-swap="innerHTML"
-                                hx-vals='{"source": "login"}'
+                                hx-vals="js:{path: getPath()}"
                                 hx-disabled-elt="this"
                                 id="nav-login"
                                 class="nav-link nav-request"
-                                href="#"
+                                href="#login"
                                 th:text="${isLoggedIn == true} ? 'Account' : 'Login'"
+                                data-ws-path="login"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-login">
                             </a>
@@ -40,12 +41,13 @@
                                 hx-post="/user/pro"
                                 hx-target="#wrapper-login"
                                 hx-swap="innerHTML"
-                                hx-vals='{"source": "pro"}'
+                                hx-vals="js:{path: getPath()}"
                                 hx-disabled-elt="this"
                                 id="nav-pro"
                                 class="nav-link nav-request"
-                                href="#"
+                                href="#pro"
                                 th:utext="${isProUser == true} ? '<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>' : '<span class=\'bi bi-lock-fill\'><span class=\'ms-125\'>Pro</span>'"
+                                data-ws-path="pro"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-login">
                             </a>

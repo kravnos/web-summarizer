@@ -9,7 +9,9 @@ $(document).ready(function() {
     const minLength = 200;
     const maxLength = 5000;
     let timeout;
-    let isDark = sessionStorage.getItem("isDark");
+    let isDark = sessionStorage.getItem("isDark") || "false";
+    let isLoggedIn = sessionStorage.getItem("isLoggedIn") || "false";
+    let isProUser = sessionStorage.getItem("isProUser") || "false";
 
     /*
         Dark Mode
@@ -30,7 +32,7 @@ $(document).ready(function() {
             sessionStorage.setItem("isDark", "true");
         } else {
             $("body").removeAttr("data-bs-theme");
-            sessionStorage.removeItem("isDark");
+            sessionStorage.setItem("isDark", "false");
         }
     });
 
@@ -246,6 +248,37 @@ $(document).ready(function() {
     });
 
     /*
+        Data
+    */
+    if (isLoggedIn == "true") {
+        if (isProUser == "true") {
+        }
+    }
+
+
+    $("body").on("htmx:beforeRequest", ".nav-request, #link-account", function(event) {
+        $("body").attr("data-ws-path", $(this).data("ws-path"));
+    });
+
+    $("#wrapper-login").on("htmx:afterRequest", function(event) {
+        if (event.detail.successful == true) {
+            $("#wrapper-login .btn-request").each(function() {
+                let data = $(this).data("ws-login");
+
+                if (data != null) {
+                    if (data == true) {
+                        sessionStorage.setItem("isLoggedIn", "true");
+                    } else {
+                        sessionStorage.setItem("isLoggedIn", "false");
+                    }
+
+                    return false;
+                }
+            });
+        }
+    });
+
+    /*
         CSRF Security Tokens
     */
     $("body").on("htmx:configRequest", function(event) {
@@ -265,3 +298,17 @@ $(window).on("load", function() {
         $("#wrapper-page").removeClass("opacity-0");
     });
 });
+
+/*
+    Helpers
+*/
+function getPath() {
+    return $("body").attr("data-ws-path");
+}
+function getIsLoggedIn() {
+    return sessionStorage.getItem("isLoggedIn");
+}
+
+function getIsProUser() {
+    return sessionStorage.getItem("isProUser");
+}

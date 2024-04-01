@@ -16,9 +16,11 @@
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include=""
+                hx-vals='js:{isLoggedIn: getIsLoggedIn()}'
                 hx-disabled-elt="this"
                 id="button-account"
                 class="btn btn-primary btn-request position-relative"
+                th:data-ws-login="${isLoggedIn} ? true : false"
                 type="submit">
                 <span id="button-account-text" class="button-text">Save</span>
                 <span id="button-account-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>

@@ -22,11 +22,10 @@
                                                                                     hx-target="#wrapper-login"
                                                                                     hx-swap="innerHTML"
                                                                                     hx-include="[name='login_email']"
-                                                                                    th:hx-vals='|{"source": "${source}"}|'
                                                                                     hx-disabled-elt="this"
                                                                                     id="link-register"
                                                                                     class="text-account link-request"
-                                                                                    href="#">Sign Up
+                                                                                    href="#register">Sign Up
                                                                                </a>
         </div>
     </div>
@@ -37,7 +36,6 @@
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='login_email']"
-                th:hx-vals='|{"source": "${source}"}|'
                 hx-disabled-elt="this"
                 id="button-password"
                 class="btn btn-secondary btn-request position-relative me-auto"
@@ -52,13 +50,13 @@
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='login_email'], [name='login_password']"
-                th:hx-vals='|{"source": "${source}"}|'
+                hx-vals="js:{path: getPath()}"
                 hx-disabled-elt="this"
                 id="button-login"
                 class="btn btn-primary btn-request position-relative"
                 type="submit">
                 <span id="button-login-text" class="button-text">Login</span>
                 <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
-        </button>
+        </button><!-- th:hx-vals='|{"path": "${path}"}|' -->
     </div>
 </div>
