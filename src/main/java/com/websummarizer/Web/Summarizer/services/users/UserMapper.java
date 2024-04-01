@@ -10,7 +10,7 @@ public class UserMapper {
     public static User mapUserReqAtoToEto(UserReqAto reqAto) {
         return User.builder()
                 .first_name(reqAto.getFirst_name())
-                .last_name(reqAto.getFirst_name())
+                .last_name(reqAto.getLast_name())
                 .email(reqAto.getEmail())
                 .phone_number(reqAto.getPhone_number())
                 .password(reqAto.getPassword())
