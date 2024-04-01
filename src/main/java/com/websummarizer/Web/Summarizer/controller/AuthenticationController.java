@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Controller class for handling authentication-related endpoints.
  */
-@Controller
+@RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthenticationController {
@@ -66,15 +66,11 @@ public class AuthenticationController {
      * @return The view name for login status.
      */
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute UserDTO body){
+    public LoginResponseDTO loginUser(@ModelAttribute UserDTO body){
         logger.info("User login request for : "+body.getLogin_email()+ " password: "+body.getLogin_password());
         LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(),body.getLogin_password());
-
-        if(loginResponseDTO!=null && loginResponseDTO.getJwt()!=null){
-            return "user/login";
-        }else {
-            return "redirect:/";
-        }
+        logger.info("login dto: "+loginResponseDTO.toString());
+        return loginResponseDTO;
     }
 
 }
