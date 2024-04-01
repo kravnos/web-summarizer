@@ -3,6 +3,7 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
@@ -42,7 +43,10 @@ public class WebController {
     private Shortlink shortlink;
 
     @Autowired
-    private HistoryService historyService;
+    private HistoryController historyController;
+
+    @Autowired
+    private UserController userController;
 
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
@@ -140,7 +144,7 @@ public class WebController {
         // Create a new history request object with the generated short code
         HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
         // Add the history request to the database and get the response
-        var historyResAto = historyService.addHistory(historyReqAto);
+        historyController.addHistory(historyReqAto);
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
@@ -164,19 +168,15 @@ public class WebController {
      * @return The name of the view to render.
      */
     @PostMapping("/createUser")
-    public void createUser(@ModelAttribute User user, HttpSession session) {
+    public void createUser(@ModelAttribute UserReqAto userReqAto, HttpSession session) {
         session.setAttribute("msg", "");
-        logger.info("Received user creation request: " + user);
+        logger.info("Received user creation request: " + userReqAto);
         boolean bool = false;
         try {
-            bool = userService.createUser(user) != null;
+            userController.createUser(userReqAto);
         } catch (Exception e) {
             session.setAttribute("msg", "Email already exists");
             logger.warning("User creation failed: " + e.getMessage());
-        }
-        if (bool) {
-            session.setAttribute("msg", "Registered Successfully");
-            logger.info("User created successfully: " + user);
         }
         //return "redirect:/";
     }
