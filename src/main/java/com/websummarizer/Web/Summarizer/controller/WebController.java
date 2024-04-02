@@ -140,6 +140,7 @@ public class WebController {
                 model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl="+url);
 
                 return "api/summary";
+
             } catch (Exception e) {
                 output = "Error Occurred. Please try again.";
                 model.addAttribute("date", dateFormat.format(date));
