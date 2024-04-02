@@ -50,7 +50,7 @@
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='login_email'], [name='login_password']"
-                hx-vals="js:{path: getPath()}"
+                hx-vals="javascript:{isProUser: getIsProUser(), path: getPath()}"
                 hx-disabled-elt="this"
                 id="button-login"
                 class="btn btn-primary btn-request position-relative"

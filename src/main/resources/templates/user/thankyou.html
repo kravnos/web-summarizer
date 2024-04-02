@@ -1,6 +1,6 @@
 <div class="wrapper-thank-you">
     <div class="modal-header">
-        <h5 id="modal-label-thank-you" class="modal-title">Thank You</h5>
+        <h5 id="modal-label-thank-you" class="modal-title">Pro Features</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body transition-0 opacity-0">
@@ -58,12 +58,14 @@
                 hx-post="/user/login"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-vals="js:{path: getPath()}"
+                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
                 hx-disabled-elt="this"
                 id="link-account"
                 class="text-account link-request"
                 href="#login"
-                data-ws-path="login">Account</a>.
+                data-ws-path="login"
+                th:data-ws-login="${isLoggedIn} ? true : false"
+                th:data-ws-pro="${isProUser} ? true : false">Account</a>.
         </div>
     </div>
     <div class="modal-footer">

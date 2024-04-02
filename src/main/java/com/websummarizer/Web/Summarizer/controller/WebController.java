@@ -105,15 +105,23 @@ public class WebController {
      */
     @PostMapping("/user/login")
     public String login(
+            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             Model model
     ) {
-        boolean isLoggedIn = false; // update this logic
+        if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
+            if ((path != null) && (path.equals("pro"))) {
+                if ((isProUser != null) && (isProUser.equals("true"))) {
+                    model.addAttribute("isProUser", true);
 
-        if (isLoggedIn) {
-            if (path.equals("pro")) {
-                return "user/pro";
+                    return "user/thankyou";
+                } else {
+                    return "user/pro";
+                }
             } else {
+                model.addAttribute("isLoggedIn", true);
+
                 return "user/account";
             }
         } else {
@@ -123,13 +131,14 @@ public class WebController {
 
     @PostMapping("/user/pro")
     public String pro(
+            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
             Model model
     ) {
-        boolean isLoggedIn = false; // update this logic
-        boolean isProUser = false;
+        if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
+            if ((isProUser != null) && (isProUser.equals("true"))) {
+                model.addAttribute("isProUser", true);
 
-        if (isLoggedIn) {
-            if (isProUser) {
                 return "user/thankyou";
             } else {
                 return "user/pro";
@@ -150,11 +159,15 @@ public class WebController {
      */
     @PostMapping("/user/purchase")
     public String purchase(
+            @RequestParam(value = "isLoggedIn") String isLoggedIn,
             Model model
     ) {
         boolean isValidPurchase = true;
 
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
         if (isValidPurchase) {
+            model.addAttribute("isProUser", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Payment successful. Thank you for your purchase.");
@@ -329,11 +342,11 @@ public class WebController {
     public String authUser(
             @RequestParam(value = "login_email") String email,
             @RequestParam(value = "login_password") String password,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             Model model
     ) {
         boolean isValidLogin = true;
-        boolean isProUser = false;
 
         if (isValidLogin) {
             model.addAttribute("isLoggedIn", true);
@@ -341,8 +354,10 @@ public class WebController {
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
 
-            if (path.equals("pro")) {
-                if (isProUser) {
+            if ((path != null) && (path.equals("pro"))) {
+                if ((isProUser != null) && (isProUser.equals("true"))) {
+                    model.addAttribute("isProUser", true);
+
                     return "user/thankyou";
                 } else {
                     return "user/pro";

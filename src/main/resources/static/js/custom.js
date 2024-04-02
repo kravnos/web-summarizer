@@ -9,7 +9,7 @@ $(document).ready(function() {
     const minLength = 200;
     const maxLength = 5000;
     let timeout;
-    let isDark = sessionStorage.getItem("isDark") || "false";
+    let isDark = sessionStorage.getItem("isDark") || "false";           // sessionStorage must be a string, cannot be boolean false
     let isLoggedIn = sessionStorage.getItem("isLoggedIn") || "false";
     let isProUser = sessionStorage.getItem("isProUser") || "false";
 
@@ -135,13 +135,15 @@ $(document).ready(function() {
     */
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
-            $("#wrapper-login .btn-request").each(function() {
+            $("#wrapper-login .btn-primary.btn-request").trigger("click");
+
+            /*$("#wrapper-login .btn-request").each(function() {
                 if (this.id != "button-password") { // add 'Cancel Membership' button ID && 'Logout' button ID here
                     $(this).trigger("click");
 
                     return false;
                 }
-            });
+            });*/
         } else {
             $(this).parent().addClass("was-validated");
         }
@@ -248,13 +250,15 @@ $(document).ready(function() {
     });
 
     /*
-        Data
+        Session Data
     */
     if (isLoggedIn == "true") {
+        $("#nav-login").text("Account");
+
         if (isProUser == "true") {
+            $("#nav-pro").html("<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>");
         }
     }
-
 
     $("body").on("htmx:beforeRequest", ".nav-request, #link-account", function(event) {
         $("body").attr("data-ws-path", $(this).data("ws-path"));
@@ -262,17 +266,17 @@ $(document).ready(function() {
 
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
-            $("#wrapper-login .btn-request").each(function() {
-                let data = $(this).data("ws-login");
+            $("#wrapper-login .btn-primary.btn-request, #wrapper-login .link-request").each(function() {
+                let login = $(this).data("ws-login");
+                let pro = $(this).data("ws-pro");
 
-                if (data != null) {
-                    if (data == true) {
-                        sessionStorage.setItem("isLoggedIn", "true");
-                    } else {
-                        sessionStorage.setItem("isLoggedIn", "false");
-                    }
-
-                    return false;
+                if (login != null) {
+                    $("body").attr("data-ws-login", login);
+                    sessionStorage.setItem("isLoggedIn", login);
+                }
+                if (pro != null) {
+                    $("body").attr("data-ws-pro", pro);
+                    sessionStorage.setItem("isProUser", pro);
                 }
             });
         }
@@ -305,6 +309,7 @@ $(window).on("load", function() {
 function getPath() {
     return $("body").attr("data-ws-path");
 }
+
 function getIsLoggedIn() {
     return sessionStorage.getItem("isLoggedIn");
 }
