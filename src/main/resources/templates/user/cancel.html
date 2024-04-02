@@ -1,0 +1,17 @@
+<div class="wrapper-cancel">
+    <div class="modal-header">
+        <h5 id="modal-label-cancel" class="modal-title">Membership Cancelled</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body transition-0 opacity-0">
+        <!-- Messages Fragment -->
+        <th:block th:replace="fragments/message.html :: message"></th:block>
+        <div class="text-account text-center pt-2">
+            <p>We're sorry to see you go. <span class="bi bi-emoji-tear"></span></p>
+            <p>All pro features are now disabled for your account.</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</div>

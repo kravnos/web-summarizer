@@ -8,7 +8,7 @@
         <th:block th:replace="fragments/message.html :: message"></th:block>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary me-auto">Logout</button>
+        <button type="button" id="button-logout" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Logout</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button
                 hx-trigger="click queue:none"

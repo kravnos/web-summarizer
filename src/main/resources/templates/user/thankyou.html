@@ -69,7 +69,17 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary me-auto">Cancel Membership</button>
+        <button hx-trigger="click queue:none"
+                hx-post="/user/cancel"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-disabled-elt="this"
+                id="button-cancel"
+                class="btn btn-secondary btn-request position-relative me-auto"
+                type="button">
+                <span id="button-cancel-text" class="button-text">Cancel Membership</span>
+                <span id="button-cancel-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+        </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
     </div>
 </div>

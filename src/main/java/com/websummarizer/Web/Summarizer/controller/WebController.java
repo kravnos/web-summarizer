@@ -183,6 +183,22 @@ public class WebController {
     }
 
     /**
+     * Endpoint for cancelling membership.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/cancel")
+    public String cancel(
+            Model model
+    ) {
+        model.addAttribute("isValid", true);
+        model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+        model.addAttribute("message", "Membership has been cancelled. You will no longer be billed.");
+
+        return "user/cancel";
+    }
+
+    /**
      * Endpoint for send authentication code.
      *
      * @return The name of the view to render.

@@ -136,14 +136,6 @@ $(document).ready(function() {
     $("#wrapper-login").on("input keydown", "input", function(event) {
         if (event.key == "Enter") {
             $("#wrapper-login .btn-primary.btn-request").trigger("click");
-
-            /*$("#wrapper-login .btn-request").each(function() {
-                if (this.id != "button-password") { // add 'Cancel Membership' button ID && 'Logout' button ID here
-                    $(this).trigger("click");
-
-                    return false;
-                }
-            });*/
         } else {
             $(this).parent().addClass("was-validated");
         }
@@ -252,14 +244,6 @@ $(document).ready(function() {
     /*
         Session Data
     */
-    if (isLoggedIn == "true") {
-        $("#nav-login").text("Account");
-
-        if (isProUser == "true") {
-            $("#nav-pro").html("<span class=\'bi bi-unlock-fill\'><span class=\'ms-125\'>Pro</span></span>");
-        }
-    }
-
     $("body").on("htmx:beforeRequest", ".nav-request, #link-account", function(event) {
         $("body").attr("data-ws-path", $(this).data("ws-path"));
     });
@@ -279,7 +263,27 @@ $(document).ready(function() {
                     sessionStorage.setItem("isProUser", pro);
                 }
             });
+
+            updateNavbar();
         }
+    });
+
+    /*
+        Navbar
+    */
+    updateNavbar(); // initial state
+
+    $("#wrapper-login").on("click", "#button-logout", function() {
+        $("body").attr("data-ws-login", "false");
+        sessionStorage.setItem("isLoggedIn", "false");
+        setTimeout("redirectHome()", longSleep);
+        updateNavbar();
+    });
+
+    $("#wrapper-login").on("htmx:beforeRequest", "#button-cancel", function() {
+        $("body").attr("data-ws-pro", "false");
+        sessionStorage.setItem("isProUser", "false");
+        updateNavbar();
     });
 
     /*
@@ -316,4 +320,23 @@ function getIsLoggedIn() {
 
 function getIsProUser() {
     return sessionStorage.getItem("isProUser");
+}
+
+function redirectHome() {
+    window.location.href = "/";
+}
+
+function updateNavbar() {
+    if (getIsLoggedIn() == "true") {
+        $("#nav-login").text("Account");
+
+        if (getIsProUser() == "true") {
+            $("#nav-pro .bi").removeClass("bi-lock-fill").addClass("bi-unlock-fill");
+        } else {
+            $("#nav-pro .bi").removeClass("bi-unlock-fill").addClass("bi-lock-fill");
+        }
+    } else {
+        $("#nav-login").text("Login");
+        $("#nav-pro .bi").removeClass("bi-unlock-fill").addClass("bi-lock-fill");
+    }
 }
