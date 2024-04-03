@@ -54,7 +54,8 @@
                 hx-disabled-elt="this"
                 id="button-login"
                 class="btn btn-primary btn-request position-relative"
-                type="submit">
+                type="submit"
+                th:data-ws-name="${first_name}">
                 <span id="button-login-text" class="button-text">Login</span>
                 <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button><!-- th:hx-vals='|{"path": "${path}"}|' -->

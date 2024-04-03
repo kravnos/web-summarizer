@@ -53,30 +53,27 @@ public class WebController {
      */
     @PostMapping("/api/summary")
     public String getSummary(
+            @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
             Model model
     ) throws IOException {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String username = "You";
         String output;
         String url;
 
         input = input.trim();
         boolean isURL = isValidURL(input);
 
-        //if (isLoggedIn) {
-        // set username to logged in name
-        //}
+        if ((username == null) || (username.equals("undefined"))) {
+            username = "You";
+        }
 
         if (isURL) {
             url = HTMLParser.parser(input);
         } else {
-            /* TODO:
-                urls are not shown in the social links
-                Please revise
-            */
+            /* TODO: urls are not shown in the social links */
             url = "https://www.google.com/";
         }
         try {
@@ -162,7 +159,7 @@ public class WebController {
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             Model model
     ) {
-        boolean isValidPurchase = true;
+        boolean isValidPurchase = true; // Not real payment, therefore always accept
 
         model.addAttribute("isLoggedIn", isLoggedIn);
 
@@ -223,7 +220,7 @@ public class WebController {
             @RequestParam(value = "code_email") String email,
             Model model
     ) {
-        boolean isValidEmail = true;
+        boolean isValidEmail = true;        /* TODO: validate email exists in the DB */
 
         model.addAttribute("email", email);
 
@@ -254,8 +251,8 @@ public class WebController {
             @RequestParam(value = "reset_code") String code,
             Model model
     ) {
-        boolean isValidEmail = true;
-        boolean isValidCode = true;
+        boolean isValidEmail = true;    /* TODO: validate email exists in the DB */
+        boolean isValidCode = true;     /* TODO: validate auth with code sent in email */
 
         if ((isValidEmail) && (isValidCode)) {
             model.addAttribute("email", email);
@@ -298,7 +295,7 @@ public class WebController {
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             Model model
     ) {
-        boolean isValidUpdate = false;
+        boolean isValidUpdate = false;      /* TODO: validate account changes in the DB */
 
         model.addAttribute("isLoggedIn", isLoggedIn);
 
@@ -309,7 +306,7 @@ public class WebController {
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Could not save settings for 'email'. Please try again.");
+            model.addAttribute("message", "Failed to save settings for 'email'. Please try again.");
         }
 
         return "user/account";
@@ -322,6 +319,7 @@ public class WebController {
      */
     @PostMapping("/user/create")
     public String createUser(
+            @RequestParam(value = "first_name") String first_name,
             @RequestParam(value = "email") String email,
             @ModelAttribute User user,
             Model model
@@ -336,6 +334,7 @@ public class WebController {
         }
 
         if (isRegistered) {
+            model.addAttribute("first_name", first_name);
             model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
@@ -362,7 +361,7 @@ public class WebController {
             @RequestParam(value = "path", required = false) String path,
             Model model
     ) {
-        boolean isValidLogin = true;
+        boolean isValidLogin = true;        /* TODO: validate login credentials against the DB */
 
         if (isValidLogin) {
             model.addAttribute("isLoggedIn", true);

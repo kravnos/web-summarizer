@@ -251,9 +251,13 @@ $(document).ready(function() {
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
             $("#wrapper-login .btn-primary.btn-request, #wrapper-login .link-request").each(function() {
+                let name = $(this).data("ws-name");
                 let login = $(this).data("ws-login");
                 let pro = $(this).data("ws-pro");
 
+                if (name != null) {
+                    $("body").attr("data-ws-name", name);
+                }
                 if (login != null) {
                     $("body").attr("data-ws-login", login);
                     sessionStorage.setItem("isLoggedIn", login);
@@ -310,6 +314,10 @@ $(window).on("load", function() {
 /*
     Helpers
 */
+function getName() {
+    return $("body").attr("data-ws-name");
+}
+
 function getPath() {
     return $("body").attr("data-ws-path");
 }
