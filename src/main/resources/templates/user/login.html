@@ -1,0 +1,63 @@
+<div class="wrapper-login">
+    <div class="modal-header">
+        <h5 id="modal-label-login" class="modal-title">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body transition-0 opacity-0">
+        <!-- Messages Fragment -->
+        <th:block th:replace="fragments/message.html :: message"></th:block>
+        <fieldset class="field-set">
+            <div class="field required mb-3">
+                <label for="login-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                <input id="login-email" class="form-control" name="login_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+            </div>
+            <div class="field required mb-3">
+                <label for="login-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+                <input id="login-password" class="form-control" name="login_password" type="password" hx-validate="true" required />
+            </div>
+        </fieldset>
+        <div class="text-account text-center pt-4 pb-2">Don't have an account? <a
+                                                                                    hx-trigger="click queue:none"
+                                                                                    hx-post="/user/register"
+                                                                                    hx-target="#wrapper-login"
+                                                                                    hx-swap="innerHTML"
+                                                                                    hx-include="[name='login_email']"
+                                                                                    hx-disabled-elt="this"
+                                                                                    id="link-register"
+                                                                                    class="text-account link-request"
+                                                                                    href="#register">Sign Up
+                                                                               </a>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button
+                hx-trigger="click queue:none"
+                hx-post="/user/code"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-include="[name='login_email']"
+                hx-disabled-elt="this"
+                id="button-password"
+                class="btn btn-secondary btn-request position-relative me-auto"
+                type="button">
+            <span id="button-password-text" class="button-text">Reset Password</span>
+            <span id="button-password-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button
+                hx-trigger="click queue:none"
+                hx-post="/user/auth"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-include="[name='login_email'], [name='login_password']"
+                hx-vals="javascript:{isProUser: getIsProUser(), path: getPath()}"
+                hx-disabled-elt="this"
+                id="button-login"
+                class="btn btn-primary btn-request position-relative"
+                type="submit"
+                th:data-ws-name="${first_name}">
+                <span id="button-login-text" class="button-text">Login</span>
+                <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+        </button><!-- th:hx-vals='|{"path": "${path}"}|' -->
+    </div>
+</div>
