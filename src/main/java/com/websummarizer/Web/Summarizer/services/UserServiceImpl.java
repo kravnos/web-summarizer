@@ -16,4 +16,14 @@ public class UserServiceImpl implements UserService{
         return userRepo.save(user);
     }
 
+    // These methods are used for: password and request token
+    public void setPassword(User user) {
+        userRepo.setPassword(user.getPassword(), user.getEmail());
+    }
+    public User getUserByPasswordResetToken(String token){
+        return userRepo.getUserByResetToken(token);
+    }
+    public int setPasswordRequestToken(String token, User user){
+        return userRepo.setRequestToken(token, user.getEmail());
+    }
 }

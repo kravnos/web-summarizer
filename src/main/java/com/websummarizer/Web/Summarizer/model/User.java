@@ -40,6 +40,10 @@ public class User {
     @Column(name = "phone_number")
     String phone_number;
 
+    @Setter
+    @Column(name = "request_token")
+    String request_token;
+
     @Override
     public String toString() {
         return "User{" +
@@ -49,6 +53,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", phone_number='" + phone_number + '\'' +
+                ", phone_number='" + request_token + '\'' +
                 '}';
     }
 }

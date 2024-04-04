@@ -14,6 +14,7 @@ public class UserMapper {
                 .email(reqAto.getEmail())
                 .phone_number(reqAto.getPhone_number())
                 .password(reqAto.getPassword())
+                .request_token(reqAto.getRequest_token())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .phone_number(user.getPhone_number())
                 .password(user.getPassword())
+                .request_token(user.getRequest_token())
                 .build();
     }
 
@@ -36,5 +38,6 @@ public class UserMapper {
         user.setEmail(update.getEmail());
         user.setPhone_number(update.getPhone_number());
         user.setPassword(update.getPassword());
+        user.setRequest_token(update.getRequest_token());
     }
 }
