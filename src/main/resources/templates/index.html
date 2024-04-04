@@ -9,8 +9,8 @@
 </head>
 <body>
 
-    <!-- Main Wrapper -->
-    <div id="wrapper" class="rounded-0 transition-0 opacity-0">
+    <!-- Page Wrapper -->
+    <div id="wrapper-page" class="rounded-0 transition-0 opacity-0">
 
         <!-- Header -->
         <nav id="header" class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
@@ -24,17 +24,32 @@
                                 hx-post="/user/login"
                                 hx-target="#wrapper-login"
                                 hx-swap="innerHTML"
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
                                 hx-disabled-elt="this"
-                                id="login"
-                                class="nav-link"
-                                href="#"
-                                th:text="${isLoggedIn == true} ? 'Account' : 'Login'"
+                                id="nav-login"
+                                class="nav-link nav-request"
+                                href="#login"
+                                data-ws-path="login"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal-login">
+                                data-bs-target="#modal-login">Login
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a id="pro" class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
+                            <a
+                                hx-trigger="click queue:none"
+                                hx-post="/user/pro"
+                                hx-target="#wrapper-login"
+                                hx-swap="innerHTML"
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "path": "pro"}'
+                                hx-disabled-elt="this"
+                                id="nav-pro"
+                                class="nav-link nav-request"
+                                href="#pro"
+                                data-ws-path="pro"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-login">
+                                <span class="bi bi-lock-fill"><span class="ms-125">Pro</span></span>
+                            </a>
                         </li>
                         <li class="nav-item">
                             <div class="form-check form-switch nav-link ms-5">
@@ -67,21 +82,23 @@
                     <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
                     <div class="input-group">
                         <!--<span class="input-group-text">http(s)://</span>-->
-                        <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
+                        <input id="input-main" class="form-control shadow-google" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
                         <div class="input-group-append ms-2">
                             <button
                                 hx-trigger="click queue:none"
                                 hx-post="/api/summary"
                                 hx-include="[name='input']"
+                                hx-vals="javascript:{first_name: getName()}"
                                 hx-target="#wrapper-summary"
                                 hx-swap="beforeend"
                                 hx-disabled-elt="this"
                                 id="button-summary"
-                                class="btn btn-primary position-relative disabled"
+                                class="btn btn-primary btn-request position-relative disabled"
                                 type="submit"
+                                tabindex="-1"
                                 aria-disabled="true">
-                                <span id="button-summary-text">Summarize</span>
-                                <span id="button-summary-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                                <span id="button-summary-text" class="button-text">Summarize</span>
+                                <span id="button-summary-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
                             </button><!-- multiple spam clicks will be ignored until response -->
                         </div>
                     </div>
@@ -100,36 +117,17 @@
         </div>
     </div>
 
-    <!-- Login/Register/Account Modal -->
-    <div id="modal-login" class="modal fade modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
+    <!-- Login/Pro/Register/Account Modal -->
+    <div id="modal-login" class="modal fade shadow-0 modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content position-relative">
                 <div id="wrapper-login" class="transition-0 opacity-0" hx-sync="this"></div>
-                <div id="modal-loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
+                <div id="modal-login-loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
                     <div class="d-flex justify-content-center align-items-center w-100 h-100">
                         <div class="spinner-border spinner-border-lg" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pro Modal -->
-    <div id="modal-pro" class="modal fade modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-pro" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-label-pro">Pro Features</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <br /><br /><br /><br /><br /><br />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Purchase</button>
                 </div>
             </div>
         </div>

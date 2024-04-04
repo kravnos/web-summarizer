@@ -1,0 +1,32 @@
+<div class="wrapper-send">
+    <div class="modal-header">
+        <h5 id="modal-label-reset" class="modal-title">Email Authentication Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body transition-0 opacity-0">
+        <!-- Messages Fragment -->
+        <th:block th:replace="fragments/message.html :: message"></th:block>
+        <fieldset class="field-set">
+            <div class="field required mb-3">
+                <label for="code-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                <input id="code-email" class="form-control" name="code_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button
+                hx-trigger="click queue:none"
+                hx-post="/user/send"
+                hx-target="#wrapper-login"
+                hx-swap="innerHTML"
+                hx-include="[name='code_email']"
+                hx-disabled-elt="this"
+                id="button-reset"
+                class="btn btn-primary btn-request position-relative"
+                type="submit">
+            <span id="button-reset-text" class="button-text">Send</span>
+            <span id="button-reset-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
