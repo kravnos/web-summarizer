@@ -4,7 +4,7 @@ body *:not(.transition-0), body *:not(.transition-0):hover {
 body *:not(.rounded-0):not(.modal-backdrop) {
     border-radius: 1.5rem!important;
 }
-body *:focus:not(.modal) {
+body *:focus:not(.shadow-0) {
     box-shadow: 0 1px 6px 0 rgba(13,110,253,.25)!important;
 }
 body {
@@ -22,6 +22,30 @@ body {
 .btn, .form-control, .shadow-google {
     padding: 0.375rem 1.5rem;
 }
+.modal .btn-helper {
+    padding: 0;
+}
+.modal .btn-helper:focus {
+    box-shadow: none!important;
+}
+.field.required .form-label:after {
+    content: ' *';
+    color: var(--bs-form-invalid-color);
+}
+.was-validated .form-control:invalid, .was-validated .form-control:valid {
+    border-color: var(--bs-border-color);
+}
+.was-validated .form-control:invalid:focus, .was-validated .form-control:valid:focus {
+    border-color: #86b7fe;
+}
+.success {
+    background: #e5efe5;
+    color: #006400;
+}
+.error {
+    background-color: #fae5e5;
+    color: #e02b27;
+}
 .shadow-google {
     box-shadow: 0 1px 6px 0 #20212447;
 }
@@ -32,10 +56,14 @@ body {
     max-width: 80%;
 }
 .fit-content {
+    display: table; /* fix firefox bug */
     width: fit-content;
 }
 .text-justify {
     text-align: justify;
+}
+.w-60 {
+    width: 60%;
 }
 .w-125 {
     width: 1.25rem;
@@ -43,14 +71,20 @@ body {
 .h-125 {
     height: 1.25rem;
 }
-.invert {
+.social-link.invert {
     filter: invert(100%);
 }
-.bi-lock-fill-ms {
-    margin-left: 2px;
+.ms-125 {
+    margin-left: 0.125rem;
 }
 .fs-7 {
     font-size: 0.75rem;
+}
+.fs-8 {
+    font-size: 0.625rem;
+}
+.fs-9 {
+    font-size: 0.5rem;
 }
 .spinner-border-lg {
     width: 2.75rem;
@@ -66,14 +100,42 @@ body {
 .modal-header, .modal-footer {
     border: 0;
 }
-.modal-body .modal-footer {
-    padding: 0;
-}
 .zindex-loader {
     z-index: 1100;
 }
 .zindex-intro {
     z-index: 990;
+}
+.payment-options {
+    height: 44px;
+    width: auto;
+}
+/* custom darkmode */
+body[data-bs-theme=dark] .form-check-input:checked {
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-body-bg);
+}
+body[data-bs-theme=dark] .shadow-google {
+    box-shadow: 0 1px 6px 0 #dfdedb53;
+}
+body[data-bs-theme=dark] .text-black-50 {
+    --bs-text-opacity: 1;
+    color: rgba(255, 255, 255, .5) !important;
+}
+body[data-bs-theme=dark] ::-webkit-scrollbar-thumb {
+    background-color: #070707;
+}
+body[data-bs-theme=dark] ::-webkit-scrollbar-thumb:hover {
+    background-color: #0e0e0e;
+}
+body[data-bs-theme=dark] .social-link.invert {
+    filter: invert(25%);
+}
+body[data-bs-theme=dark] .payment-options.invert {
+    filter: invert(100%) grayscale(100%) contrast(200%);
+}
+body[data-bs-theme=dark] .bi-moon-fill::before {
+    content: "\f1d1";
 }
 /* custom htmx loader */
 /*.htmx-indicator {

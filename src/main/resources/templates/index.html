@@ -1,186 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.com">
 <head>
+    <!-- Webpage Title -->
     <title>Web Summarizer</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--    <meta name="_csrf" th:content="${_csrf.token}"> -->
-<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"> -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&display=swap" rel="stylesheet" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link th:href="@{/css/custom.css}" rel="stylesheet" type="text/css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-    <script th:src="@{/js/custom.js}" type="text/javascript"></script>
+
+    <!-- Meta Fragment -->
+    <th:block th:replace="fragments/meta.html :: meta"></th:block>
 </head>
 <body>
-<!-- loading -->
-<div id="loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
-    <div class="d-flex justify-content-center align-items-center w-100 h-100">
-        <div class="spinner-border spinner-border-lg" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-</div>
 
-<!-- Main Wrapper -->
-<div id="wrapper" class="rounded-0 transition-0 opacity-0">
-    <!-- Header -->
-    <nav id="header" class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
-        <div class="container container-custom">
-            <a class="navbar-brand" href="/">Web Summarizer</a>
-            <div class="justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a id="login" class="nav-link" href="#" th:text="${loggedIn} ? 'Account' : 'Login'" data-bs-toggle="modal" data-bs-target="#modal-login"></a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="pro" class="nav-link bi bi-lock-fill" href="#" data-bs-toggle="modal" data-bs-target="#modal-pro"><span class="bi-lock-fill-ms">Pro</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="form-check form-switch nav-link ms-5">
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                            <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
+    <!-- Page Wrapper -->
+    <div id="wrapper-page" class="rounded-0 transition-0 opacity-0">
+
+        <!-- Header -->
+        <nav id="header" class="navbar rounded-0 fixed-top navbar-expand navbar-dark bg-primary">
+            <div class="container container-custom">
+                <a class="navbar-brand" href="/">Web Summarizer</a>
+                <div class="justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a
+                                hx-trigger="click queue:none"
+                                hx-post="/user/login"
+                                hx-target="#wrapper-login"
+                                hx-swap="innerHTML"
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
+                                hx-disabled-elt="this"
+                                id="nav-login"
+                                class="nav-link nav-request"
+                                href="#login"
+                                data-ws-path="login"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-login">Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                hx-trigger="click queue:none"
+                                hx-post="/user/pro"
+                                hx-target="#wrapper-login"
+                                hx-swap="innerHTML"
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "path": "pro"}'
+                                hx-disabled-elt="this"
+                                id="nav-pro"
+                                class="nav-link nav-request"
+                                href="#pro"
+                                data-ws-path="pro"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-login">
+                                <span class="bi bi-lock-fill"><span class="ms-125">Pro</span></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="form-check form-switch nav-link ms-5">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <div id="main" class="container container-custom scroll-custom transition-0">
+            <div class="row">
+                <div class="col">
+                    <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
+                        <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
+                        <h3 class="mt-2">What would you like to summarize?</h3>
+                    </div>
+                    <div id="wrapper-summary" class="text-break text-justify transition-0" hx-sync="this"><!-- Summarized Text --></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer" class="container container-custom fixed-bottom">
+            <div class="row">
+                <div class="col">
+                    <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
+                    <div class="input-group">
+                        <!--<span class="input-group-text">http(s)://</span>-->
+                        <input id="input-main" class="form-control shadow-google" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
+                        <div class="input-group-append ms-2">
+                            <button
+                                hx-trigger="click queue:none"
+                                hx-post="/api/summary"
+                                hx-include="[name='input']"
+                                hx-vals="javascript:{first_name: getName()}"
+                                hx-target="#wrapper-summary"
+                                hx-swap="beforeend"
+                                hx-disabled-elt="this"
+                                id="button-summary"
+                                class="btn btn-primary btn-request position-relative disabled"
+                                type="submit"
+                                tabindex="-1"
+                                aria-disabled="true">
+                                <span id="button-summary-text" class="button-text">Summarize</span>
+                                <span id="button-summary-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                            </button><!-- multiple spam clicks will be ignored until response -->
                         </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main -->
-    <div id="main" class="container container-custom scroll-custom transition-0">
-        <div class="row">
-            <div class="col">
-                <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
-                    <span id="wand" class="text-primary fs-1 bi bi-magic"></span>
-                    <h3 class="mt-2">What would you like to summarize?</h3>
-                </div>
-                <div id="wrapper-summary" class="text-break text-justify transition-0"><!-- Summarized Text --></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="footer" class="container container-custom fixed-bottom">
-        <div class="row">
-            <div class="col">
-                <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
-                <div class="input-group">
-                    <!--<span class="input-group-text">http(s)://</span>-->
-                    <input id="input-main" class="form-control shadow-google border-0" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus />
-                    <div class="input-group-append ms-2">
-                        <button
-                            hx-trigger="click queue:none"
-                            hx-post="/api/summary"
-                            hx-include="[name='input']"
-                            hx-target="#wrapper-summary"
-                            hx-swap="beforeend"
-                            hx-disabled-elt="this"
-                            id="summary-button"
-                            class="btn btn-primary position-relative disabled"
-                            type="button"
-                            aria-disabled="true">
-                            <span id="summary-button-text">Summarize</span>
-                            <span id="summary-button-spinner" class="spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
-                        </button><!-- multiple spam clicks will be ignored until response -->
                     </div>
+                    <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
                 </div>
-                <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
             </div>
         </div>
     </div>
 
-    <!-- Login/Register Modal -->
-    <div id="modal-login" class="modal fade modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
+    <!-- Loader -->
+    <div id="loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
+        <div class="d-flex justify-content-center align-items-center w-100 h-100">
+            <div class="spinner-border spinner-border-lg" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Pro/Register/Account Modal -->
+    <div id="modal-login" class="modal fade shadow-0 modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Login Modal -->
-                <div id="wrapper-login">
-                    <div class="modal-header">
-                        <h5 id="modal-label-login" class="modal-title">Login</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="login-email" class="m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                        <input id="login-email" class="form-control mb-3" name="login-email" type="email" required />
-                        <label for="login-password" class="m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                        <input id="login-password" class="form-control mb-3" name="login-password" type="password" required />
-                        <div class="text-account text-center pt-4 pb-2">Don't have an account? <a id="link-register" class="text-account" href="#">Sign Up</a></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button
-                            hx-trigger="click queue:none"
-                            hx-post="/loginUser"
-                            hx-target="#wrapper-login .modal-body"
-                            hx-include="[name='login-email'], [name='login-register']"
-                            hx-disabled-elt="this"
-                            id="login-button"
-                            class="btn btn-primary"
-                            type="button">Login
-                        </button>
-                    </div>
-                </div>
-                <!-- Register Modal -->
-                <div id="wrapper-register" class="d-none">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modal-label-register">Create an Account</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!--<th:block th:if="${session.msg}">
-                            <p class="text-center fs-7">[[${session.msg}]]</p>
-                        </th:block>-->
-                        <label for="register-first-name" class="m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                        <input id="register-first-name" class="form-control mb-3" name="register-first-name" type="text" required />
-                        <label for="register-last-name" class="m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                        <input id="register-last-name" class="form-control mb-3" name="register-last-name" type="text" required />
-                        <label for="register-email" class="m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                        <input id="register-email" class="form-control mb-3" name="register-email" type="email" required />
-                        <label for="register-password" class="m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                        <input id="register-password" class="form-control mb-3" name="register-password" type="password" required />
-                        <div class="text-account text-center pt-4 pb-2">Already have an account? <a id="link-login" class="text-account" href="#">Login</a></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button
-                            hx-trigger="click queue:none"
-                            hx-post="/createUser"
-                            hx-target="#wrapper-register .modal-body"
-                            hx-include="[name='register-first-name'], [name='register-last-name'], [name='register-email'], [name='register-password']"
-                            hx-disabled-elt="this"
-                            id="create-button"
-                            class="btn btn-primary"
-                            type="button">Create
-                        </button>
+            <div class="modal-content position-relative">
+                <div id="wrapper-login" class="transition-0 opacity-0" hx-sync="this"></div>
+                <div id="modal-login-loader" class="text-primary position-absolute top-50 start-50 translate-middle w-100 h-100 m-auto transition-0 zindex-loader">
+                    <div class="d-flex justify-content-center align-items-center w-100 h-100">
+                        <div class="spinner-border spinner-border-lg" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Pro Modal -->
-    <div id="modal-pro" class="modal fade modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-pro" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-label-pro">Pro Features</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <br /><br /><br /><br /><br /><br />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Purchase</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 </body>
 </html>
