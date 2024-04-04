@@ -278,9 +278,10 @@ $(document).ready(function() {
     updateNavbar(); // initial state
 
     $("#wrapper-login").on("click", "#button-logout", function() {
+        $("body").removeAttr("data-ws-name");
         $("body").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");
-        setTimeout("redirectHome()", longSleep);
+        setTimeout("redirectTo('/')", longSleep);
         updateNavbar();
     });
 
@@ -330,8 +331,8 @@ function getIsProUser() {
     return sessionStorage.getItem("isProUser");
 }
 
-function redirectHome() {
-    window.location.href = "/";
+function redirectTo(url) {
+    window.location.href = url;
 }
 
 function updateNavbar() {
