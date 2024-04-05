@@ -25,7 +25,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
         logger.info("Received user creation request: " + user);
         try {
