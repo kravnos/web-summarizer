@@ -7,7 +7,6 @@ import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +28,6 @@ public class AuthenticationController {
     @PostMapping("/create")
     public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
         logger.info("Received user creation request: " + user);
-        boolean isRegistered;
         try {
             User registeredUser = authenticationService.registerUser(user);
             if (registeredUser != null) {

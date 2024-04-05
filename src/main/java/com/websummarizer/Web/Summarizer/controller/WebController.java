@@ -3,13 +3,8 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
-import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.AnonymousAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,16 +26,16 @@ public class WebController {
     private final Bart bart;
 
     @Autowired
-    private UserServiceImpl userService;
+    private AuthenticationService authenticationService;
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
     /**
      * Constructor for WebController.
      *
-     * @param bart The Bart instance to use.
+     * @param bartController The BartController instance to use.
      */
-    public WebController(Bart bart) {
-        this.bart = bart;
+    public WebController(Bart bartController) {
+        this.bart = bartController;
     }
 
     /**
@@ -328,7 +323,7 @@ public class WebController {
         boolean isRegistered = false;
 
         try {
-            isRegistered = userService.createUser(user) != null;
+            isRegistered = authenticationService.registerUser(user) != null;
         } catch (Exception e) {
             logger.warning("User creation failed: " + e.getMessage());
         }
