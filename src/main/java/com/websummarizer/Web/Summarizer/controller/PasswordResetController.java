@@ -34,7 +34,7 @@ public class PasswordResetController {
     private static final Logger logger = Logger.getLogger("PasswordResetController");
 
     /**
-     * Endpoint for send authentication code.
+     * Endpoint for requesting the modal where the user's inputs their email of the account with the password to reset.
      *
      * @return The name of the view to render.
      */
@@ -49,29 +49,52 @@ public class PasswordResetController {
     }
 
     /**
-     * Endpoint for send authentication code.
+     * Endpoint for sending authentication code to the email submitted.
      *
      * @return The name of the view to render.
      */
     @PostMapping("/user/send")
+    @Transactional
     public String send(
             @RequestParam(value = "code_email") String email,
-            Model model
+            Model model,
+            HttpServletResponse response
     ) {
-        boolean isValidEmail = true;        /* TODO: validate email exists in the DB */
 
+        //boolean isValidEmail = userService.getUserByEmail(email);
+        User temp = userService.getUserByEmail(email);
         model.addAttribute("email", email);
 
-        if (isValidEmail) {
+        if (temp != null) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
+
+            //  Create email body
+            String token = UUID.randomUUID().toString();    // Authentication code/Reset Token
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Password Reset");
+            message.setText("This is a test for a school project. Please delete if you got this by accident.");
+            message.setText("Reset password authentication code: " + token);
+
+            //  Send email
+            try{
+                emailSender.send(message);
+                logger.info("Email successfully sent to: " + email);
+            } catch (MailParseException m){
+                logger.warning("There was an error sending the email");
+                logger.warning("Error Message: " + m.getMessage());
+                logger.warning("Error Cause: " + m.getCause());
+                response.setStatus(PasswordResetHTTPStatus.EMAIL_PARSE_ERROR());
+            }
 
             return "user/reset";
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
+            response.setStatus(PasswordResetHTTPStatus.EMAIL_NOT_FOUND());
 
             return "user/code";
         }
@@ -83,16 +106,23 @@ public class PasswordResetController {
      * @return The name of the view to render.
      */
     @PostMapping("/user/reset")
+    @Transactional
     public String reset(
             @RequestParam(value = "reset_email") String email,
             @RequestParam(value = "reset_password") String password,
             @RequestParam(value = "reset_code") String code,
-            Model model
+            Model model,
+            HttpServletResponse response
     ) {
-        boolean isValidEmail = true;    /* TODO: validate email exists in the DB */
-        boolean isValidCode = true;     /* TODO: validate auth with code sent in email */
+        //boolean isValidEmail = true;    /* TODO: validate email exists in the DB */
+        //boolean isValidCode = true;     /* TODO: validate auth with code sent in email */
+        User temp = userService.getUserByEmailAndResetToken(email, code);
 
-        if ((isValidEmail) && (isValidCode)) {
+        if (temp != null) {
+            temp.setPassword(password);
+            userService.setPassword(temp);
+            userService.setPasswordRequestToken(null, temp);
+
             model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
@@ -103,11 +133,12 @@ public class PasswordResetController {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Authentication error for '" + email + "'. Please try again.");
+            response.setStatus(PasswordResetHTTPStatus.INVALID_TOKEN());
 
             return "user/reset";
         }
     }
-    
+
     /**
      * Runs when a user selects "Forgot Password" and submits an email address
      *

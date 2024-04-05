@@ -20,8 +20,9 @@ public class UserServiceImpl implements UserService{
     public void setPassword(User user) {
         userRepo.setPassword(user.getPassword(), user.getEmail());
     }
-    public User getUserByPasswordResetToken(String token){
-        return userRepo.getUserByResetToken(token);
+    public User getUserByEmail(String email){return userRepo.getUserByEmail(email);}
+    public User getUserByEmailAndResetToken(String email, String token){
+        return userRepo.getUserByEmailAndResetToken(email, token);
     }
     public int setPasswordRequestToken(String token, User user){
         return userRepo.setRequestToken(token, user.getEmail());

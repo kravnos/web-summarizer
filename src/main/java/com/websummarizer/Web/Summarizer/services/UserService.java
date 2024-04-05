@@ -8,6 +8,7 @@ public interface UserService {
 
     // These methods are used for: password and request token
     void setPassword(User user);
-    User getUserByPasswordResetToken(String token);
+    User getUserByEmail(String email);
+    User getUserByEmailAndResetToken(String email, String token);
     int setPasswordRequestToken(String token, User user);
 }
