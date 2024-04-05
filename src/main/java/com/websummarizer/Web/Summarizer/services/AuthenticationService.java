@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,31 +57,29 @@ public class AuthenticationService {
 
         user.setAuthorities(authorities);
 
+        logger.log(Level.INFO, "User registered successfully: {0}", user.getEmail());
         return userRepo.save(user);
     }
 
     /**
      * Logs in a user.
      *
-     * @param email The email of the user to log in.
+     * @param email    The email of the user to log in.
      * @param password The password of the user to log in.
      * @return LoginResponseDTO containing user information and JWT token.
      */
-    public LoginResponseDTO loginUser(String email, String password){
+    public LoginResponseDTO loginUser(String email, String password) {
         try {
-
-            logger.info("in loginUser method in authentication service class" + email+ " "+password);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
             );
             String token = tokenService.generateJwt(authentication);
-            logger.info("everything fine upto 2");
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(userRepo.findByEmail(email).get(), token);
-            logger.info("returning the following login response dto: "+loginResponseDTO);
-            return loginResponseDTO;
-        }catch (AuthenticationException e){
-            logger.info("failed loginUser method in authentication service class running catch");
-            return new LoginResponseDTO(null,"");
+            User loggedInUser = userRepo.findByEmail(email).orElse(null);
+            logger.log(Level.INFO, "User login successful: {0}", email);
+            return new LoginResponseDTO(loggedInUser, token);
+        } catch (AuthenticationException e) {
+            logger.log(Level.WARNING, "Failed to login user: {0}", email);
+            return new LoginResponseDTO(null, "");
         }
     }
 }
