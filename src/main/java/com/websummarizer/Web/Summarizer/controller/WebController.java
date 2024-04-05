@@ -32,10 +32,10 @@ public class WebController {
     /**
      * Constructor for WebController.
      *
-     * @param bartController The BartController instance to use.
+     * @param bart The Bart instance to use.
      */
-    public WebController(Bart bartController) {
-        this.bart = bartController;
+    public WebController(Bart bart) {
+        this.bart = bart;
     }
 
     /**
