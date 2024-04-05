@@ -5,6 +5,8 @@ import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,38 +26,25 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    /**
-     * Endpoint for creating a user.
-     *
-     * @param email The email of the user to be created.
-     * @param user The User object containing user details.
-     * @param model The Model object for adding attributes.
-     * @return The view name for user creation status.
-     */
     @PostMapping("/create")
-    public String createUser(
-            @RequestParam(value = "email") String email,
-            @ModelAttribute User user,
-            Model model
-    ) {
+    public ResponseEntity<User> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
         logger.info("Received user creation request: " + user);
-        boolean isRegistered = false;
-
+        boolean isRegistered;
         try {
-            isRegistered = authenticationService.registerUser(user) != null;
-        } catch (Exception e) {
-            logger.warning("User creation failed: " + e.getMessage());
-        }
+            isRegistered = authenticationService.registerUser(user)!=null;
+            logger.info("User registered successfully: " + user.getEmail());
 
-        if (isRegistered) {
-            logger.info("User created successfully: " + user);
-            model.addAttribute("isRegistered", true);
-            model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
-            return "user/login";
-        } else {
+            if (isRegistered) {
+                logger.info("User registered successfully: " + user);
+                model.addAttribute("isRegistered", true);
+                model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+            }
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            logger.severe("Failed to register user: " + e.getMessage());
             model.addAttribute("isRegistered", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
-            return "user/register";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new User());
         }
     }
 
@@ -66,11 +55,16 @@ public class AuthenticationController {
      * @return The view name for login status.
      */
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@ModelAttribute UserDTO body){
-        logger.info("User login request for : "+body.getLogin_email()+ " password: "+body.getLogin_password());
-        LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(),body.getLogin_password());
-        logger.info("login dto: "+loginResponseDTO.toString());
-        return loginResponseDTO;
+    public LoginResponseDTO loginUser(@ModelAttribute UserDTO body) {
+        logger.info("User login request for : " + body.getLogin_email());
+        try {
+            LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(), body.getLogin_password());
+            logger.info("User login successful: " + body.getLogin_email());
+            return loginResponseDTO;
+        } catch (Exception e) {
+            logger.severe("Failed to login user: " + e.getMessage());
+            throw e; // Rethrow the exception or handle as needed   //TODO
+        }
     }
 
 }
