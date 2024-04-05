@@ -361,7 +361,7 @@ public class WebController {
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
-        boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();        /* TODO: validate login credentials against the DB */
+        boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
             model.addAttribute("isLoggedIn", true);
