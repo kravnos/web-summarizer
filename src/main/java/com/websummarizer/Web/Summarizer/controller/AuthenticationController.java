@@ -26,25 +26,19 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
+    public ResponseEntity<?> registerUser(User user) {
         logger.info("Received user creation request: " + user);
         try {
             User registeredUser = authenticationService.registerUser(user);
             if (registeredUser != null) {
-                logger.info("User registered successfully: " + email);
-                model.addAttribute("isRegistered", true);
-                model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+                logger.info("User registered successfully: " + user.getEmail());
                 return ResponseEntity.ok(registeredUser);
             } else {
-                logger.warning("Failed to register user: " + email);
-                model.addAttribute("isRegistered", false);
-                model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+                logger.warning("Failed to register user: " + user.getEmail());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user.");
             }
         } catch (Exception e) {
             logger.severe("Failed to register user: " + e.getMessage());
-            model.addAttribute("isRegistered", false);
-            model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user.");
         }
     }
@@ -52,19 +46,19 @@ public class AuthenticationController {
     /**
      * Endpoint for user login.
      *
-     * @param body UserDTO object containing login credentials.
+     * @param userDTO UserDTO object containing login credentials.
      * @return The view name for login status.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@ModelAttribute UserDTO body) {
-        logger.info("User login request for: " + body.getLogin_email());
+    public ResponseEntity<?> loginUser(UserDTO userDTO) {
+        logger.info("User login request for: " + userDTO.getLogin_email());
         try {
-            LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(), body.getLogin_password());
+            LoginResponseDTO loginResponseDTO = authenticationService.loginUser(userDTO.getLogin_email(), userDTO.getLogin_password());
             if (loginResponseDTO.getUser() != null) {
-                logger.info("User login successful: " + body.getLogin_email());
+                logger.info("User login successful: " + userDTO.getLogin_email());
                 return ResponseEntity.ok(loginResponseDTO);
             } else {
-                logger.warning("Invalid credentials for user: " + body.getLogin_email());
+                logger.warning("Invalid credentials for user: " + userDTO.getLogin_email());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
             }
         } catch (Exception e) {

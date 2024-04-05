@@ -46,7 +46,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button
                 hx-trigger="click queue:none"
-                hx-post="/auth/login"
+                hx-post="/user/auth"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='login_email'], [name='login_password']"
@@ -56,8 +56,8 @@
                 class="btn btn-primary btn-request position-relative"
                 type="submit"
                 th:data-ws-name="${first_name}">
-                <span id="button-login-text" class="button-text">Login</span>
-                <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+            <span id="button-login-text" class="button-text">Login</span>
+            <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button><!-- th:hx-vals='|{"path": "${path}"}|' -->
     </div>
 </div>

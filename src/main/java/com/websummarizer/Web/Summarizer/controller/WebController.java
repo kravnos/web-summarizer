@@ -2,9 +2,10 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
-import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,8 @@ public class WebController {
 
     @Autowired
     private final Bart bart;
-
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationController authenticationController;
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
 
     /**
@@ -91,6 +91,45 @@ public class WebController {
     }
 
     /**
+     * Endpoint for creating a user.
+     *
+     * @param user The user to create.
+     */
+    @PostMapping("/user/create")
+    public String createUser(
+            @RequestParam(value = "first_name") String first_name,
+            @RequestParam(value = "email") String email,
+            @ModelAttribute User user,
+            Model model
+    ) {
+        logger.info("Received user creation request: " + user);
+        boolean isRegistered = false;
+
+        try {
+            ResponseEntity<?> registerResponse = authenticationController.registerUser(user);
+            isRegistered = registerResponse.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            logger.warning("User creation failed: " + e.getMessage());
+        }
+
+        if (isRegistered) {
+            model.addAttribute("first_name", first_name);
+            model.addAttribute("email", email);
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "User '" + email + "' created successfully. Please login.");
+
+            return "user/login";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Registration error for '" + email + "'. Please try again.");
+
+            return "user/register";
+        }
+    }
+
+    /**
      * Endpoint for user sign in.
      *
      * @return The name of the view to render.
@@ -100,6 +139,7 @@ public class WebController {
             @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
+            @ModelAttribute UserDTO userDTO,
             Model model
     ) {
         if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
@@ -308,44 +348,6 @@ public class WebController {
     }
 
     /**
-     * Endpoint for creating a user.
-     *
-     * @param user The user to create.
-     */
-    @PostMapping("/user/create")
-    public String createUser(
-            @RequestParam(value = "first_name") String first_name,
-            @RequestParam(value = "email") String email,
-            @ModelAttribute User user,
-            Model model
-    ) {
-        logger.info("Received user creation request: " + user);
-        boolean isRegistered = false;
-
-        try {
-            isRegistered = authenticationService.registerUser(user) != null;
-        } catch (Exception e) {
-            logger.warning("User creation failed: " + e.getMessage());
-        }
-
-        if (isRegistered) {
-            model.addAttribute("first_name", first_name);
-            model.addAttribute("email", email);
-            model.addAttribute("isValid", true);
-            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "User '" + email + "' created successfully. Please login.");
-
-            return "user/login";
-        } else {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Registration error for '" + email + "'. Please try again.");
-
-            return "user/register";
-        }
-    }
-
-    /**
      * Endpoint for validating the login of a user.
      */
     @PostMapping("/user/auth")
@@ -354,9 +356,12 @@ public class WebController {
             @RequestParam(value = "login_password") String password,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
+            @ModelAttribute UserDTO userDTO,
             Model model
     ) {
-        boolean isValidLogin = true;        /* TODO: validate login credentials against the DB */
+        ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
+
+        boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();        /* TODO: validate login credentials against the DB */
 
         if (isValidLogin) {
             model.addAttribute("isLoggedIn", true);
