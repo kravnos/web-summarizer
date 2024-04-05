@@ -27,24 +27,27 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/create")
-    public ResponseEntity<User> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
+    public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam(value = "email") String email, Model model) {
         logger.info("Received user creation request: " + user);
         boolean isRegistered;
         try {
-            isRegistered = authenticationService.registerUser(user)!=null;
-            logger.info("User registered successfully: " + user.getEmail());
-
-            if (isRegistered) {
-                logger.info("User registered successfully: " + user);
+            User registeredUser = authenticationService.registerUser(user);
+            if (registeredUser != null) {
+                logger.info("User registered successfully: " + email);
                 model.addAttribute("isRegistered", true);
                 model.addAttribute("message", "<span class=\"bi bi-check-circle-fill\"></span> User '" + email + "' created successfully. Please login.");
+                return ResponseEntity.ok(registeredUser);
+            } else {
+                logger.warning("Failed to register user: " + email);
+                model.addAttribute("isRegistered", false);
+                model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user.");
             }
-            return ResponseEntity.ok(user);
         } catch (Exception e) {
             logger.severe("Failed to register user: " + e.getMessage());
             model.addAttribute("isRegistered", false);
             model.addAttribute("message", "<span class=\"bi bi-exclamation-triangle-fill\"></span> Registration error for '" + email + "'. Please try again.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new User());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user.");
         }
     }
 
@@ -55,15 +58,20 @@ public class AuthenticationController {
      * @return The view name for login status.
      */
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@ModelAttribute UserDTO body) {
-        logger.info("User login request for : " + body.getLogin_email());
+    public ResponseEntity<?> loginUser(@ModelAttribute UserDTO body) {
+        logger.info("User login request for: " + body.getLogin_email());
         try {
             LoginResponseDTO loginResponseDTO = authenticationService.loginUser(body.getLogin_email(), body.getLogin_password());
-            logger.info("User login successful: " + body.getLogin_email());
-            return loginResponseDTO;
+            if (loginResponseDTO.getUser() != null) {
+                logger.info("User login successful: " + body.getLogin_email());
+                return ResponseEntity.ok(loginResponseDTO);
+            } else {
+                logger.warning("Invalid credentials for user: " + body.getLogin_email());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+            }
         } catch (Exception e) {
             logger.severe("Failed to login user: " + e.getMessage());
-            throw e; // Rethrow the exception or handle as needed   //TODO
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to login user: " + e.getMessage());
         }
     }
 
