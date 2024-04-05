@@ -20,7 +20,7 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid")
     private long id;
 
@@ -57,7 +57,7 @@ public class User implements UserDetails {
     /**
      * Set of roles assigned to the user.
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_role_junction",
             joinColumns = {@JoinColumn(name = "uid")},
