@@ -66,8 +66,11 @@ public class PasswordResetController {
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
 
-            //  Create email body
+            //  Set reset token
             String token = UUID.randomUUID().toString();    // Authentication code/Reset Token
+            userService.setPasswordRequestToken(token, temp);
+
+            //  Create email body
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
             message.setSubject("Password Reset");
@@ -116,6 +119,7 @@ public class PasswordResetController {
             HttpServletResponse response
     ) {
         User temp = userService.getUserByEmailAndResetToken(email, code);
+
         if (temp != null) {
             temp.setPassword(password);
             userService.setPassword(temp);
