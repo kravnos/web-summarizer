@@ -4,6 +4,7 @@ import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatu
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
@@ -67,7 +68,7 @@ public class PasswordResetController {
             model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
 
             //  Set reset token
-            String token = UUID.randomUUID().toString();    // Authentication code/Reset Token
+            String token = RandomStringUtils.randomAlphanumeric(6);    // Authentication code/Reset Token
             userService.setPasswordRequestToken(token, temp);
 
             //  Create email body
@@ -75,7 +76,7 @@ public class PasswordResetController {
             message.setTo(email);
             message.setSubject("Password Reset");
             message.setText("This is a test for a school project. Please delete if you got this by accident.");
-            message.setText("Reset password authentication code: " + token);
+            message.setText("Reset password authentication code: \n\n" + token);
 
             //  Send email
             try{
