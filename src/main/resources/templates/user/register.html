@@ -45,7 +45,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button
                 hx-trigger="click queue:none"
-                hx-post="/auth/register"
+                hx-post="/user/create"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
                 hx-include="[name='first_name'], [name='last_name'], [name='email'], [name='password'], [name='phone_number']"
