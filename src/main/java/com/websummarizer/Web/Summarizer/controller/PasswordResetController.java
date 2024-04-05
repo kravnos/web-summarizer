@@ -4,18 +4,13 @@ import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatu
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,7 +19,7 @@ import java.util.logging.Logger;
 
 @Controller
 public class PasswordResetController {
-    
+
     @Autowired
     private UserServiceImpl userService;
     @Autowired
@@ -34,6 +29,8 @@ public class PasswordResetController {
     /**
      * Endpoint for requesting the modal where the user's inputs their email of the account with the password to reset.
      *
+     * @param email The email the user submitted.
+     * @param model Self-explanatory
      * @return The name of the view to render.
      */
     @PostMapping("/user/code")
@@ -49,7 +46,9 @@ public class PasswordResetController {
     /**
      * Endpoint for sending authentication code to the email submitted.
      *
-     * @param response HTTP Response code
+     * @param email The email the user submitted.
+     * @param model Self-explanatory
+     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/send")
@@ -100,7 +99,11 @@ public class PasswordResetController {
     /**
      * Endpoint for reset password.
      *
-     * @param response HTTP Response code
+     * @param email The email the user submitted.
+     * @param password The new password
+     * @param code The code used to identify that the user made the reset request
+     * @param model Self-explanatory
+     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/reset")
