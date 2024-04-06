@@ -84,6 +84,10 @@ public class SecurityConfig {
                     auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/user/register"))
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
