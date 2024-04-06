@@ -6,7 +6,12 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import com.websummarizer.Web.Summarizer.utils.RSAKeyProperties;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,14 +22,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.io.IOException;
 
 /**
  * Configuration class for security-related beans and configurations.
@@ -34,6 +44,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final RSAKeyProperties keyProperties;
+    @Autowired
+    AuthenticationService authenticationService;
 
     /**
      * Constructor for SecurityConfig.
@@ -81,18 +93,40 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/oauth/**").permitAll();
                     auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/user/login")
                         .defaultSuccessUrl("/")
-                        .failureUrl("/user/register"))
+                        .failureUrl("/user/register")//todo change them to valid URL : get now allowed right now
+                        .successHandler(new AuthenticationSuccessHandler() {
+                            @Override
+                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                                                Authentication authentication) throws IOException, ServletException {
+
+                                //todo choose whatever is necessary
+                                System.out.println("cccccc"+authentication.getCredentials());
+                                System.out.println("cccccc"+authentication.getPrincipal());
+                                System.out.println("cccccc"+authentication.getAuthorities());
+                                System.out.println("cccccc"+authentication.getDetails());
+                                System.out.println("cccccc"+authentication.getName());
+
+                                System.out.println("authentication.getPrinciple() - " + authentication.getPrincipal());
+                                DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+                                //todo change the way auth service is used
+                                authenticationService.processOAuthPostLoginGoogle(oidcUser.getEmail());
+                                response.sendRedirect("/list");
+                            }
+                        })
+                )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-
     }
+
+
 
     /**
      * Provides a JwtDecoder bean for decoding JWT tokens.
