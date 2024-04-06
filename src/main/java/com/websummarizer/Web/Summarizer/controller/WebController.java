@@ -217,21 +217,23 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
+            @RequestParam(value = "account_email", required = false) String email,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             Model model
     ) {
-        boolean isValidUpdate = false;      /* TODO: validate account changes in the DB */
+        boolean isValidUpdate = true;      /* TODO: push user changes to the DB */
 
+        model.addAttribute("email", email);
         model.addAttribute("isLoggedIn", isLoggedIn);
 
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for 'email' successfully updated.");
+            model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Failed to save settings for 'email'. Please try again.");
+            model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
 
         return "user/account";
@@ -303,6 +305,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("email", email);
+
                 return "user/account";
             }
         } else {

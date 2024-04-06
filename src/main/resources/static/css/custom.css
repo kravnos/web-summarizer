@@ -28,6 +28,12 @@ body {
 .modal .btn-helper:focus {
     box-shadow: none!important;
 }
+.modal-dialog-scrollable {
+     height: 100%;
+}
+.modal-header, .modal-footer {
+    border: 0;
+}
 .field.required .form-label:after {
     content: ' *';
     color: var(--bs-form-invalid-color);
@@ -94,12 +100,6 @@ body {
     --bs-spinner-width: 0.5rem;
     --bs-spinner-height: 0.1rem;
 }
-.modal-dialog-scrollable {
-     height: 100%;
-}
-.modal-header, .modal-footer {
-    border: 0;
-}
 .zindex-loader {
     z-index: 1100;
 }
@@ -109,6 +109,16 @@ body {
 .payment-options {
     height: 44px;
     width: auto;
+}
+.wrapper-account fieldset {
+    border: var(--bs-border-width) solid var(--bs-border-color);
+}
+.wrapper-account legend {
+    background-color: var(--bs-body-bg);
+    font-size: inherit;
+    float: inherit;
+    width: inherit;
+    margin-left: -0.5rem!important;
 }
 /* custom darkmode */
 body[data-bs-theme=dark] .form-check-input:checked {
