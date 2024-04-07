@@ -24,7 +24,7 @@
                                 hx-post="/user/login"
                                 hx-target="#wrapper-login"
                                 hx-swap="innerHTML"
-                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "path": "login"}'
                                 hx-disabled-elt="this"
                                 id="nav-login"
                                 class="nav-link nav-request"
@@ -63,7 +63,7 @@
         </nav>
 
         <!-- Main -->
-        <div id="main" class="container container-custom scroll-custom transition-0">
+        <div id="main" class="container container-custom scroll-main transition-0">
             <div class="row">
                 <div class="col">
                     <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">

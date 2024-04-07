@@ -13,10 +13,14 @@ body {
 .container-custom {
     max-width: 992px!important;
 }
-.scroll-custom {
+.scroll-main {
     margin-top: 5rem;
     /*max-height: calc(100vh - 62px);*/
     max-height: calc(100vh - 10.375rem);
+    overflow-y: auto;
+}
+.scroll-summary {
+    max-height: 236.8px;
     overflow-y: auto;
 }
 .btn, .form-control, .shadow-google {
@@ -68,6 +72,15 @@ body {
 .text-justify {
     text-align: justify;
 }
+.social-link.invert {
+    filter: invert(100%);
+}
+.blur {
+    filter: blur(2px);
+}
+.grayscale {
+    filter: grayscale(100%);
+}
 .w-60 {
     width: 60%;
 }
@@ -76,9 +89,6 @@ body {
 }
 .h-125 {
     height: 1.25rem;
-}
-.social-link.invert {
-    filter: invert(100%);
 }
 .ms-125 {
     margin-left: 0.125rem;
@@ -119,6 +129,9 @@ body {
     float: inherit;
     width: inherit;
     margin-left: -0.5rem!important;
+}
+.wrapper-account .form-check-input:not(:checked) {
+    border: 2px solid var(--bs-border-color);
 }
 /* custom darkmode */
 body[data-bs-theme=dark] .navbar .form-check-input:checked {

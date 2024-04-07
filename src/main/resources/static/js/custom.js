@@ -290,8 +290,7 @@ $(document).ready(function() {
     updateNavbar(); // initial state
 
     $("#wrapper-login").on("click", "#button-logout", function() {
-        $("body").removeAttr("data-ws-name");
-        $("body").attr("data-ws-login", "false");
+        $("body").removeAttr("data-ws-name").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");
         setTimeout("redirectTo('/')", longSleep);
         updateNavbar();
