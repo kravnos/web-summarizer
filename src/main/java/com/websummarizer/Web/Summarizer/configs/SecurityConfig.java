@@ -45,7 +45,7 @@ public class SecurityConfig {
 
     private final RSAKeyProperties keyProperties;
     @Autowired
-    AuthenticationService authenticationService;
+    SuccessHandler successHandler;
 
     /**
      * Constructor for SecurityConfig.
@@ -101,25 +101,7 @@ public class SecurityConfig {
                         .loginPage("/user/login")
                         .defaultSuccessUrl("/")
                         .failureUrl("/user/register")//todo change them to valid URL : get now allowed right now
-                        .successHandler(new AuthenticationSuccessHandler() {
-                            @Override
-                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                                Authentication authentication) throws IOException, ServletException {
-
-                                //todo choose whatever is necessary
-                                System.out.println("cccccc"+authentication.getCredentials());
-                                System.out.println("cccccc"+authentication.getPrincipal());
-                                System.out.println("cccccc"+authentication.getAuthorities());
-                                System.out.println("cccccc"+authentication.getDetails());
-                                System.out.println("cccccc"+authentication.getName());
-
-                                System.out.println("authentication.getPrinciple() - " + authentication.getPrincipal());
-                                DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-                                //todo change the way auth service is used
-                                authenticationService.processOAuthPostLoginGoogle(oidcUser.getEmail());
-                                response.sendRedirect("/list");
-                            }
-                        })
+                        .successHandler((successHandler))
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
