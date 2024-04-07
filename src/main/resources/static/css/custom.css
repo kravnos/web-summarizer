@@ -121,7 +121,7 @@ body {
     margin-left: -0.5rem!important;
 }
 /* custom darkmode */
-body[data-bs-theme=dark] .form-check-input:checked {
+body[data-bs-theme=dark] .navbar .form-check-input:checked {
     background-color: var(--bs-body-bg);
     border-color: var(--bs-body-bg);
 }
