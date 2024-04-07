@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,11 @@ public class WebController {
 
     @Autowired
     private UserServiceImpl userService;
-    private static final Logger logger = Logger.getLogger(Bart.class.getName());
+
+    @Value("${API_URL}")
+    private String webaddr;
+
+    private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
     /**
      * Constructor for WebController.
@@ -71,10 +76,11 @@ public class WebController {
         }
 
         if (isURL) {
-            url = HTMLParser.parser(input);
+            //url = HTMLParser.parser(input);
+            url = input;
         } else {
             /* TODO: urls are not shown in the social links */
-            url = "https://www.google.com/";
+            url = webaddr;
         }
         try {
             output = bart.queryModel(input);
