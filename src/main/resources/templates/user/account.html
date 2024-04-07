@@ -6,27 +6,6 @@
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
         <th:block th:replace="fragments/message.html :: message"></th:block>
-        <fieldset class="field-set overflow-none mb-4 p-3">
-            <legend class="m-0 px-2 py-0">LLM Selection</legend>
-            <div class="wrapper-list">
-                <ol class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
-                        <div class="form-check me-auto fs-8 m-0 p-0">
-                            <div class="fs-7 text-uppercase fw-bold">Bart Model</div>
-                            Model trained with de-noising as pretraining objective
-                        </div>
-                        <input class="form-check-input" name="account_llm" value="bart" type="radio" hx-preserve="true" checked />
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
-                        <div class="form-check me-auto fs-8 m-0 p-0">
-                            <div class="fs-7 text-uppercase fw-bold">Open AI</div>
-                            Model trained to understand natural and formal language
-                        </div>
-                        <input class="form-check-input" name="account_llm" value="openai" type="radio" hx-preserve="true" />
-                    </li>
-                </ol>
-            </div>
-        </fieldset>
         <fieldset class="field-set validate overflow-none mb-4 p-3">
             <legend class="m-0 px-2 py-0">Account Details</legend>
             <div class="row mb-3">
@@ -55,7 +34,67 @@
             </div>
         </fieldset>
         <fieldset class="field-set overflow-none mb-4 p-3">
+            <legend class="m-0 px-2 py-0">LLM Selection <span class="bi bi-lock-fill"></span></legend>
+            <div class="wrapper-list">
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="form-check me-auto fs-8 m-0 p-0">
+                            <div class="fs-7 text-uppercase fw-bold">Bart Model</div>
+                            Model trained with de-noising as pretraining objective
+                        </div>
+                        <input class="form-check-input" name="account_llm" value="bart" type="radio" hx-preserve="true" checked />
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0">
+                        <div class="form-check me-auto fs-8 m-0 p-0">
+                            <div class="fs-7 text-uppercase fw-bold">Open AI</div>
+                            Model trained to understand natural and formal language
+                        </div>
+                        <input class="form-check-input" name="account_llm" value="openai" type="radio" hx-preserve="true" />
+                    </li>
+                </ol>
+            </div>
+        </fieldset>
+        <fieldset class="field-set overflow-none p-3">
             <legend class="m-0 px-2 py-0">Summary History <span class="bi bi-lock-fill"></span></legend>
+            <div class="wrapper-list">
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary">View</a>
+                    </li>
+                </ol>
+            </div>
         </fieldset>
     </div>
     <div class="modal-footer">
