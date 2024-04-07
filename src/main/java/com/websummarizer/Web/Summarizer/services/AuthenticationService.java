@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer.services;
 
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
+import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.RoleRepo;
@@ -40,7 +41,7 @@ public class AuthenticationService {
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
 
     /**
-     * Registers a new user.
+     * Registers a new user when user registers with their email and not service providers.
      *
      * @param user The user to register.
      * @return The registered user.
@@ -48,6 +49,7 @@ public class AuthenticationService {
     public User registerUser(User user) {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setProvider(Provider.LOCAL);
 
         Role userRole = roleRepo.findByAuthority("USER")
                 .orElseThrow(() -> new IllegalStateException("Default role not found"));
