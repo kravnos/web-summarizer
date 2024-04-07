@@ -133,7 +133,7 @@ $(document).ready(function() {
     /*
         Modals
     */
-    $("#wrapper-login").on("input keydown", "input.form-control", function(event) {
+    $("#wrapper-login").on("input keydown", ".validate input", function(event) {
         if (event.key == "Enter") {
             $("#wrapper-login .btn-primary.btn-request").trigger("click");
         } else {
@@ -163,7 +163,7 @@ $(document).ready(function() {
         let successMessage;
         let errorMessage;
 
-        $("#wrapper-login input.form-control").each(function() {
+        $("#wrapper-login .validate input").each(function() {
             let element = $(this);
             let required = element.prop("required");
             let type = element.attr("type");
@@ -205,7 +205,7 @@ $(document).ready(function() {
                 }, messageTimer);
             });
 
-            $("#wrapper-login .field-set").addClass("was-validated");
+            $("#wrapper-login .field-set.validate").addClass("was-validated");
 
             event.preventDefault();
             event.stopPropagation();
@@ -217,7 +217,7 @@ $(document).ready(function() {
         let errorMessage;
 
         if (event.detail.successful == true) {
-            let inputs = $("#wrapper-login input.form-control");
+            let inputs = $("#wrapper-login .validate input");
             inputs.first().focus();
 
             $(inputs.get().reverse()).each(function() {
