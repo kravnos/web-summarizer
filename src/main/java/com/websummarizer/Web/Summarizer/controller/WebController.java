@@ -198,7 +198,7 @@ public class WebController {
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
+            model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
