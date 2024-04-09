@@ -58,7 +58,7 @@
                 hx-post="/user/login"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
+                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "path": "login"}'
                 hx-disabled-elt="this"
                 id="link-account"
                 class="text-account link-request"

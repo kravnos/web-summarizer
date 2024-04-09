@@ -6,6 +6,90 @@
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
         <th:block th:replace="fragments/message.html :: message"></th:block>
+        <fieldset class="field-set validate overflow-none mb-4 p-3">
+            <legend class="m-0 px-2 py-0">Account Details</legend>
+            <div class="row mb-3">
+                <div class="field required col-4">
+                    <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
+                    <input id="register-first-name" class="form-control" name="account_first_name" type="text" th:value=${first_name} hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field required col-4">
+                    <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
+                    <input id="register-last-name" class="form-control" name="account_last_name" type="text" th:value=${last_name} hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field col-4">
+                    <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
+                    <input id="register-phone-number" class="form-control" name="account_phone_number" type="tel" th:value=${phone} hx-validate="true" hx-preserve="true" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="field required col-6">
+                    <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                    <input id="register-email" class="form-control" name="account_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field required col-6">
+                    <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+                    <input id="register-password" class="form-control" name="account_password" type="password" hx-validate="true" required />
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="field-set overflow-none mb-4 p-3">
+            <legend class="m-0 px-2 py-0">LLM Selection <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
+            <div class="wrapper-list">
+                <ol class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <div class="form-check me-auto fs-8 m-0 p-0">
+                            <div class="fs-7 text-uppercase fw-bold">Bart Model</div>
+                            Model trained with de-noising as pretraining objective
+                        </div>
+                        <input class="form-check-input transition-0" name="account_llm" value="bart" type="radio" hx-preserve="true" checked />
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 blur disabled'">
+                        <div class="form-check me-auto fs-8 m-0 p-0">
+                            <div class="fs-7 text-uppercase fw-bold">Open AI</div>
+                            Model trained to understand natural and formal language
+                        </div>
+                        <input class="form-check-input transition-0" name="account_llm" value="openai" type="radio" hx-preserve="true" />
+                    </li>
+                </ol>
+            </div>
+        </fieldset>
+        <fieldset class="field-set scroll-summary p-3">
+            <legend class="m-0 px-2 py-0">Summary History <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
+            <div class="wrapper-list">
+                <ol class="list-group">
+                    <!-- TODO: th:for each loop through actual histories -->
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 blur disabled'">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary" data-bs-dismiss="modal">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 blur disabled'">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary" data-bs-dismiss="modal">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 blur disabled'">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary" data-bs-dismiss="modal">View</a>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 blur disabled'">
+                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
+                            &lt;history_content&gt;
+                        </div>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none" href="#summary" data-bs-dismiss="modal">View</a>
+                    </li>
+                </ol>
+            </div>
+        </fieldset>
     </div>
     <div class="modal-footer">
         <button type="button" id="button-logout" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Logout</button>
@@ -15,8 +99,8 @@
                 hx-post="/user/account"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-include=""
-                hx-vals="javascript:{isLoggedIn: getIsLoggedIn()}"
+                hx-include="[name='account_llm'], [name='account_first_name'], [name='account_last_name'], [name='account_email'], [name='account_password'], [name='account_phone_number']"
+                hx-vals="javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser()}"
                 hx-disabled-elt="this"
                 id="button-account"
                 class="btn btn-primary btn-request position-relative"

@@ -5,11 +5,6 @@ import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.AnonymousAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,7 +74,6 @@ public class WebController {
             //url = HTMLParser.parser(input);
             url = input;
         } else {
-            /* TODO: urls are not shown in the social links */
             url = webaddr;
         }
         try {
@@ -124,11 +118,146 @@ public class WebController {
                 }
             } else {
                 model.addAttribute("isLoggedIn", true);
+                model.addAttribute("isProUser", isProUser);
+                /*
+                    TODO:
+                      Get all user details from db and add to model
+                      Require: first name, last, phone, email, do not add password.
+                */
 
                 return "user/account";
             }
         } else {
             return "user/login";
+        }
+    }
+
+    /**
+     * Endpoint for validating the login of a user.
+     */
+    @PostMapping("/user/auth")
+    public String authUser(
+            @RequestParam(value = "login_email") String email,
+            @RequestParam(value = "login_password") String password,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
+            @RequestParam(value = "path", required = false) String path,
+            Model model
+    ) {
+        boolean isValidLogin = true;        /* TODO: validate login credentials against the DB */
+
+        if (isValidLogin) {
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "User '" + email + "' logged in successfully.");
+
+            if ((path != null) && (path.equals("pro"))) {
+                if ((isProUser != null) && (isProUser.equals("true"))) {
+                    model.addAttribute("isProUser", true);
+
+                    return "user/thankyou";
+                } else {
+                    return "user/pro";
+                }
+            } else {
+                model.addAttribute("isProUser", isProUser);
+                /*
+                    TODO:
+                      Get all user details from db and add to model
+                      Require: first name, last, phone, email, do not add password.
+                */
+                return "user/account";
+            }
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Login auth error for '" + email + "'. Please try again.");
+
+            return "user/login";
+        }
+    }
+
+    /**
+     * Endpoint for user account settings.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/account")
+    public String account(
+            @RequestParam(value = "account_email", required = false) String email,
+            @RequestParam(value = "isLoggedIn") String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
+            Model model
+    ) {
+        boolean isValidUpdate = true;      /* TODO: push user changes to the DB */
+
+        model.addAttribute("email", email);
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("isProUser", isProUser);
+
+        if (isValidUpdate) {
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
+        }
+
+        return "user/account";
+    }
+
+    /**
+     * Endpoint for user registration.
+     *
+     * @return The name of the view to render.
+     */
+    @PostMapping("/user/register")
+    public String register(
+            @RequestParam(value = "login_email") String email,
+            Model model
+    ) {
+        model.addAttribute("email", email);
+
+        return "user/register";
+    }
+
+    /**
+     * Endpoint for creating a user.
+     *
+     * @param user The user to create.
+     */
+    @PostMapping("/user/create")
+    public String createUser(
+            @RequestParam(value = "first_name") String first_name,
+            @RequestParam(value = "email") String email,
+            @ModelAttribute User user,
+            Model model
+    ) {
+        logger.info("Received user creation request: " + user);
+        boolean isRegistered = false;
+
+        try {
+            isRegistered = userService.createUser(user) != null;
+        } catch (Exception e) {
+            logger.warning("User creation failed: " + e.getMessage());
+        }
+
+        if (isRegistered) {
+            model.addAttribute("first_name", first_name);
+            model.addAttribute("email", email);
+            model.addAttribute("isValid", true);
+            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+            model.addAttribute("message", "User '" + email + "' created successfully. Please login.");
+
+            return "user/login";
+        } else {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Registration error for '" + email + "'. Please try again.");
+
+            return "user/register";
         }
     }
 
@@ -199,125 +328,6 @@ public class WebController {
         model.addAttribute("message", "Membership has been cancelled. You will no longer be billed.");
 
         return "user/cancel";
-    }
-
-    /**
-     * Endpoint for user registration.
-     *
-     * @return The name of the view to render.
-     */
-    @PostMapping("/user/register")
-    public String register(
-            @RequestParam(value = "login_email") String email,
-            Model model
-    ) {
-        model.addAttribute("email", email);
-
-        return "user/register";
-    }
-
-    /**
-     * Endpoint for user account settings.
-     *
-     * @return The name of the view to render.
-     */
-    @PostMapping("/user/account")
-    public String account(
-            @RequestParam(value = "isLoggedIn") String isLoggedIn,
-            Model model
-    ) {
-        boolean isValidUpdate = false;      /* TODO: validate account changes in the DB */
-
-        model.addAttribute("isLoggedIn", isLoggedIn);
-
-        if (isValidUpdate) {
-            model.addAttribute("isValid", true);
-            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for 'email' successfully updated.");
-        } else {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Failed to save settings for 'email'. Please try again.");
-        }
-
-        return "user/account";
-    }
-
-    /**
-     * Endpoint for creating a user.
-     *
-     * @param user The user to create.
-     */
-    @PostMapping("/user/create")
-    public String createUser(
-            @RequestParam(value = "first_name") String first_name,
-            @RequestParam(value = "email") String email,
-            @ModelAttribute User user,
-            Model model
-    ) {
-        logger.info("Received user creation request: " + user);
-        boolean isRegistered = false;
-
-        try {
-            isRegistered = userService.createUser(user) != null;
-        } catch (Exception e) {
-            logger.warning("User creation failed: " + e.getMessage());
-        }
-
-        if (isRegistered) {
-            model.addAttribute("first_name", first_name);
-            model.addAttribute("email", email);
-            model.addAttribute("isValid", true);
-            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "User '" + email + "' created successfully. Please login.");
-
-            return "user/login";
-        } else {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Registration error for '" + email + "'. Please try again.");
-
-            return "user/register";
-        }
-    }
-
-    /**
-     * Endpoint for validating the login of a user.
-     */
-    @PostMapping("/user/auth")
-    public String authUser(
-            @RequestParam(value = "login_email") String email,
-            @RequestParam(value = "login_password") String password,
-            @RequestParam(value = "isProUser", required = false) String isProUser,
-            @RequestParam(value = "path", required = false) String path,
-            Model model
-    ) {
-        boolean isValidLogin = true;        /* TODO: validate login credentials against the DB */
-
-        if (isValidLogin) {
-            model.addAttribute("isLoggedIn", true);
-            model.addAttribute("isValid", true);
-            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "User '" + email + "' logged in successfully.");
-
-            if ((path != null) && (path.equals("pro"))) {
-                if ((isProUser != null) && (isProUser.equals("true"))) {
-                    model.addAttribute("isProUser", true);
-
-                    return "user/thankyou";
-                } else {
-                    return "user/pro";
-                }
-            } else {
-                return "user/account";
-            }
-        } else {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Login auth error for '" + email + "'. Please try again.");
-
-            return "user/login";
-        }
     }
 
     /**

@@ -6,26 +6,30 @@
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
         <th:block th:replace="fragments/message.html :: message"></th:block>
-        <fieldset class="field-set">
-            <div class="field required mb-3">
-                <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                <input id="register-first-name" class="form-control" name="first_name" type="text" hx-validate="true" hx-preserve="true" required />
+        <fieldset class="field-set validate overflow-none rounded-0">
+            <div class="row mb-3">
+                <div class="field required col-4">
+                    <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
+                    <input id="register-first-name" class="form-control" name="first_name" type="text" hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field required col-4">
+                    <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
+                    <input id="register-last-name" class="form-control" name="last_name" type="text" hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field col-4">
+                    <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
+                    <input id="register-phone-number" class="form-control" name="phone_number" type="tel" hx-validate="true" hx-preserve="true" />
+                </div>
             </div>
-            <div class="field required mb-3">
-                <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                <input id="register-last-name" class="form-control" name="last_name" type="text" hx-validate="true" hx-preserve="true" required />
-            </div>
-            <div class="field required mb-3">
-                <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                <input id="register-email" class="form-control" name="email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
-            </div>
-            <div class="field required mb-3">
-                <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                <input id="register-password" class="form-control" name="password" type="password" hx-validate="true" required />
-            </div>
-            <div class="field mb-3">
-                <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
-                <input id="register-phone-number" class="form-control" name="phone_number" type="tel" hx-validate="true" hx-preserve="true" />
+            <div class="row mb-3">
+                <div class="field required col-6">
+                    <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                    <input id="register-email" class="form-control" name="email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                </div>
+                <div class="field required col-6">
+                    <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+                    <input id="register-password" class="form-control" name="password" type="password" hx-validate="true" required />
+                </div>
             </div>
         </fieldset>
         <div class="text-account text-center pt-4 pb-2">Already have an account? <a
