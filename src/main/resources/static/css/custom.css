@@ -1,3 +1,4 @@
+/* Custom styles */
 body *:not(.transition-0), body *:not(.transition-0):hover {
 	transition-duration: 0.25s!important;
 }

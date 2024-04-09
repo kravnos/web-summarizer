@@ -102,7 +102,7 @@ $(document).ready(function() {
 
             for (let i = 0, l = summary.length; i <= l; i++) {
                 setTimeout(function() {
-                    if (i == summary.length) {
+                    if (i >= summary.length) {
                         $(".ai").hide();
                         $("#button-summary-text").removeClass("opacity-0");
                         $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
@@ -266,16 +266,17 @@ $(document).ready(function() {
                 let name = $(this).data("ws-name");
                 let login = $(this).data("ws-login");
                 let pro = $(this).data("ws-pro");
+                let body = $("body");
 
                 if (name != null) {
-                    $("body").attr("data-ws-name", name);
+                    body.attr("data-ws-name", name);
                 }
                 if (login != null) {
-                    $("body").attr("data-ws-login", login);
+                    body.attr("data-ws-login", login);
                     sessionStorage.setItem("isLoggedIn", login);
                 }
                 if (pro != null) {
-                    $("body").attr("data-ws-pro", pro);
+                    body.attr("data-ws-pro", pro);
                     sessionStorage.setItem("isProUser", pro);
                 }
             });
