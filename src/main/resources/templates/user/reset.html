@@ -5,7 +5,7 @@
     </div>
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
-        <th:block th:replace="fragments/message.html :: message"></th:block>
+        <th:block th:replace="~{fragments/message.html :: message}"></th:block>
         <fieldset class="field-set validate">
             <div class="field required mb-3">
                 <label for="reset-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
