@@ -6,7 +6,7 @@
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
         <th:block th:replace="fragments/message.html :: message"></th:block>
-        <fieldset class="field-set">
+        <fieldset class="field-set validate">
             <div class="field required mb-3">
                 <label for="code-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
                 <input id="code-email" class="form-control" name="code_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
