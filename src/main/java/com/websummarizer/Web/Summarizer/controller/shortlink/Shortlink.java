@@ -2,6 +2,8 @@ package com.websummarizer.Web.Summarizer.controller.shortlink;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Random;
+
 @RestController
 public class Shortlink {
     public Shortlink(){
@@ -10,6 +12,8 @@ public class Shortlink {
 
     // Method to generate a short code for a given URL
     public String codeShort(String urlOg){
+        Random rand = new Random();
+        urlOg = urlOg + rand.hashCode(); //add random avoiding duplicate code
         int num = Math.abs(urlOg.hashCode());
         String dic = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String out = "";
