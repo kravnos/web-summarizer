@@ -97,7 +97,7 @@ $(document).ready(function() {
 
         if (event.detail.successful == true) {
             let summary = element.html();
-            let scroller = $(".scroll-custom");
+            let scroller = $(".scroll-main");
             let height = 0;
 
             for (let i = 0, l = summary.length; i <= l; i++) {
@@ -124,7 +124,7 @@ $(document).ready(function() {
 
     $("#main").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(sleep, function() {
-            let scroller = $(".scroll-custom");
+            let scroller = $(".scroll-main");
             scroller.scrollTop(scroller[0].scrollHeight);
             $("#main").removeClass("opacity-0");
         });
