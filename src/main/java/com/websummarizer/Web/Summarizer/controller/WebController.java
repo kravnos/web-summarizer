@@ -1,6 +1,8 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
+import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
@@ -12,10 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Controller for web-related actions.
@@ -28,6 +33,11 @@ public class WebController {
     @Autowired
     private AuthenticationController authenticationController;
     private static final Logger logger = Logger.getLogger(Bart.class.getName());
+    @Autowired
+    Shortlink shortlink;
+
+    @Autowired
+    HistoryController historyController;
 
     /**
      * Constructor for WebController.
@@ -77,10 +87,18 @@ public class WebController {
             output = "Error Occurred. Please try again.";
         }
 
+
+        // Generate a short code for the given URL
+        String ShortlinkCode = shortlink.codeShort(url);
+        // Create a new history request object with the generated short code
+        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
+        // Add the history request to the database and get the response
+        historyController.addHistory(historyReqAto);
+
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output);
+        model.addAttribute("output", output + " : " + ShortlinkCode);
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
@@ -104,6 +122,18 @@ public class WebController {
     ) {
         logger.info("Received user creation request: " + user);
         boolean isRegistered = false;
+        String password = user.getPassword();
+
+
+        //check password
+        if(!checkPassword(password)) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+
+            return "user/register";
+        }
+
 
         try {
             ResponseEntity<?> registerResponse = authenticationController.registerUser(user);
@@ -127,6 +157,18 @@ public class WebController {
 
             return "user/register";
         }
+    }
+
+    //unfinished checkpassword function
+    private boolean checkPassword(String password){
+        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        // Compile the pattern
+        Pattern regex = Pattern.compile(pattern);
+
+        // Create a Matcher object
+        Matcher matcher = regex.matcher(password);
+        return matcher.matches();
     }
 
     /**
