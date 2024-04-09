@@ -3,6 +3,7 @@ package com.websummarizer.Web.Summarizer.services;
 import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.model.UserOAuth2;
 import com.websummarizer.Web.Summarizer.repo.RoleRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class OAuth2AuthenticationService {
 
     public User processOAuthPostLoginGoogle(DefaultOidcUser oidcUser){
         String email = oidcUser.getEmail();
-        logger.info("Received oauth 2 user creation request: " + email);
+        logger.info("received oauth 2 Google user creation request: " + email);
         User user = userRepo.findByEmail(email).orElse(null);
         //Process the request only when the user email is not already registered with the application
         if(user==null){
@@ -68,4 +69,19 @@ public class OAuth2AuthenticationService {
         }
     }
 
+    public User processOAuthPostLoginGithub(UserOAuth2 oauth2User) {
+        String uniqueUserName = oauth2User.getLogin();
+        logger.info("received oauth 2 GITHUB user creation request: " + uniqueUserName);
+        User user = userRepo.findByEmail(uniqueUserName).orElse(null);
+
+        if(uniqueUserName != null && user==null) {
+            //todo: make sure google/github username and something else is not same
+            User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, null, null, null, Provider.GITHUB);
+            return registerUser(oauthUser);
+        }
+        else {
+            //TODO : check what will happen if the user has a email registered and then tries to loging using github
+            return null;
+        }
+    }
 }
