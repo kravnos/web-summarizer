@@ -59,4 +59,10 @@ public class UserService {
                 .build();
     }
 
+    public Long getFoundId(String email){
+
+        Optional<User> maybeFoundEmail = userRepository.findByEmail(email);
+        return maybeFoundEmail.map(UserMapper::mapUserEtoToResAto).orElseThrow().getId();
+    }
+
 }
