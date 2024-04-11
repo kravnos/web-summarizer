@@ -6,6 +6,8 @@ import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,6 +39,9 @@ public class WebController {
     Shortlink shortlink;
 
     @Autowired
+    BitLyController bitLyController;
+
+    @Autowired
     HistoryController historyController;
 
     /**
@@ -60,7 +65,7 @@ public class WebController {
     public String getSummary(
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
-            Model model
+            Model model, HttpSession session
     ) throws IOException {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
@@ -87,13 +92,9 @@ public class WebController {
             output = "Error Occurred. Please try again.";
         }
 
+        String ShortlinkCode = shortlink.Shortlink(input, output, session);
 
-        // Generate a short code for the given URL
-        String ShortlinkCode = shortlink.codeShort(url);
-        // Create a new history request object with the generated short code
-        HistoryReqAto historyReqAto = new HistoryReqAto(1L, output, ShortlinkCode, LocalDateTime.now());
-        // Add the history request to the database and get the response
-        historyController.addHistory(historyReqAto);
+
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
@@ -126,7 +127,7 @@ public class WebController {
 
 
         //check password
-        if(!checkPassword(password)) {
+        if(!shortlink.checkPassword(password)) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
@@ -159,17 +160,6 @@ public class WebController {
         }
     }
 
-    //unfinished checkpassword function
-    private boolean checkPassword(String password){
-        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-
-        // Compile the pattern
-        Pattern regex = Pattern.compile(pattern);
-
-        // Create a Matcher object
-        Matcher matcher = regex.matcher(password);
-        return matcher.matches();
-    }
 
     /**
      * Endpoint for user sign in.
@@ -399,7 +389,7 @@ public class WebController {
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             @ModelAttribute UserDTO userDTO,
-            Model model
+            Model model, HttpServletRequest request
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
@@ -410,6 +400,9 @@ public class WebController {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
+
+            HttpSession session = request.getSession();
+            session.setAttribute("username", userDTO.getLogin_email());
 
             if ((path != null) && (path.equals("pro"))) {
                 if ((isProUser != null) && (isProUser.equals("true"))) {
