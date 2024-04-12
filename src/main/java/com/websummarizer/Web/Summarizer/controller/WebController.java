@@ -3,7 +3,7 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
-import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class WebController {
     @Autowired
     private AuthenticationController authenticationController;
 
-    @Value("${API_URL}")
+    @Value("${WEBADDRESS}")
     private String webAddress;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
@@ -60,8 +60,8 @@ public class WebController {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String output;
-        String url;
+        String output = null;
+        String url = null;
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -71,16 +71,23 @@ public class WebController {
         }
 
         if (isURL) {
-            //url = HTMLParser.parser(input);
-            url = input;
+            logger.info("got the URL:"+input);
+            try {
+                url = HTMLParser.parser(input);
+                output = bart.queryModel(url);
+            }catch (IOException e){
+                output = "Error Occurred. Please try again.";
+            }
         } else {
-            url = webAddress;
+            try {
+                logger.info("got the text:" + input);
+                output = bart.queryModel(input);
+                url = webAddress;
+            }catch (Exception e){
+                output = "Error Occurred while fetching your results. Please try again.";
+            }
         }
-        try {
-            output = bart.queryModel(input);
-        } catch (Exception e) {
-            output = "Error Occurred. Please try again.";
-        }
+
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
@@ -88,9 +95,9 @@ public class WebController {
         model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: fix the url share part add short links to share
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: fix the url share part add short links to share
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: fix the url share part add short links to share
 
         return "api/summary";
     }
