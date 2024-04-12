@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Domain object representing a user.
+ * Domain object for Affiliate (represents a row in table "users")
  */
 @Entity
 @Table(name = "users")
@@ -20,7 +20,7 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uid")
     private long id;
 
@@ -54,6 +54,9 @@ public class User implements UserDetails {
     @Column(name = "phone_number")
     private String phone_number;
 
+    @Setter
+    @Column(name = "request_token")
+    String request_token;
     /**
      * Set of roles assigned to the user.
      */
