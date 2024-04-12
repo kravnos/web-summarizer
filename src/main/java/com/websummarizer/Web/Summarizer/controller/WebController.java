@@ -71,11 +71,11 @@ public class WebController {
         }
 
         if (isURL) {
-            logger.info("got the URL:"+input);
+            logger.info("got the URL:" + input);
             try {
                 url = HTMLParser.parser(input);
                 output = bart.queryModel(url);
-            }catch (IOException e){
+            } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
         } else {
@@ -83,7 +83,7 @@ public class WebController {
                 logger.info("got the text:" + input);
                 output = bart.queryModel(input);
                 url = webAddress;
-            }catch (Exception e){
+            } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
             }
         }

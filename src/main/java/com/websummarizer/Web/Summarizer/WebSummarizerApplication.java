@@ -17,24 +17,24 @@ import java.util.Set;
 @SpringBootApplication
 public class WebSummarizerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WebSummarizerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WebSummarizerApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner run(RoleRepo roleRepository, UserRepo userRepository, PasswordEncoder passwordEncoder){
-		return args ->{
-			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
-			Role adminRole = roleRepository.save(new Role("ADMIN"));
-			roleRepository.save(new Role("USER"));
+    @Bean
+    CommandLineRunner run(RoleRepo roleRepository, UserRepo userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            if (roleRepository.findByAuthority("ADMIN").isPresent()) return;
+            Role adminRole = roleRepository.save(new Role("ADMIN"));
+            roleRepository.save(new Role("USER"));
 
-			Set<Role> roles = new HashSet<>();
-			roles.add(adminRole);
+            Set<Role> roles = new HashSet<>();
+            roles.add(adminRole);
 
-			User admin = new User(1,"ADMIN","ADMIN","admin@email.com",passwordEncoder.
-					encode("password"),null,null,roles,Provider.LOCAL);
-			userRepository.save(admin);
-		};
-	}
+            User admin = new User(1, "ADMIN", "ADMIN", "admin@email.com", passwordEncoder.
+                    encode("password"), null, null, roles, Provider.LOCAL);
+            userRepository.save(admin);
+        };
+    }
 
 }

@@ -3,13 +3,14 @@ package com.websummarizer.Web.Summarizer.repo;
 import com.websummarizer.Web.Summarizer.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
 /**
  * Repository interface for managing Role entities.
  */
 @Repository
-public interface RoleRepo extends JpaRepository<Role,Long> {
+public interface RoleRepo extends JpaRepository<Role, Long> {
     /**
      * Retrieves a role by its authority.
      *

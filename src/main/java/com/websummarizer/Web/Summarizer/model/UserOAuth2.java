@@ -11,6 +11,7 @@ import java.util.Map;
 public class UserOAuth2 implements OAuth2User {
 
     private OAuth2User oAuth2User;
+
     @Override
     public Map<String, Object> getAttributes() {
         return oAuth2User.getAttributes();

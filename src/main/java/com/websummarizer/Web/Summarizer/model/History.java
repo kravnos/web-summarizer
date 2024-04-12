@@ -2,6 +2,7 @@ package com.websummarizer.Web.Summarizer.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 /**

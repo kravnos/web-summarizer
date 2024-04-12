@@ -72,7 +72,7 @@ public class User implements UserDetails {
     private Provider provider;
 
     public User(String email) {
-        this.email=email;
+        this.email = email;
     }
 
     public User(String first_name, String last_name, String email, String password, String phone_number, Set<Role> authorities, Provider provider) {

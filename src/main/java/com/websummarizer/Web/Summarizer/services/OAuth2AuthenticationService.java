@@ -48,22 +48,21 @@ public class OAuth2AuthenticationService {
         return userRepo.save(user);
     }
 
-    public User processOAuthPostLoginGoogle(DefaultOidcUser oidcUser){
+    public User processOAuthPostLoginGoogle(DefaultOidcUser oidcUser) {
         String email = oidcUser.getEmail();
         logger.info("received oauth 2 Google user creation request: " + email);
         User user = userRepo.findByEmail(email).orElse(null);
         //Process the request only when the user email is not already registered with the application
-        if(user==null){
+        if (user == null) {
             //todo choose whatever is necessary can extract photo as well
             String firstName = oidcUser.getGivenName();
             String lastName = oidcUser.getFamilyName();
             String phone = oidcUser.getPhoneNumber();
             //todo : retrieve user first and last name as well
-            User oauthUser = new User(firstName,lastName,email,null,phone,null,Provider.GOOGLE);
+            User oauthUser = new User(firstName, lastName, email, null, phone, null, Provider.GOOGLE);
             //todo: newUser.setEnabled(true);
             return registerUser(oauthUser);
-        }
-        else {
+        } else {
             //TODO : check what will happen if the user has a email registered and then tries to loging using google
             return null;
         }
@@ -74,12 +73,11 @@ public class OAuth2AuthenticationService {
         logger.info("received oauth 2 GITHUB user creation request: " + uniqueUserName);
         User user = userRepo.findByEmail(uniqueUserName).orElse(null);
 
-        if(uniqueUserName != null && user==null) {
+        if (uniqueUserName != null && user == null) {
             //todo: make sure google/github username and something else is not same
             User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, null, null, null, Provider.GITHUB);
             return registerUser(oauthUser);
-        }
-        else {
+        } else {
             //TODO : check what will happen if the user has a email registered and then tries to loging using github
             return null;
         }

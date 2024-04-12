@@ -53,7 +53,7 @@ public class SecurityConfig {
      * @return BCryptPasswordEncoder instance.
      */
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -64,7 +64,7 @@ public class SecurityConfig {
      * @return AuthenticationManager instance.
      */
     @Bean
-    public AuthenticationManager authManager(UserDetailsService detailsService){
+    public AuthenticationManager authManager(UserDetailsService detailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(detailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -100,14 +100,13 @@ public class SecurityConfig {
     }
 
 
-
     /**
      * Provides a JwtDecoder bean for decoding JWT tokens.
      *
      * @return NimbusJwtDecoder instance configured with the RSA public key.
      */
     @Bean
-    public JwtDecoder jwtDecoder(){
+    public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keyProperties.getPublicKey()).build();
     }
 
@@ -117,7 +116,7 @@ public class SecurityConfig {
      * @return NimbusJwtEncoder instance configured with RSA key pair.
      */
     @Bean
-    public JwtEncoder jwtEncoder(){
+    public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(keyProperties.getPublicKey()).privateKey(keyProperties.getPrivateKey()).build();
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
