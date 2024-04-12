@@ -27,4 +27,12 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.request_token = ?1 where u.email = ?2")
     int setRequestToken(String token, String email);
+
+    /**
+     * Retrieves a user by its email address.
+     *
+     * @param username The email address of the user.
+     * @return Optional containing the user with the given email, if found.
+     */
+    Optional<User> findByEmail(String username);
 }
