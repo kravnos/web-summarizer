@@ -2,10 +2,11 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
-import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +28,10 @@ public class WebController {
     private final Bart bart;
 
     @Autowired
-    private UserServiceImpl userService;
+    private AuthenticationController authenticationController;
 
     @Value("${API_URL}")
-    private String webaddr;
+    private String webAddress;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -49,14 +50,13 @@ public class WebController {
      * @param input The input from the user.
      * @param model The model to use.
      * @return The name of the view to render.
-     * @throws IOException If an I/O error occurs.
      */
     @PostMapping("/api/summary")
     public String getSummary(
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
             Model model
-    ) throws IOException {
+    ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
@@ -74,7 +74,7 @@ public class WebController {
             //url = HTMLParser.parser(input);
             url = input;
         } else {
-            url = webaddr;
+            url = webAddress;
         }
         try {
             output = bart.queryModel(input);
@@ -141,9 +141,12 @@ public class WebController {
             @RequestParam(value = "login_password") String password,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
+            @ModelAttribute UserDTO userDTO,
             Model model
     ) {
-        boolean isValidLogin = true;        /* TODO: validate login credentials against the DB */
+        ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
+
+        boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
             model.addAttribute("isLoggedIn", true);
@@ -160,12 +163,6 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("isProUser", isProUser);
-                /*
-                    TODO:
-                      Get all user details from db and add to model
-                      Require: first name, last, phone, email, do not add password.
-                */
                 return "user/account";
             }
         } else {
@@ -239,7 +236,8 @@ public class WebController {
         boolean isRegistered = false;
 
         try {
-            isRegistered = userService.createUser(user) != null;
+            ResponseEntity<?> registerResponse = authenticationController.registerUser(user);
+            isRegistered = registerResponse.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
             logger.warning("User creation failed: " + e.getMessage());
         }
