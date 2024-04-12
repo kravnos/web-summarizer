@@ -8,6 +8,7 @@ $(document).ready(function() {
     const messageTimer = 6666;
     const minLength = 200;
     const maxLength = 5000;
+    const typeSpeed = 15;
     let timeout;
     let isDark = sessionStorage.getItem("isDark") || "false";           // sessionStorage must be a string, cannot be boolean false
     let isLoggedIn = sessionStorage.getItem("isLoggedIn") || "false";
@@ -92,39 +93,38 @@ $(document).ready(function() {
     });
 
     $("#button-summary").on("htmx:afterRequest", function(event) {
-        let div = $(".text-output").last();
+        let element = $(".text-output").last();
 
         if (event.detail.successful == true) {
-            const typeSpeed = 15;
-            let summary = div.html();
-            let scroller = $(".scroll-custom");
+            let summary = element.html();
+            let scroller = $(".scroll-main");
             let height = 0;
 
             for (let i = 0, l = summary.length; i <= l; i++) {
                 setTimeout(function() {
-                    if (i == summary.length) {
+                    if (i >= summary.length) {
                         $(".ai").hide();
                         $("#button-summary-text").removeClass("opacity-0");
                         $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
                         $("#input-main").trigger("input");
                     }
-                    if ((i > 0) && (height < div.height())) {
-                        height = div.height();
+                    if ((i > 0) && (height < element.height())) {
+                        height = element.height();
                         scroller.scrollTop(scroller[0].scrollHeight);
                     }
 
-                    div.html(summary.slice(0, i));
+                    element.html(summary.slice(0, i));
                 }, typeSpeed * i);
             }
         } else {
-            div.text("Error. Request from server failed.");
+            element.text("Error. Request from server failed.");
             $("#main").trigger("htmx:afterSettle");
         }
     });
 
     $("#main").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(sleep, function() {
-            let scroller = $(".scroll-custom");
+            let scroller = $(".scroll-main");
             scroller.scrollTop(scroller[0].scrollHeight);
             $("#main").removeClass("opacity-0");
         });
@@ -133,11 +133,21 @@ $(document).ready(function() {
     /*
         Modals
     */
-    $("#wrapper-login").on("input keydown", "input", function(event) {
+    $("#wrapper-login").on("input keydown", ".validate input", function(event) {
         if (event.key == "Enter") {
             $("#wrapper-login .btn-primary.btn-request").trigger("click");
         } else {
-            $(this).parent().addClass("was-validated");
+            let element = $(this);
+            let required = element.prop("required");
+            let type = element.attr("type");
+
+            if ((required) || ((type) && (type != "text"))) {
+                if (element.val()) {
+                    element.parent().addClass("was-validated");
+                } else {
+                    element.parent().removeClass("was-validated");
+                }
+            }
         }
     });
 
@@ -153,10 +163,12 @@ $(document).ready(function() {
         let successMessage;
         let errorMessage;
 
-        $("#wrapper-login input").each(function() {
+        $("#wrapper-login .validate input").each(function() {
             let element = $(this);
+            let required = element.prop("required");
+            let type = element.attr("type");
 
-            if ((element.prop("required")) || ((element.attr("type")) && (element.attr("type") != "text"))) {
+            if ((required) || ((type) && (type != "text"))) {
                 isValid = this.checkValidity();
 
                 if (!isValid) {
@@ -193,7 +205,7 @@ $(document).ready(function() {
                 }, messageTimer);
             });
 
-            $("#wrapper-login .field-set").addClass("was-validated");
+            $("#wrapper-login .field-set.validate").addClass("was-validated");
 
             event.preventDefault();
             event.stopPropagation();
@@ -205,7 +217,7 @@ $(document).ready(function() {
         let errorMessage;
 
         if (event.detail.successful == true) {
-            let inputs = $("#wrapper-login input");
+            let inputs = $("#wrapper-login .validate input");
             inputs.first().focus();
 
             $(inputs.get().reverse()).each(function() {
@@ -254,16 +266,17 @@ $(document).ready(function() {
                 let name = $(this).data("ws-name");
                 let login = $(this).data("ws-login");
                 let pro = $(this).data("ws-pro");
+                let body = $("body");
 
                 if (name != null) {
-                    $("body").attr("data-ws-name", name);
+                    body.attr("data-ws-name", name);
                 }
                 if (login != null) {
-                    $("body").attr("data-ws-login", login);
+                    body.attr("data-ws-login", login);
                     sessionStorage.setItem("isLoggedIn", login);
                 }
                 if (pro != null) {
-                    $("body").attr("data-ws-pro", pro);
+                    body.attr("data-ws-pro", pro);
                     sessionStorage.setItem("isProUser", pro);
                 }
             });
@@ -278,8 +291,7 @@ $(document).ready(function() {
     updateNavbar(); // initial state
 
     $("#wrapper-login").on("click", "#button-logout", function() {
-        $("body").removeAttr("data-ws-name");
-        $("body").attr("data-ws-login", "false");
+        $("body").removeAttr("data-ws-name").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");
         setTimeout("redirectTo('/')", longSleep);
         updateNavbar();
@@ -336,16 +348,19 @@ function redirectTo(url) {
 }
 
 function updateNavbar() {
+    let login = $("#nav-login");
+    let pro = $("#nav-pro .bi");
+
     if (getIsLoggedIn() == "true") {
-        $("#nav-login").text("Account");
+        login.text("Account");
 
         if (getIsProUser() == "true") {
-            $("#nav-pro .bi").removeClass("bi-lock-fill").addClass("bi-unlock-fill");
+            pro.removeClass("bi-lock-fill").addClass("bi-unlock-fill");
         } else {
-            $("#nav-pro .bi").removeClass("bi-unlock-fill").addClass("bi-lock-fill");
+            pro.removeClass("bi-unlock-fill").addClass("bi-lock-fill");
         }
     } else {
-        $("#nav-login").text("Login");
-        $("#nav-pro .bi").removeClass("bi-unlock-fill").addClass("bi-lock-fill");
+        login.text("Login");
+        pro.removeClass("bi-unlock-fill").addClass("bi-lock-fill");
     }
 }

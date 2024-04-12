@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="https://www.thymeleaf.com">
 <head>
     <!-- Webpage Title -->
     <title>Web Summarizer</title>
@@ -25,7 +24,7 @@ xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                                 hx-post="/user/login"
                                 hx-target="#wrapper-login"
                                 hx-swap="innerHTML"
-                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), "path": "login"}'
+                                hx-vals='javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "path": "login"}'
                                 hx-disabled-elt="this"
                                 id="nav-login"
                                 class="nav-link nav-request"
@@ -54,7 +53,7 @@ xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                         </li>
                         <li class="nav-item">
                             <div class="form-check form-switch nav-link ms-5">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                <input id="flexSwitchCheckDefault" class="form-check-input" type="checkbox" role="switch">
                                 <label class="form-check-label bi bi-moon-fill" for="flexSwitchCheckDefault"></label>
                             </div>
                         </li>
@@ -64,7 +63,7 @@ xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
         </nav>
 
         <!-- Main -->
-        <div id="main" class="container container-custom scroll-custom transition-0">
+        <div id="main" class="container container-custom scroll-main transition-0">
             <div class="row">
                 <div class="col">
                     <div id="intro" class="position-absolute top-50 start-50 translate-middle text-center m-auto transition-0 zindex-intro">
@@ -118,7 +117,7 @@ xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
         </div>
     </div>
 
-    <!-- Login/Pro/Register/Account Modal -->
+    <!-- Login/Pro Modal -->
     <div id="modal-login" class="modal fade shadow-0 modal-dialog-scrollable" tabindex="-1" aria-labelledby="modal-label-login" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content position-relative">
@@ -133,6 +132,5 @@ xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
             </div>
         </div>
     </div>
-WELCOME <span sec:authentication="principal.getUsername()">User</span>
 </body>
 </html>

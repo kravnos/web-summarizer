@@ -31,7 +31,8 @@ public class WebSummarizerApplication {
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
 
-			User admin = new User(1,"ADMIN","ADMIN","admin@email.com",passwordEncoder.encode("password"),"null", roles, Provider.LOCAL);
+			User admin = new User(1,"ADMIN","ADMIN","admin@email.com",passwordEncoder.
+					encode("password"),null,"14444444444", roles);
 			userRepository.save(admin);
 		};
 	}

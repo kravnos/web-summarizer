@@ -32,4 +32,8 @@ public class UserReqAto {
     @NonNull
     @ToString.Include
     String phone_number;
+
+    @NonNull
+    @ToString.Include
+    String request_token;
 }

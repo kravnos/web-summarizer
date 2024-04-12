@@ -6,7 +6,7 @@
     <div class="modal-body transition-0 opacity-0">
         <!-- Messages Fragment -->
         <th:block th:replace="fragments/message.html :: message"></th:block>
-        <fieldset class="field-set">
+        <fieldset class="field-set validate">
             <div class="field required mb-3">
                 <label for="login-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
                 <input id="login-email" class="form-control" name="login_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
@@ -83,8 +83,8 @@
                 class="btn btn-primary btn-request position-relative"
                 type="submit"
                 th:data-ws-name="${first_name}">
-            <span id="button-login-text" class="button-text">Login</span>
-            <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+                <span id="button-login-text" class="button-text">Login</span>
+                <span id="button-login-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button><!-- th:hx-vals='|{"path": "${path}"}|' -->
     </div>
 </div>

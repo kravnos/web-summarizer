@@ -1,27 +1,39 @@
 package com.websummarizer.Web.Summarizer.services;
 
+import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.logging.Logger;
 
-/**
- * Service class implementing UserDetailsService for managing user details retrieval.
- */
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
     private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
+
     @Autowired
     private UserRepo userRepo;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
+    public User createUser(User user) {
+        return userRepo.save(user);
+    }
+
+    // These methods are used for: password and request token
+    public void setPassword(User user) {
+        userRepo.setPassword(user.getPassword(), user.getEmail());
+    }
+    public User getUserByEmail(String email){return userRepo.getUserByEmail(email);}
+    public User getUserByEmailAndResetToken(String email, String token){
+        return userRepo.getUserByEmailAndResetToken(email, token);
+    }
+    public int setPasswordRequestToken(String token, User user){
+        return userRepo.setRequestToken(token, user.getEmail());
+    }
     /**
      * Loads user details by email.
      *

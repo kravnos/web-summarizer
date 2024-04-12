@@ -40,6 +40,7 @@ public class HTMLParser {
         LOGGER.log(Level.INFO, "HTML content parsed successfully from URL: {0}", url);
 
         // Trim excess whitespace and return the concatenated text
+        System.out.println("website data: "+websiteData);
         return websiteData.toString().trim();
 
     }
