@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -58,6 +57,19 @@ public class UserService {
         return UsersResAto.builder()
                 .users(users)
                 .build();
+    }
+
+    public Long getFoundId(String email){
+        long id = 1l;
+
+        Optional<User> maybeFoundEmail = userRepository.findByEmail(email);
+        try {
+            id = maybeFoundEmail.get().getId();
+        }catch (Exception e){
+
+        }
+
+        return id;
     }
 
 }
