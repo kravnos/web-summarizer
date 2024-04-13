@@ -7,6 +7,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.websummarizer.Web.Summarizer.utils.RSAKeyProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +35,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final RSAKeyProperties keyProperties;
+    @Autowired
+    SuccessHandler successHandler;
 
     /**
      * Constructor for SecurityConfig.
@@ -50,7 +53,7 @@ public class SecurityConfig {
      * @return BCryptPasswordEncoder instance.
      */
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -61,7 +64,7 @@ public class SecurityConfig {
      * @return AuthenticationManager instance.
      */
     @Bean
-    public AuthenticationManager authManager(UserDetailsService detailsService){
+    public AuthenticationManager authManager(UserDetailsService detailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(detailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -81,14 +84,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/oauth/**").permitAll();
                     auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/user/register")//todo change them to valid URL : get now allowed right now
+                        .successHandler((successHandler))
+                )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-
     }
+
 
     /**
      * Provides a JwtDecoder bean for decoding JWT tokens.
@@ -96,7 +106,7 @@ public class SecurityConfig {
      * @return NimbusJwtDecoder instance configured with the RSA public key.
      */
     @Bean
-    public JwtDecoder jwtDecoder(){
+    public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keyProperties.getPublicKey()).build();
     }
 
@@ -106,7 +116,7 @@ public class SecurityConfig {
      * @return NimbusJwtEncoder instance configured with RSA key pair.
      */
     @Bean
-    public JwtEncoder jwtEncoder(){
+    public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(keyProperties.getPublicKey()).privateKey(keyProperties.getPrivateKey()).build();
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);

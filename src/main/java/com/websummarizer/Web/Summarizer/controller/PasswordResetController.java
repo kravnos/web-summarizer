@@ -46,8 +46,8 @@ public class PasswordResetController {
     /**
      * Endpoint for sending authentication code to the email submitted.
      *
-     * @param email The email the user submitted.
-     * @param model Self-explanatory
+     * @param email    The email the user submitted.
+     * @param model    Self-explanatory
      * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
@@ -78,10 +78,10 @@ public class PasswordResetController {
             message.setText("Reset password authentication code: \n\n" + token);
 
             //  Send email
-            try{
+            try {
                 emailSender.send(message);
                 logger.info("Email successfully sent to: " + email);
-            } catch (MailParseException m){
+            } catch (MailParseException m) {
                 logger.warning("There was an error sending the email");
                 logger.warning("Error Message: " + m.getMessage());
                 logger.warning("Error Cause: " + m.getCause());
@@ -102,10 +102,10 @@ public class PasswordResetController {
     /**
      * Endpoint for reset password.
      *
-     * @param email The email the user submitted.
+     * @param email    The email the user submitted.
      * @param password The new password
-     * @param code The code used to identify that the user made the reset request
-     * @param model Self-explanatory
+     * @param code     The code used to identify that the user made the reset request
+     * @param model    Self-explanatory
      * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */

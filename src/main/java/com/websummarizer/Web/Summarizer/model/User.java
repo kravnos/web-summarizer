@@ -68,6 +68,23 @@ public class User implements UserDetails {
     )
     private Set<Role> authorities;
 
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
+    public User(String email) {
+        this.email = email;
+    }
+
+    public User(String first_name, String last_name, String email, String password, String phone_number, Set<Role> authorities, Provider provider) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.phone_number = phone_number;
+        this.authorities = authorities;
+        this.provider = provider;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
@@ -97,4 +114,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

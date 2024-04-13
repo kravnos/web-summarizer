@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class TokenService {
      * @param authentication The authentication object.
      * @return The generated JWT token.
      */
-    public String generateJwt(Authentication authentication){
+    public String generateJwt(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -37,7 +38,7 @@ public class TokenService {
                 .issuer("self")
                 .issuedAt(now)
                 .subject(authentication.getName())
-                .claim("role",scope)
+                .claim("role", scope)
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
