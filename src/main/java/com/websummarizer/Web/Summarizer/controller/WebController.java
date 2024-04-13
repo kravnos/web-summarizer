@@ -1,9 +1,12 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,12 @@ public class WebController {
     @Autowired
     private AuthenticationController authenticationController;
 
+    @Autowired
+    Shortlink shortlink;
+
+    @Autowired
+    BitLyController bitLyController;
+
     @Value("${WEBADDRESS}")
     private String webAddress;
 
@@ -55,7 +64,7 @@ public class WebController {
     public String getSummary(
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
-            Model model
+            Model model, HttpSession session
     ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
@@ -88,11 +97,13 @@ public class WebController {
             }
         }
 
+        String shortlinkCode = shortlink.Shortlink(input, output, session);
+
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output);
+        model.addAttribute("output", output + " : "+ shortlinkCode);
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: fix the url share part add short links to share
@@ -149,7 +160,7 @@ public class WebController {
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             @ModelAttribute UserDTO userDTO,
-            Model model
+            Model model, HttpServletRequest request
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
@@ -160,6 +171,11 @@ public class WebController {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
+
+            // Retrieve the session associated with the user's request or create a new one if it doesn't exist
+            HttpSession session = request.getSession();
+            // Store the user's login email in the session under the attribute name "username"
+            session.setAttribute("username", userDTO.getLogin_email());
 
             if ((path != null) && (path.equals("pro"))) {
                 if ((isProUser != null) && (isProUser.equals("true"))) {
@@ -241,6 +257,15 @@ public class WebController {
     ) {
         logger.info("Received user creation request: " + user);
         boolean isRegistered = false;
+
+        //check password
+        if(!shortlink.checkPassword(user.getPassword())) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+
+            return "user/register";
+        }
 
         try {
             ResponseEntity<?> registerResponse = authenticationController.registerUser(user);
