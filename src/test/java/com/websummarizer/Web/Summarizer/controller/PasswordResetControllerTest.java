@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ import static org.mockito.Mockito.*;
 public class PasswordResetControllerTest {
     @MockBean
     private UserServiceImpl userService;
+    @MockBean
+    private AuthenticationService authenticationService;
     @MockBean
     private JavaMailSender emailSender;
 
@@ -100,7 +103,7 @@ public class PasswordResetControllerTest {
                 -Changing the user password
                 -Removing the reset token after a successful password change
          */
-        verify(userService).setPassword(any(User.class));
+        verify(authenticationService).registerUser(any(User.class));
         verify(userService).setPasswordRequestToken(eq(null), any(User.class));
     }
 }
