@@ -60,8 +60,8 @@ public class WebController {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String output = null;
-        String url = null;
+        String output = null;   // This stores the summarized web content
+        String url = null;      // This stores the shortened URL***
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -73,8 +73,9 @@ public class WebController {
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                url = HTMLParser.parser(input);
-                output = bart.queryModel(url);
+                //***todo: add short links instead of using the actual URL
+                url = input;
+                output = bart.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
@@ -95,9 +96,9 @@ public class WebController {
         model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: fix the url share part add short links to share
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: fix the url share part add short links to share
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: fix the url share part add short links to share
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: add short links to share
 
         return "api/summary";
     }
