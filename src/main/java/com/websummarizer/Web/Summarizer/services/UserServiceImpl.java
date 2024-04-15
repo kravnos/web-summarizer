@@ -27,18 +27,6 @@ public class UserServiceImpl implements UserDetailsService {
      * Loads user details by email.
      *
      * @param email The email of the user.
-     * @return UserDetails object containing user details.
-     */
-    //todo: Same functionality as the existing "loadUserByUsername" used in PasswordResetController.
-    //      Plan fix so that the controller can use loadUserByUsername instead
-    public User getUserByEmail(String email) {
-        return userRepo.getUserByEmail(email);
-    }
-
-    /**
-     * Loads user details by email.
-     *
-     * @param email The email of the user.
      * @param token The token associated with the user
      * @return UserDetails object containing user details.
      */

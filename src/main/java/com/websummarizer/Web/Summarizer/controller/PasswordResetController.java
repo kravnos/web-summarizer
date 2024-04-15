@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -61,10 +62,14 @@ public class PasswordResetController {
             Model model,
             HttpServletResponse response
     ) {
-        User temp = userService.getUserByEmail(email);
-        model.addAttribute("email", email);
-
+        User temp;
+        try{
+            temp = (User) userService.loadUserByUsername(email);
+        } catch (UsernameNotFoundException u){
+            temp = null;    // Return null if no user was found
+        }
         if (temp != null) {
+            model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
@@ -122,7 +127,6 @@ public class PasswordResetController {
             HttpServletResponse response
     ) {
         User temp = userService.getUserByEmailAndResetToken(email, code);
-
         if (temp != null) {
             temp.setPassword(password);
             authenticationService.registerUser(temp);
