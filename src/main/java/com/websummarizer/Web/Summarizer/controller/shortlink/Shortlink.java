@@ -39,7 +39,7 @@ public class Shortlink {
         // Generate a short code for the given URL
         String shortlinkCode = codeShort(url);
         // Create a new history request object with the generated short code
-        HistoryReqAto historyReqAto = new HistoryReqAto(id, output, shortlinkCode, LocalDateTime.now());
+        HistoryReqAto historyReqAto = new HistoryReqAto(id, output,url, shortlinkCode, LocalDateTime.now());
         // Add the history request to the database and get the response
         historyController.addHistory(historyReqAto);
 
