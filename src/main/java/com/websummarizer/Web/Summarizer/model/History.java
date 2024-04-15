@@ -31,11 +31,16 @@ public class History {
     private String historyContent;
 
     @Setter
+    @Column(name = "linkURL", length = 1000)
+    private String linkURL;
+
+    @Setter
     @Column(name = "short_link", unique = true, nullable = false)
     private String shortLink;
 
     @Setter
     @Column(name = "upload_time")
     private LocalDateTime uploadTime;
+
 
 }
