@@ -1,6 +1,9 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.repo.RoleRepo;
+import com.websummarizer.Web.Summarizer.repo.UserRepo;
+import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -10,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -28,6 +32,14 @@ import static org.mockito.Mockito.*;
 public class PasswordResetControllerTest {
     @MockBean
     private UserServiceImpl userService;
+    @MockBean
+    private AuthenticationService authenticationService;
+    @MockBean
+    private RoleRepo roleRepo;
+    @MockBean
+    private UserRepo userRepo;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
     @MockBean
     private JavaMailSender emailSender;
 
@@ -60,7 +72,7 @@ public class PasswordResetControllerTest {
 
         //  Return "valid" user for testing purposes
         User user = new User();
-        when(userService.getUserByEmail(anyString())).thenReturn(user);
+        when(userService.loadUserByUsername(anyString())).thenReturn(user);
 
         //  Assert that the user has been brought to the password reset modal
         MockMvcBuilders.standaloneSetup(controller)
@@ -100,7 +112,7 @@ public class PasswordResetControllerTest {
                 -Changing the user password
                 -Removing the reset token after a successful password change
          */
-        verify(userService).setPassword(any(User.class));
+        verify(authenticationService).registerUser(any(User.class));
         verify(userService).setPasswordRequestToken(eq(null), any(User.class));
     }
 }

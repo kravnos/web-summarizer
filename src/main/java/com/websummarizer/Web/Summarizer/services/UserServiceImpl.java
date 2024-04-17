@@ -23,21 +23,25 @@ public class UserServiceImpl implements UserDetailsService {
         return userRepo.save(user);
     }
 
-    // These methods are used for: password and request token
-    public void setPassword(User user) {
-        userRepo.setPassword(user.getPassword(), user.getEmail());
-    }
-
-    public User getUserByEmail(String email) {
-        return userRepo.getUserByEmail(email);
-    }
-
+    /**
+     * Loads user details by email.
+     *
+     * @param email The email of the user.
+     * @param token The token associated with the user
+     * @return User object containing user details (Null if not found).
+     */
     public User getUserByEmailAndResetToken(String email, String token) {
         return userRepo.getUserByEmailAndResetToken(email, token);
     }
 
-    public int setPasswordRequestToken(String token, User user) {
-        return userRepo.setRequestToken(token, user.getEmail());
+    /**
+     * Loads user details by email.
+     *
+     * @param token The token associated with the user
+     * @param user The user that is having its reset token set
+     */
+    public void setPasswordRequestToken(String token, User user) {
+        userRepo.setRequestToken(token, user.getEmail());
     }
 
     /**

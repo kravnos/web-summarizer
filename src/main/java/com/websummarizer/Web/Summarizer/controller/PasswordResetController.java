@@ -1,14 +1,13 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -22,6 +21,8 @@ public class PasswordResetController {
 
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private AuthenticationController authenticationController;
     @Autowired
     private JavaMailSender emailSender;
     private static final Logger logger = Logger.getLogger("PasswordResetController");
@@ -48,55 +49,75 @@ public class PasswordResetController {
      *
      * @param email    The email the user submitted.
      * @param model    Self-explanatory
-     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/send")
     @Transactional
     public String send(
             @RequestParam(value = "code_email") String email,
-            Model model,
-            HttpServletResponse response
+            Model model
     ) {
-        User temp = userService.getUserByEmail(email);
-        model.addAttribute("email", email);
+        User temp;
+        try{
+            temp = (User) userService.loadUserByUsername(email);
+        } catch (UsernameNotFoundException u){
+            temp = null;    // Return null if no user was found
+        }
 
         if (temp != null) {
-            model.addAttribute("isValid", true);
-            model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
-
             //  Set reset token
             String token = RandomStringUtils.randomAlphanumeric(6);    // Authentication code/Reset Token
             userService.setPasswordRequestToken(token, temp);
 
             //  Create email body
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(email);
-            message.setSubject("Password Reset");
-            message.setText("This is a test for a school project. Please delete if you got this by accident.");
-            message.setText("Reset password authentication code: \n\n" + token);
+            try{
+                // Try-catch used in case there is a problem with the SMTP configuration in env.properties
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(email);
+                message.setSubject("Password Reset");
+                message.setText("This is a test for a school project. Please delete if you got this by accident.");
+                message.setText("Reset password authentication code: \n\n" + token);
 
-            //  Send email
-            try {
-                emailSender.send(message);
-                logger.info("Email successfully sent to: " + email);
-            } catch (MailParseException m) {
-                logger.warning("There was an error sending the email");
-                logger.warning("Error Message: " + m.getMessage());
-                logger.warning("Error Cause: " + m.getCause());
-                response.setStatus(PasswordResetHTTPStatus.EMAIL_PARSE_ERROR());
+                //  Send email
+                try {
+                    emailSender.send(message);
+                    model.addAttribute("email", email);
+                    model.addAttribute("isValid", true);
+                    model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+                    model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
+                    logger.info("Email successfully sent to: " + email);
+                    return "user/reset";
+                }
+                //  Run if there was a problem with the parsing of the email
+                catch (MailParseException m) {
+                    model.addAttribute("isValid", false);
+                    model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                    model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
+                    logger.severe("There was an error sending the email");
+                    logger.severe("Error Message: " + m.getMessage());
+                    logger.severe("Error Cause: " + m.getCause());
+                    return "user/login";
+                }
             }
 
-            return "user/reset";
-        } else {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
-            response.setStatus(PasswordResetHTTPStatus.EMAIL_NOT_FOUND());
+            //  Runs if there is a problem with the SMTP config properties
+            catch (Exception e){
+                model.addAttribute("isValid", false);
+                model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
+                logger.severe("Problem with SMTP configuration. (Possibly invalid username or app password in env.properties?)");
+                logger.severe("Error Message: " + e.getMessage());
+                logger.severe("Error Cause: " + e.getCause());
+                return "user/login";
+            }
 
-            return "user/code";
         }
+        // If null, then return invalid email message to user
+        model.addAttribute("isValid", false);
+        model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+        model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
+
+        return "user/code";
     }
 
     /**
@@ -106,7 +127,6 @@ public class PasswordResetController {
      * @param password The new password
      * @param code     The code used to identify that the user made the reset request
      * @param model    Self-explanatory
-     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/reset")
@@ -115,14 +135,12 @@ public class PasswordResetController {
             @RequestParam(value = "reset_email") String email,
             @RequestParam(value = "reset_password") String password,
             @RequestParam(value = "reset_code") String code,
-            Model model,
-            HttpServletResponse response
+            Model model
     ) {
         User temp = userService.getUserByEmailAndResetToken(email, code);
-
         if (temp != null) {
             temp.setPassword(password);
-            userService.setPassword(temp);
+            authenticationController.registerUser(temp);
             userService.setPasswordRequestToken(null, temp);
 
             model.addAttribute("email", email);
@@ -135,9 +153,9 @@ public class PasswordResetController {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Authentication error for '" + email + "'. Please try again.");
-            response.setStatus(PasswordResetHTTPStatus.INVALID_TOKEN());
 
             return "user/reset";
         }
     }
+
 }
