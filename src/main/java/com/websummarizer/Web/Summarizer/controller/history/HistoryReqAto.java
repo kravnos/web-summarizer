@@ -23,6 +23,10 @@ public class HistoryReqAto {
 
     @NonNull
     @ToString.Include
+    private String linkURL;
+
+    @NonNull
+    @ToString.Include
     private String short_link;
 
     @NonNull
