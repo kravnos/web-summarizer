@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserDetailsService {
      *
      * @param email The email of the user.
      * @param token The token associated with the user
-     * @return UserDetails object containing user details.
+     * @return User object containing user details (Null if not found).
      */
     public User getUserByEmailAndResetToken(String email, String token) {
         return userRepo.getUserByEmailAndResetToken(email, token);
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService {
      * Loads user details by email.
      *
      * @param token The token associated with the user
-     * @param user The user that is having its reset token set to null
+     * @param user The user that is having its reset token set
      */
     public void setPasswordRequestToken(String token, User user) {
         userRepo.setRequestToken(token, user.getEmail());
