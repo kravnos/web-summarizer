@@ -1,9 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailParseException;
@@ -51,15 +49,13 @@ public class PasswordResetController {
      *
      * @param email    The email the user submitted.
      * @param model    Self-explanatory
-     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/send")
     @Transactional
     public String send(
             @RequestParam(value = "code_email") String email,
-            Model model,
-            HttpServletResponse response
+            Model model
     ) {
         User temp;
         try{
@@ -100,7 +96,6 @@ public class PasswordResetController {
                     logger.severe("There was an error sending the email");
                     logger.severe("Error Message: " + m.getMessage());
                     logger.severe("Error Cause: " + m.getCause());
-                    response.setStatus(PasswordResetHTTPStatus.EMAIL_PARSE_ERROR());
                     return "user/login";
                 }
             }
@@ -121,7 +116,6 @@ public class PasswordResetController {
         model.addAttribute("isValid", false);
         model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
         model.addAttribute("message", "No account found for '" + email + "'. Please try again.");
-        response.setStatus(PasswordResetHTTPStatus.EMAIL_NOT_FOUND());
 
         return "user/code";
     }
@@ -133,7 +127,6 @@ public class PasswordResetController {
      * @param password The new password
      * @param code     The code used to identify that the user made the reset request
      * @param model    Self-explanatory
-     * @param response HTTP Response code to edit (for user testing)
      * @return The name of the view to render.
      */
     @PostMapping("/user/reset")
@@ -142,8 +135,7 @@ public class PasswordResetController {
             @RequestParam(value = "reset_email") String email,
             @RequestParam(value = "reset_password") String password,
             @RequestParam(value = "reset_code") String code,
-            Model model,
-            HttpServletResponse response
+            Model model
     ) {
         User temp = userService.getUserByEmailAndResetToken(email, code);
         if (temp != null) {
@@ -161,7 +153,6 @@ public class PasswordResetController {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Authentication error for '" + email + "'. Please try again.");
-            response.setStatus(PasswordResetHTTPStatus.INVALID_TOKEN());
 
             return "user/reset";
         }
