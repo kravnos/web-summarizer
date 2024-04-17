@@ -3,9 +3,7 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.RoleRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
-import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/*
+    TESTS FOR PasswordResetController
+        -code()
+        -send()
+            -valid user
+            -invalid user
+        -reset()
+            -valid user
+            -invalid user
+ */
 @WebMvcTest(PasswordResetController.class)
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
@@ -33,7 +41,7 @@ public class PasswordResetControllerTest {
     @MockBean
     private UserServiceImpl userService;
     @MockBean
-    private AuthenticationService authenticationService;
+    private AuthenticationController authenticationController;
     @MockBean
     private RoleRepo roleRepo;
     @MockBean
@@ -63,10 +71,10 @@ public class PasswordResetControllerTest {
     }
 
     /**
-     * Method under test: {@link PasswordResetController#send(String, Model, HttpServletResponse)}
+     * Method under test: {@link PasswordResetController#send(String, Model)}
      */
     @Test
-    public void sendTest() throws Exception {
+    public void validUserSendTest() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/send");
         requestBuilder.param("code_email", "test@email.com");
 
@@ -87,10 +95,29 @@ public class PasswordResetControllerTest {
     }
 
     /**
-     * Method under test: {@link PasswordResetController#reset(String, String, String, Model, HttpServletResponse)}
+     * Method under test: {@link PasswordResetController#send(String, Model)}
      */
     @Test
-    public void resetTest() throws Exception {
+    public void invalidUserSendTest() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/send");
+        requestBuilder.param("code_email", "test@email.com");
+
+        //  Return null for testing purposes
+        when(userService.loadUserByUsername(anyString())).thenReturn(null);
+
+        //  Assert that the user has been brought back to the code modal after detecting a null user
+        MockMvcBuilders.standaloneSetup(controller)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("user/code"));
+    }
+
+    /**
+     * Method under test: {@link PasswordResetController#reset(String, String, String, Model)}
+     */
+    @Test
+    public void validUserResetTest() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/reset");
         requestBuilder.param("reset_email", "test@email.com");
         requestBuilder.param("reset_password", "123");
@@ -112,7 +139,28 @@ public class PasswordResetControllerTest {
                 -Changing the user password
                 -Removing the reset token after a successful password change
          */
-        verify(authenticationService).registerUser(any(User.class));
+        verify(authenticationController).registerUser(any(User.class));
         verify(userService).setPasswordRequestToken(eq(null), any(User.class));
+    }
+
+    /**
+     * Method under test: {@link PasswordResetController#reset(String, String, String, Model)}
+     */
+    @Test
+    public void invalidUserResetTest() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/reset");
+        requestBuilder.param("reset_email", "test@email.com");
+        requestBuilder.param("reset_password", "123");
+        requestBuilder.param("reset_code", "ABCDEF");
+
+        //  Return null user for testing purposes
+        when(userService.getUserByEmailAndResetToken(anyString(),anyString())).thenReturn(null);
+
+        //  Assert that the user has been brought back to the reset modal on a fail
+        MockMvcBuilders.standaloneSetup(controller)
+                .build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("user/reset"));
     }
 }

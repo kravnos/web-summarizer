@@ -79,28 +79,31 @@ public class PasswordResetController {
                 message.setText("Reset password authentication code: \n\n" + token);
 
                 //  Send email
-                try {
-                    emailSender.send(message);
-                    model.addAttribute("email", email);
-                    model.addAttribute("isValid", true);
-                    model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-                    model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
-                    logger.info("Email successfully sent to: " + email);
-                    return "user/reset";
-                }
-                //  Run if there was a problem with the parsing of the email
-                catch (MailParseException m) {
-                    model.addAttribute("isValid", false);
-                    model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-                    model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
-                    logger.severe("There was an error sending the email");
-                    logger.severe("Error Message: " + m.getMessage());
-                    logger.severe("Error Cause: " + m.getCause());
-                    return "user/login";
-                }
+                emailSender.send(message);
+                model.addAttribute("email", email);
+                model.addAttribute("isValid", true);
+                model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+                model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
+                logger.info("Email successfully sent to: " + email);
+                return "user/reset";
+
+            }
+
+            //  Run if there was a problem with the parsing of the email
+            catch (MailParseException m) {
+                model.addAttribute("isValid", false);
+                model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
+                logger.severe("There was an error sending the email");
+                logger.severe("Error Message: " + m.getMessage());
+                logger.severe("Error Cause: " + m.getCause());
+                return "user/login";
             }
 
             //  Runs if there is a problem with the SMTP config properties
+            //  "AuthenticationFailedException" is typically the exception but for some reason the catch block thinks
+            //  that it isn't thrown, yet it will get thrown during runtime if there was a problem with the SMTP properties.
+            //  So, a generic Exception is used
             catch (Exception e){
                 model.addAttribute("isValid", false);
                 model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
