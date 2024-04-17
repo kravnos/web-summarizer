@@ -64,7 +64,8 @@ public class WebController {
     public String getSummary(
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
-            Model model, HttpSession session
+            HttpSession session,
+            Model model
     ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
@@ -187,6 +188,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("isProUser", isProUser);
+
                 return "user/account";
             }
         } else {
@@ -219,7 +222,7 @@ public class WebController {
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
+            model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
