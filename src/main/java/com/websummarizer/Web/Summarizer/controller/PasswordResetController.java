@@ -2,7 +2,6 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.common.exceptions.PasswordResetHTTPStatus;
 import com.websummarizer.Web.Summarizer.model.User;
-import com.websummarizer.Web.Summarizer.services.AuthenticationService;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,7 +24,7 @@ public class PasswordResetController {
     @Autowired
     private UserServiceImpl userService;
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationController authenticationController;
     @Autowired
     private JavaMailSender emailSender;
     private static final Logger logger = Logger.getLogger("PasswordResetController");
@@ -149,7 +148,7 @@ public class PasswordResetController {
         User temp = userService.getUserByEmailAndResetToken(email, code);
         if (temp != null) {
             temp.setPassword(password);
-            authenticationService.registerUser(temp);
+            authenticationController.registerUser(temp);
             userService.setPasswordRequestToken(null, temp);
 
             model.addAttribute("email", email);
