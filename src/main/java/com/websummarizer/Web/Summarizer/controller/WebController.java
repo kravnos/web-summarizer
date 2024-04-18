@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.bart.OpenAi;
 import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
@@ -31,6 +32,9 @@ public class WebController {
     private final Bart bart;
 
     @Autowired
+    private final OpenAi openAi;
+
+    @Autowired
     private AuthenticationController authenticationController;
 
     @Autowired
@@ -49,8 +53,9 @@ public class WebController {
      *
      * @param bart The Bart instance to use.
      */
-    public WebController(Bart bart) {
+    public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
+        this.openAi = openAi;
     }
 
     /**
@@ -92,6 +97,67 @@ public class WebController {
             try {
                 logger.info("got the text:" + input);
                 output = bart.queryModel(input);
+                url = webAddress;
+            } catch (Exception e) {
+                output = "Error Occurred while fetching your results. Please try again.";
+            }
+        }
+
+        String shortlinkCode = shortlink.Shortlink(input, output, session);
+
+
+        model.addAttribute("date", dateFormat.format(date));
+        model.addAttribute("user", username);
+        model.addAttribute("input", input);
+        model.addAttribute("output", output + " : "+ shortlinkCode);
+
+        // Share Button Attributes
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: add short links to share
+
+        return "api/summary";
+    }
+
+    /**
+     * Endpoint for getting a summary.
+     *
+     * @param input The input from the user.
+     * @param model The model to use.
+     * @return The name of the view to render.
+     */
+    @PostMapping("/api/summary/openai")
+    public String getSummaryOpenai(
+            @RequestParam(value = "first_name", required = false) String username,
+            @RequestParam(value = "input") String input,
+            Model model, HttpSession session
+    ) {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
+
+        String output = null;   // This stores the summarized web content
+        String url = null;      // This stores the shortened URL***
+
+        input = input.trim();
+        boolean isURL = isValidURL(input);
+
+        if ((username == null) || (username.equals("undefined"))) {
+            username = "You";
+        }
+
+        if (isURL) {
+            logger.info("got the URL:" + input);
+            try {
+                //***todo: add short links instead of using the actual URL
+                url = input;
+                output = openAi.queryModel(HTMLParser.parser(input));
+            } catch (IOException e) {
+                output = "Error Occurred. Please try again.";
+            }
+        } else {
+            try {
+                logger.info("got the text:" + input);
+                output = openAi.queryModel(input);
                 url = webAddress;
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";

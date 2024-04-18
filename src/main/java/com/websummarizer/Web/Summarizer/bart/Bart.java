@@ -28,9 +28,9 @@ public class Bart {
      * @param apiUrl    The URL of the Bart API.
      * @param authToken The authentication token for accessing the Bart API.
      */
-    public Bart(@Value("${API_URL}") String apiUrl, @Value("${AUTH_TOKEN}") String authToken) {
+    public Bart(@Value("${API_URL_BART}") String apiUrl,
+                @Value("${AUTH_TOKEN_BART}") String authToken) {
         this.API_URL = apiUrl;
-
         // Set up HTTP headers
         this.headers = new HttpHeaders();
         this.headers.setContentType(MediaType.APPLICATION_JSON);
