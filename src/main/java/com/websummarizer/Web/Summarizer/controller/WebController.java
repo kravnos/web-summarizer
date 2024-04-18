@@ -208,7 +208,12 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
+            @RequestParam(value = "account_llm", required = false) String llm,
+            @RequestParam(value = "account_first_name", required = false) String first_name,
+            @RequestParam(value = "account_last_name", required = false) String last_name,
             @RequestParam(value = "account_email", required = false) String email,
+            @RequestParam(value = "account_password", required = false) String password,
+            @RequestParam(value = "account_phone_number", required = false) String phone,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             Model model
