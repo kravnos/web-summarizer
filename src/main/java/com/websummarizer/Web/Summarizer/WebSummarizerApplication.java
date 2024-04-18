@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer;
 
+import com.websummarizer.Web.Summarizer.model.LLMSelection;
 import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;
 import com.websummarizer.Web.Summarizer.model.User;
@@ -32,7 +33,7 @@ public class WebSummarizerApplication {
             roles.add(adminRole);
 
             User admin = new User(1, "ADMIN", "ADMIN", "admin@email.com", passwordEncoder.
-                    encode("password"), null, null, roles, Provider.LOCAL);
+                    encode("password"), null, null, roles, Provider.LOCAL, LLMSelection.BART);
             userRepository.save(admin);
         };
     }
