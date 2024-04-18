@@ -1,6 +1,5 @@
 package com.websummarizer.Web.Summarizer.bart;
 
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -92,7 +91,7 @@ public class OpenAi {
                 br.close();
 
                 // Log the response
-                LOGGER.log(Level.INFO, "Response: " + response.toString());
+                LOGGER.log(Level.INFO, "Response: " + response);
 
                 // Extract the message from the JSON response
                 return extractMessageFromJSONResponse(response.toString());

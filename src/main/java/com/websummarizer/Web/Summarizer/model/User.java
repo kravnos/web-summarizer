@@ -71,6 +71,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
+    @Enumerated(EnumType.STRING)
+    private LLMSelection llmSelection;
+
     public User(String email) {
         this.email = email;
     }
