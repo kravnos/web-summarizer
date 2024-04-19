@@ -101,6 +101,9 @@ public class PasswordResetController {
             }
 
             //  Runs if there is a problem with the SMTP config properties
+            //  "AuthenticationFailedException" is typically the exception but for some reason the catch block thinks
+            //  that it isn't thrown, yet it will get thrown during runtime if there was a problem with the SMTP properties.
+            //  So, a generic Exception is used
             catch (Exception e){
                 model.addAttribute("isValid", false);
                 model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
