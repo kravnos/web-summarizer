@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.User;
@@ -63,6 +64,26 @@ public class AuthenticationController {
         } catch (Exception e) {
             logger.severe("Failed to login user: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to login user: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/update-user")
+    public ResponseEntity<?> updateUser(UserReqAto userReqAto){
+        //todo make sure not to allow user info change for other users
+        logger.info("user update request with following info: " + userReqAto);
+        try{
+            User updatedUser = authenticationService.updateExistingUser(userReqAto);
+            if(updatedUser!=null){
+                logger.info("user updated successful: "+updatedUser);
+                return ResponseEntity.ok(updatedUser);
+            }
+            else {
+                logger.warning("Failed to update, returned user object is null");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
+            }
+        } catch (Exception e) {
+            logger.severe("Failed to update user due to an exception: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
         }
     }
 

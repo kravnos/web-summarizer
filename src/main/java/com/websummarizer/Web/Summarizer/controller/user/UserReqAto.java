@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller.user;
 
+import com.websummarizer.Web.Summarizer.model.LLMSelection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,17 +24,18 @@ public class UserReqAto {
 
     @NonNull
     @ToString.Include
-    String email;
+    private String email;
 
     @NonNull
     @ToString.Include
-    String password;
+    private String password;
 
     @NonNull
     @ToString.Include
-    String phone_number;
+    private String phone_number;
 
-    @NonNull
     @ToString.Include
-    String request_token;
+    private String request_token;
+
+    private String account_llm;
 }

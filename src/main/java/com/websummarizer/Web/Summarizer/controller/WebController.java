@@ -3,6 +3,7 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.bart.Bart;
 import com.websummarizer.Web.Summarizer.bart.OpenAi;
 import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
@@ -274,15 +275,17 @@ public class WebController {
             @RequestParam(value = "account_email", required = false) String email,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
+            @ModelAttribute UserReqAto user,
             Model model
     ) {
-        boolean isValidUpdate = true;      /* TODO: push user changes to the DB */
+        logger.info("User update request for the following user: "+user);
+        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
 
         model.addAttribute("email", email);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("isProUser", isProUser);
 
-        if (isValidUpdate) {
+        if (isValidUpdate != null) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
@@ -291,7 +294,6 @@ public class WebController {
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
-
         return "user/account";
     }
 
