@@ -62,6 +62,8 @@ public class WebController {
      */
     @PostMapping("/api/summary")
     public String getSummary(
+            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
             HttpSession session,
