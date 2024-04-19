@@ -21,7 +21,7 @@ body {
     overflow-y: auto;
 }
 .scroll-summary {
-    max-height: 236.8px;
+    max-height: 188px;
     overflow-y: auto;
 }
 .btn, .form-control, .shadow-google {
