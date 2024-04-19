@@ -290,6 +290,11 @@ $(document).ready(function() {
     */
     updateNavbar(); // initial state
 
+    $("#wrapper-login").on("click", ".button-login-oauth", function() {
+        $("body").attr("data-ws-login", "true");
+        sessionStorage.setItem("isLoggedIn", "true");
+    });
+
     $("#wrapper-login").on("click", "#button-logout", function() {
         $("body").removeAttr("data-ws-name").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");

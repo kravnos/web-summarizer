@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec = "http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <!-- Webpage Title -->
     <title>Web Summarizer</title>
 
     <!-- Meta Fragment -->
-    <th:block th:replace="fragments/meta.html :: meta"></th:block>
+    <th:block th:replace="~{fragments/meta.html :: meta}"></th:block>
 </head>
 <body>
 
@@ -89,7 +88,7 @@
                                 hx-trigger="click queue:none"
                                 hx-post="/api/summary"
                                 hx-include="[name='input']"
-                                hx-vals="javascript:{first_name: getName()}"
+                                hx-vals="javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), first_name: getName()}"
                                 hx-target="#wrapper-summary"
                                 hx-swap="beforeend"
                                 hx-disabled-elt="this"
