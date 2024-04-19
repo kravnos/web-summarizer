@@ -91,7 +91,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/user/login")
                         .defaultSuccessUrl("/")
-                        .failureUrl("/user/register")//todo change them to valid URL : get now allowed right now
+                        .failureUrl("/user/login")//todo change them to valid URL : get now allowed right now
                         .successHandler((successHandler))
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)

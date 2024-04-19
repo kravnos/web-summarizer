@@ -62,9 +62,12 @@ public class WebController {
      */
     @PostMapping("/api/summary")
     public String getSummary(
+            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
-            Model model, HttpSession session
+            HttpSession session,
+            Model model
     ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
@@ -187,6 +190,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("isProUser", isProUser);
+
                 return "user/account";
             }
         } else {
@@ -205,7 +210,12 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
+            @RequestParam(value = "account_llm", required = false) String llm,
+            @RequestParam(value = "account_first_name", required = false) String first_name,
+            @RequestParam(value = "account_last_name", required = false) String last_name,
             @RequestParam(value = "account_email", required = false) String email,
+            @RequestParam(value = "account_password", required = false) String password,
+            @RequestParam(value = "account_phone_number", required = false) String phone,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             Model model
@@ -219,7 +229,7 @@ public class WebController {
         if (isValidUpdate) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-            model.addAttribute("message", "Account settings for '" + email + "' successfully updated.");
+            model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");

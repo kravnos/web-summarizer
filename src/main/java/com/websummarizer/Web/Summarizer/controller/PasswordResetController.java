@@ -79,25 +79,25 @@ public class PasswordResetController {
                 message.setText("Reset password authentication code: \n\n" + token);
 
                 //  Send email
-                emailSender.send(message);
-                model.addAttribute("email", email);
-                model.addAttribute("isValid", true);
-                model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
-                model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
-                logger.info("Email successfully sent to: " + email);
-                return "user/reset";
-
-            }
-
-            //  Run if there was a problem with the parsing of the email
-            catch (MailParseException m) {
-                model.addAttribute("isValid", false);
-                model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-                model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
-                logger.severe("There was an error sending the email");
-                logger.severe("Error Message: " + m.getMessage());
-                logger.severe("Error Cause: " + m.getCause());
-                return "user/login";
+                try {
+                    emailSender.send(message);
+                    model.addAttribute("email", email);
+                    model.addAttribute("isValid", true);
+                    model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
+                    model.addAttribute("message", "Authentication Code sent to '" + email + "'. Please check your inbox.");
+                    logger.info("Email successfully sent to: " + email);
+                    return "user/reset";
+                }
+                //  Run if there was a problem with the parsing of the email
+                catch (MailParseException m) {
+                    model.addAttribute("isValid", false);
+                    model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                    model.addAttribute("message", "Problem detected with the server's email functionality. Please contact an administrator.");
+                    logger.severe("There was an error sending the email");
+                    logger.severe("Error Message: " + m.getMessage());
+                    logger.severe("Error Cause: " + m.getCause());
+                    return "user/code";
+                }
             }
 
             //  Runs if there is a problem with the SMTP config properties
@@ -111,7 +111,7 @@ public class PasswordResetController {
                 logger.severe("Problem with SMTP configuration. (Possibly invalid username or app password in env.properties?)");
                 logger.severe("Error Message: " + e.getMessage());
                 logger.severe("Error Cause: " + e.getCause());
-                return "user/login";
+                return "user/code";
             }
 
         }
