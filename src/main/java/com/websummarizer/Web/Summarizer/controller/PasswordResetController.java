@@ -96,7 +96,7 @@ public class PasswordResetController {
                     logger.severe("There was an error sending the email");
                     logger.severe("Error Message: " + m.getMessage());
                     logger.severe("Error Cause: " + m.getCause());
-                    return "user/login";
+                    return "user/code";
                 }
             }
 
@@ -108,7 +108,7 @@ public class PasswordResetController {
                 logger.severe("Problem with SMTP configuration. (Possibly invalid username or app password in env.properties?)");
                 logger.severe("Error Message: " + e.getMessage());
                 logger.severe("Error Cause: " + e.getCause());
-                return "user/login";
+                return "user/code";
             }
 
         }
