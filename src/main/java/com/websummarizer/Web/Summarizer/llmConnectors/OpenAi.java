@@ -1,8 +1,12 @@
 package com.websummarizer.Web.Summarizer.llmConnectors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
@@ -33,7 +37,7 @@ public class OpenAi implements Llm{
         // Initialize instance variables with provided values
         this.API_URL = apiUrl;
         this.model = model;
-        this.authToken = authToken;
+        //this.authToken = authToken;
 
         // Set up HTTP headers
         this.headers = new HttpHeaders();
@@ -48,19 +52,8 @@ public class OpenAi implements Llm{
     @Override
     public String queryModel(String prompt) {
         try {
-            // Create URL object for API endpoint
-            URL obj = new URL(API_URL);
-            // Open connection to the API endpoint
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-            // Set HTTP request method to POST
-            connection.setRequestMethod("POST");
-            // Set authorization header with authentication token
-            connection.setRequestProperty("Authorization", "Bearer " + this.authToken);
-            // Set content type header
-            connection.setRequestProperty("Content-Type", "application/json");
-
-            // Construct the request body in JSON format
-            String body = "{" +
+            // Prepare request body
+            String requestBody = "{" +
                     "\"model\": \"" + model + "\", \"messages\": " +
                     "[" +
                     "{" +
@@ -70,41 +63,33 @@ public class OpenAi implements Llm{
                     " \"content\": \"" + prompt + "\"}" +
                     "]" +
                     "}";
-            // Allow output to connection
-            connection.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-            // Write request body to connection output stream
-            writer.write(body);
-            writer.flush();
-            writer.close();
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            // Response from the OpenAI API
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuffer response = new StringBuffer();
+            // Send HTTP POST request to Bart API
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    API_URL, HttpMethod.POST, requestEntity, String.class);
 
-                // Read response from the connection
-                while ((line = br.readLine()) != null) {
-                    response.append(line);
-                }
-                br.close();
+            LOGGER.info("response entity from openai: " + responseEntity);
 
-                // Log the response
-                LOGGER.log(Level.INFO, "Response: " + response);
+            // Check if request was successful
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                // Parse response JSON
+                LOGGER.info("response ok");
 
-                // Extract the message from the JSON response
-                return extractMessageFromJSONResponse(response.toString());
+                // Return the summarized text
+                return extractMessageFromJSONResponse(responseEntity.toString());
             } else {
-                LOGGER.log(Level.WARNING, "Failed to query model. Response code: " + responseCode);
-                // Throw exception if request fails
-                throw new RuntimeException("Failed to query model. Response code: " + responseCode);
+                // Return error message if request was not successful
+                return "Cannot summarize at the moment. Please try again later.";
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Exception occurred while querying model", e);
-            // Throw exception if an error occurs during request
-            throw new RuntimeException("Exception occurred while querying model", e);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // Log HTTP client/server error
+            LOGGER.log(Level.SEVERE, "HTTP client/server error");
+            return "Error: " + e.getStatusCode() + " " + e.getStatusText();
+        } catch (Exception e) {
+            // Log other exceptions
+            LOGGER.log(Level.SEVERE, "An error occurred");
+            return "An error occurred. Please try again later.";
         }
     }
 
