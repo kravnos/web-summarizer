@@ -11,25 +11,25 @@
             <div class="row mb-3">
                 <div class="field required col-4">
                     <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                    <input id="register-first-name" class="form-control" name="account_first_name" type="text" th:value=${first_name} hx-validate="true" hx-preserve="true" required />
+                    <input id="register-first-name" class="form-control" name="first_name" type="text" th:value=${first_name} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field required col-4">
                     <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                    <input id="register-last-name" class="form-control" name="account_last_name" type="text" th:value=${last_name} hx-validate="true" hx-preserve="true" required />
+                    <input id="register-last-name" class="form-control" name="last_name" type="text" th:value=${last_name} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field col-4">
                     <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
-                    <input id="register-phone-number" class="form-control" name="account_phone_number" type="tel" th:value=${phone} hx-validate="true" hx-preserve="true" />
+                    <input id="register-phone-number" class="form-control" name="phone_number" type="tel" th:value=${phone} hx-validate="true" hx-preserve="true" />
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="field required col-6">
                     <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                    <input id="register-email" class="form-control" name="account_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required disabled />
+                    <input id="register-email" class="form-control" name="email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field required col-6">
                     <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                    <input id="register-password" class="form-control" name="account_password" type="password" hx-validate="true" required />
+                    <input id="register-password" class="form-control" name="password" type="password" hx-validate="true" required />
                 </div>
             </div>
         </fieldset>
@@ -99,7 +99,7 @@
                 hx-post="/user/account"
                 hx-target="#wrapper-login"
                 hx-swap="innerHTML"
-                hx-include="[name='account_llm'], [name='account_first_name'], [name='account_last_name'], [name='account_email'], [name='account_password'], [name='account_phone_number']"
+                hx-include="[name='account_llm'], [name='first_name'], [name='last_name'], [name='email'], [name='password'], [name='phone_number']"
                 hx-vals="javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser()}"
                 hx-disabled-elt="this"
                 id="button-account"

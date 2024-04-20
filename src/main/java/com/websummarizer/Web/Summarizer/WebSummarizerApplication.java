@@ -32,7 +32,7 @@ public class WebSummarizerApplication {
             roles.add(adminRole);
 
             User admin = new User(1, "ADMIN", "ADMIN", "admin@email.com", passwordEncoder.
-                    encode("password"), null, null, roles, Provider.LOCAL);
+                    encode("password"), null, null, roles, Provider.LOCAL, "bart");
             userRepository.save(admin);
         };
     }

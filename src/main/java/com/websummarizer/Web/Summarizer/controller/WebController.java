@@ -1,7 +1,10 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
+import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
+import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
 import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
@@ -19,6 +22,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -29,6 +33,9 @@ public class WebController {
 
     @Autowired
     private final Bart bart;
+
+    @Autowired
+    private final OpenAi openAi;
 
     @Autowired
     private AuthenticationController authenticationController;
@@ -42,6 +49,8 @@ public class WebController {
     @Value("${WEBADDRESS}")
     private String webAddress;
 
+    private Llm currentLlm;
+
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
     /**
@@ -49,8 +58,10 @@ public class WebController {
      *
      * @param bart The Bart instance to use.
      */
-    public WebController(Bart bart) {
+    public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
+        this.currentLlm=bart; //default llm as bart
+        this.openAi = openAi;
     }
 
     /**
@@ -72,7 +83,7 @@ public class WebController {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String output = null;   // This stores the summarized web content
+        String output;   // This stores the summarized web content
         String url = null;      // This stores the shortened URL***
 
         input = input.trim();
@@ -87,14 +98,14 @@ public class WebController {
             try {
                 //***todo: add short links instead of using the actual URL
                 url = input;
-                output = bart.queryModel(HTMLParser.parser(input));
+                output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
         } else {
             try {
                 logger.info("got the text:" + input);
-                output = bart.queryModel(input);
+                output = currentLlm.queryModel(input);
                 url = webAddress;
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
@@ -107,7 +118,7 @@ public class WebController {
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : "+ shortlinkCode);
+        model.addAttribute("output", output + " : " + shortlinkCode);
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
@@ -210,23 +221,28 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-            @RequestParam(value = "account_llm", required = false) String llm,
-            @RequestParam(value = "account_first_name", required = false) String first_name,
-            @RequestParam(value = "account_last_name", required = false) String last_name,
-            @RequestParam(value = "account_email", required = false) String email,
-            @RequestParam(value = "account_password", required = false) String password,
-            @RequestParam(value = "account_phone_number", required = false) String phone,
+            @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
+            @ModelAttribute UserReqAto user,
             Model model
     ) {
-        boolean isValidUpdate = true;      /* TODO: push user changes to the DB */
-
+        logger.info("User update request for the following user: " + user);
+        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
+        if(user!=null){
+            if(Objects.equals(user.getAccount_llm(), "bart")){
+                logger.info("llm selected : bart");
+                this.currentLlm = bart;
+            }else if(Objects.equals(user.getAccount_llm(), "openai")){
+                logger.info("llm selected : openai");
+                this.currentLlm = openAi;
+            }
+        }
         model.addAttribute("email", email);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("isProUser", isProUser);
 
-        if (isValidUpdate) {
+        if (isValidUpdate != null) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
@@ -235,7 +251,6 @@ public class WebController {
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
-
         return "user/account";
     }
 
@@ -270,7 +285,7 @@ public class WebController {
         boolean isRegistered = false;
 
         //check password
-        if(!shortlink.checkPassword(user.getPassword())) {
+        if (!shortlink.checkPassword(user.getPassword())) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
@@ -279,6 +294,7 @@ public class WebController {
         }
 
         try {
+            user.setLlmSelection("bart");//added default llm as bart while registration
             ResponseEntity<?> registerResponse = authenticationController.registerUser(user);
             isRegistered = registerResponse.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {

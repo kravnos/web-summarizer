@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.services;
 
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;
@@ -84,4 +85,36 @@ public class AuthenticationService {
             return new LoginResponseDTO(null, "");
         }
     }
+
+    public User updateExistingUser(UserReqAto userReqAto) {
+        try {
+            User existingUser = userRepo.findByEmail(userReqAto.getEmail()).orElse(null);
+
+            if(existingUser!=null) {
+                logger.log(Level.INFO, "User found in the DB: {0}", userReqAto.getEmail());
+
+                // Update the existing user with new values
+                existingUser.setFirst_name(userReqAto.getFirst_name());
+                existingUser.setLast_name(userReqAto.getLast_name());
+                existingUser.setPassword(passwordEncoder.encode(userReqAto.getPassword()));
+                existingUser.setPhone_number(userReqAto.getPhone_number());
+                existingUser.setLlmSelection(userReqAto.getAccount_llm());
+
+                // Save the updated user
+                User updatedUser = userRepo.save(existingUser);
+
+                logger.info("User updated successfully: " + updatedUser);
+
+                return updatedUser;
+            }
+            else {
+                logger.log(Level.INFO, "User not found in the DB: {0}", userReqAto.getEmail());
+                return null;//todo change return object
+            }
+        } catch (RuntimeException e) {
+            logger.log(Level.WARNING, "Failed to process update request due to an exception", e);
+            return null; //todo change return object
+        }
+    }
+
 }
