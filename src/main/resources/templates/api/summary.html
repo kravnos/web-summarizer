@@ -13,6 +13,7 @@
     </div>
     <div class="chat output fit-content shadow-google border-0 me-auto ms-0 my-2">
         <span class="text-chat text-output" th:utext="${output}"></span>
+        <a class="text-chat text-output" th:text="${short_url}" th:href="${short_url}"></a>
         <span class="ai spinner-grow spinner-grow-xs"></span>
     </div>
     <div class="social-links fit-content ms-0 me-auto my-2 px-4">

@@ -36,6 +36,18 @@ public class Shortlink {
 
         }
 
+        // Create bitly link with given url
+        String shortBitly = bitLyController.getBitly(url);
+        // Create a new history request object with the generated short code
+        HistoryReqAto historyReqAto = new HistoryReqAto(id, output,url, shortBitly, LocalDateTime.now());
+        // Add the history request to the database and get the response
+        historyController.addHistory(historyReqAto);
+
+        return shortBitly;
+
+
+        /* THIS IS THE ORIGINAL
+
         // Generate a short code for the given URL
         String shortlinkCode = codeShort(url);
         // Create a new history request object with the generated short code
@@ -43,10 +55,10 @@ public class Shortlink {
         // Add the history request to the database and get the response
         historyController.addHistory(historyReqAto);
 
-//        String shortBitly = bitLyController.getBitly("http://***.***.*.***:8080/"+shortlinkCode); //need domain to make this function work,  else this is just the pc ip address to test
+        String shortBitly = bitLyController.getBitly("http://***.***.*.***:8080/"+shortlinkCode); //need domain to make this function work,  else this is just the pc ip address to test
 
         return shortlinkCode;
-
+        */
     }
 
     // Method to generate a short code for a given URL

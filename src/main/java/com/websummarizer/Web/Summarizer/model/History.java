@@ -35,7 +35,8 @@ public class History {
     private String linkURL;
 
     @Setter
-    @Column(name = "short_link", unique = true, nullable = false)
+    @Column(name = "short_link", nullable = false)
+    //@Column(name = "short_link", unique = true, nullable = false)
     private String shortLink;
 
     @Setter

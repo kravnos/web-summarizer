@@ -84,7 +84,7 @@ public class WebController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
         String output;   // This stores the summarized web content
-        String url = null;      // This stores the shortened URL***
+        String url = null;      // This stores the shortened URL
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -96,7 +96,6 @@ public class WebController {
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                //***todo: add short links instead of using the actual URL
                 url = input;
                 output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
@@ -112,18 +111,21 @@ public class WebController {
             }
         }
 
-        String shortlinkCode = shortlink.Shortlink(input, output, session);
-
+        //String shortlinkCode = shortlink.Shortlink(input, output, session);
+        String shortenedlink = shortlink.Shortlink(url, output, session);
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : " + shortlinkCode);
+        //model.addAttribute("output", output + " : " + shortlinkCode);
+        //model.addAttribute("short_url", output + " : " + shortlinkCode);
+        model.addAttribute("output", output);
+        model.addAttribute("short_url", shortenedlink);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + shortenedlink);
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + shortenedlink);
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + shortenedlink);
 
         return "api/summary";
     }
