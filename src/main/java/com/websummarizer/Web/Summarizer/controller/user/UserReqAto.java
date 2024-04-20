@@ -1,6 +1,5 @@
 package com.websummarizer.Web.Summarizer.controller.user;
 
-import com.websummarizer.Web.Summarizer.model.LLMSelection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

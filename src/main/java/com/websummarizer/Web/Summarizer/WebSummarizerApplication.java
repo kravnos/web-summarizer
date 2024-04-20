@@ -1,6 +1,5 @@
 package com.websummarizer.Web.Summarizer;
 
-import com.websummarizer.Web.Summarizer.model.LLMSelection;
 import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;
 import com.websummarizer.Web.Summarizer.model.User;
