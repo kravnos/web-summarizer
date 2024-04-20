@@ -49,6 +49,10 @@ body {
 .was-validated .form-control:invalid:focus, .was-validated .form-control:valid:focus {
     border-color: #86b7fe;
 }
+.form-control.disabled {
+    background-color: var(--bs-secondary-bg);
+    opacity: 1;
+}
 .success {
     background: #e5efe5;
     color: #006400;
