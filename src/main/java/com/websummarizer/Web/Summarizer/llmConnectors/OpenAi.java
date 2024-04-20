@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.bart;
+package com.websummarizer.Web.Summarizer.llmConnectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-public class OpenAi {
+public class OpenAi implements Llm{
     // Logger for logging messages
     private static final Logger LOGGER = Logger.getLogger(OpenAi.class.getName());
 
@@ -45,6 +45,7 @@ public class OpenAi {
     }
 
     // Method for querying the OpenAI model
+    @Override
     public String queryModel(String prompt) {
         try {
             // Create URL object for API endpoint

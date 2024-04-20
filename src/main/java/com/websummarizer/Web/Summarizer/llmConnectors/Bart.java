@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.bart;
+package com.websummarizer.Web.Summarizer.llmConnectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * Controller class for handling Bart API requests.
  */
 @RestController
-public class Bart {
+public class Bart implements Llm{
     private static final Logger LOGGER = Logger.getLogger(Bart.class.getName());
     private final String API_URL;
     private final HttpHeaders headers;
@@ -45,6 +45,7 @@ public class Bart {
      * @param inputText The text to be summarized.
      * @return The summarized text, or an error message if summarization fails.
      */
+    @Override
     public String queryModel(String inputText) {
         try {
             // Prepare request body
