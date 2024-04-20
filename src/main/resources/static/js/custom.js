@@ -133,15 +133,16 @@ $(document).ready(function() {
     /*
         Modals
     */
-    $("#wrapper-login").on("input keydown", ".validate input", function(event) {
+    $("#wrapper-login").on("input keydown", ".validate input:not(.disabled)", function(event) {
         if (event.key == "Enter") {
             $("#wrapper-login .btn-primary.btn-request").trigger("click");
         } else {
             let element = $(this);
             let required = element.prop("required");
+            let validate = element.attr("hx-validate");
             let type = element.attr("type");
 
-            if ((required) || ((type) && (type != "text"))) {
+            if ((required) || (validate == "true") || ((type) && (type != "text"))) {
                 if (element.val()) {
                     element.parent().addClass("was-validated");
                 } else {
@@ -159,26 +160,32 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:beforeRequest", ".btn-request", function(event) {
+        let needsValidation = true;
         let isValid = true;
         let successMessage;
         let errorMessage;
 
-        $("#wrapper-login .validate input").each(function() {
+        $("#wrapper-login .validate input:not(.disabled)").each(function() {
             let element = $(this);
             let required = element.prop("required");
+            let validate = element.attr("hx-validate");
             let type = element.attr("type");
 
-            if ((required) || ((type) && (type != "text"))) {
-                isValid = this.checkValidity();
+            if ((required) || (validate == "true") || ((type) && (type != "text"))) {
+                if (needsValidation) {
+                    isValid = this.checkValidity();
 
-                if (!isValid) {
-                    element.focus();
+                    if (!isValid) {
+                        element.focus();
 
-                    errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
-                    errorMessage += $("label[for='" + element.attr('id') + "']").text() + " error. " + this.validationMessage;
+                        errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
+                        errorMessage += $("label[for='" + element.attr('id') + "']").text() + " error. " + this.validationMessage;
 
-                    return false;
+                        needsValidation = false;
+                    }
                 }
+
+                element.parent().addClass("was-validated");
             }
         });
 
@@ -205,8 +212,6 @@ $(document).ready(function() {
                 }, messageTimer);
             });
 
-            $("#wrapper-login .field-set.validate").addClass("was-validated");
-
             event.preventDefault();
             event.stopPropagation();
         }
@@ -217,7 +222,7 @@ $(document).ready(function() {
         let errorMessage;
 
         if (event.detail.successful == true) {
-            let inputs = $("#wrapper-login .validate input");
+            let inputs = $("#wrapper-login .validate input:not(.disabled)");
             inputs.first().focus();
 
             $(inputs.get().reverse()).each(function() {
@@ -263,14 +268,10 @@ $(document).ready(function() {
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
             $("#wrapper-login .btn-primary.btn-request, #wrapper-login .link-request").each(function() {
-                let name = $(this).data("ws-name");
                 let login = $(this).data("ws-login");
                 let pro = $(this).data("ws-pro");
                 let body = $("body");
 
-                if (name != null) {
-                    body.attr("data-ws-name", name);
-                }
                 if (login != null) {
                     body.attr("data-ws-login", login);
                     sessionStorage.setItem("isLoggedIn", login);
@@ -296,7 +297,7 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("click", "#button-logout", function() {
-        $("body").removeAttr("data-ws-name").attr("data-ws-login", "false");
+        $("body").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");
         setTimeout("redirectTo('/')", longSleep);
         updateNavbar();
@@ -332,10 +333,6 @@ $(window).on("load", function() {
 /*
     Helpers
 */
-function getName() {
-    return $("body").attr("data-ws-name");
-}
-
 function getPath() {
     return $("body").attr("data-ws-path");
 }
