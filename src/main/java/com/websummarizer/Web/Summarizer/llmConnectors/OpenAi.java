@@ -1,7 +1,5 @@
 package com.websummarizer.Web.Summarizer.llmConnectors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,17 +7,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-public class OpenAi implements Llm{
+public class OpenAi implements Llm {
     // Logger for logging messages
     private static final Logger LOGGER = Logger.getLogger(OpenAi.class.getName());
 
@@ -33,7 +25,7 @@ public class OpenAi implements Llm{
     // Constructor for initializing OpenAI object
     public OpenAi(@Value("${API_URL_OPENAI}") String apiUrl,
                   @Value("${AUTH_TOKEN_OPENAI}") String authToken,
-                  @Value("${MODEL}")String model) {
+                  @Value("${MODEL}") String model) {
         // Initialize instance variables with provided values
         this.API_URL = apiUrl;
         this.model = model;
