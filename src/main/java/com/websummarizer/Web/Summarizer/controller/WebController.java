@@ -1,7 +1,8 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.bart.Bart;
-import com.websummarizer.Web.Summarizer.bart.OpenAi;
+import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
+import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
+import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
 import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
 import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
@@ -21,6 +22,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -47,6 +49,8 @@ public class WebController {
     @Value("${WEBADDRESS}")
     private String webAddress;
 
+    private Llm currentLlm;
+
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
     /**
@@ -56,6 +60,7 @@ public class WebController {
      */
     public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
+        this.currentLlm=bart; //default llm as bart
         this.openAi = openAi;
     }
 
@@ -93,14 +98,14 @@ public class WebController {
             try {
                 //***todo: add short links instead of using the actual URL
                 url = input;
-                output = bart.queryModel(HTMLParser.parser(input));
+                output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
         } else {
             try {
                 logger.info("got the text:" + input);
-                output = bart.queryModel(input);
+                output = currentLlm.queryModel(input);
                 url = webAddress;
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
@@ -113,7 +118,7 @@ public class WebController {
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : "+ shortlinkCode);
+        model.addAttribute("output", output + " : " + shortlinkCode);
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
@@ -174,7 +179,7 @@ public class WebController {
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : "+ shortlinkCode);
+        model.addAttribute("output", output + " : " + shortlinkCode);
 
         // Share Button Attributes
         model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
@@ -288,9 +293,17 @@ public class WebController {
             @ModelAttribute UserReqAto user,
             Model model
     ) {
-        logger.info("User update request for the following user: "+user);
+        logger.info("User update request for the following user: " + user);
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
-
+        if(user!=null){
+            if(Objects.equals(user.getAccount_llm(), "bart")){
+                logger.info("llm selected : bart");
+                this.currentLlm = bart;
+            }else if(Objects.equals(user.getAccount_llm(), "openai")){
+                logger.info("llm selected : openai");
+                this.currentLlm = openAi;
+            }
+        }
         model.addAttribute("email", email);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("isProUser", isProUser);
@@ -338,7 +351,7 @@ public class WebController {
         boolean isRegistered = false;
 
         //check password
-        if(!shortlink.checkPassword(user.getPassword())) {
+        if (!shortlink.checkPassword(user.getPassword())) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");

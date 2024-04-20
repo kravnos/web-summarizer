@@ -2,7 +2,7 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import static org.mockito.Mockito.when;
 
-import com.websummarizer.Web.Summarizer.bart.Bart;
+import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
