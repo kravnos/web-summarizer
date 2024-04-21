@@ -25,7 +25,7 @@
             <div class="row mb-3">
                 <div class="field required col-6">
                     <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                    <input id="register-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value="${email}" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
+                    <input id="register-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value="${email != null} ? ${email} : 'Unknown'" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field col-6">
                     <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
