@@ -88,37 +88,59 @@ public class AuthenticationService {
     }
 
     public User updateExistingUser(UserReqAto userReqAto) throws OauthUpdateNotAllowed {
-            User existingUser = userRepo.findByEmail(userReqAto.getEmail()).orElse(null);
+        User existingUser = userRepo.findByEmail(userReqAto.getEmail()).orElse(null);
 
-            if(existingUser!=null) {
-                logger.log(Level.INFO, "User found in the DB: {0}", userReqAto.getEmail());
+        if (existingUser != null) {
+            logger.log(Level.INFO, "User found in the DB: {0}", userReqAto.getEmail());
 
-                if(userReqAto.getProvider() != Provider.LOCAL){
+            if (userReqAto.getProvider() != Provider.LOCAL) {
+                //ensure none of the fields is changed except the llm selection as oauth users cannot change account info
+//                System.out.println(existingUser.getFirst_name().equals(userReqAto.getFirst_name()) +"\n"+
+//                        existingUser.getLast_name().equals(userReqAto.getLast_name()) +"\n"+
+//                        existingUser.getEmail().equals(userReqAto.getEmail()) +"\n"+
+//                        existingUser.getPassword().equals(userReqAto.getPassword()) +"\n"+
+//                        existingUser.getPhone_number().equals(userReqAto.getPhone_number()) +"\n"+
+//                        existingUser.getProvider().equals(userReqAto.getProvider()));
+
+                if (userReqAto.getFirst_name().isBlank() &&
+                        userReqAto.getLast_name().isBlank() &&
+                        existingUser.getEmail().equals(userReqAto.getEmail()) &&
+                        userReqAto.getPassword().isBlank() &&
+                        userReqAto.getPhone_number().isBlank()
+                ){
+                    existingUser.setLlmSelection(userReqAto.getAccount_llm());
+                    // Save the updated user
+                    User updatedUser = userRepo.save(existingUser);
+
+                    logger.info("User updated successfully: " + updatedUser);
+
+                    return updatedUser;
+                }else {
                     throw new OauthUpdateNotAllowed();
                 }
-
-                // Update the existing user with new values
-                if(!userReqAto.getFirst_name().isBlank())
-                    existingUser.setFirst_name(userReqAto.getFirst_name());
-                if(!userReqAto.getLast_name().isBlank())
-                    existingUser.setLast_name(userReqAto.getLast_name());
-                if(!userReqAto.getPassword().isBlank())
-                    existingUser.setPassword(passwordEncoder.encode(userReqAto.getPassword()));
-                if(!userReqAto.getPhone_number().isBlank())
-                    existingUser.setPhone_number(userReqAto.getPhone_number());
-                existingUser.setLlmSelection(userReqAto.getAccount_llm());
-
-                // Save the updated user
-                User updatedUser = userRepo.save(existingUser);
-
-                logger.info("User updated successfully: " + updatedUser);
-
-                return updatedUser;
             }
-            else {
-                logger.log(Level.INFO, "User not found in the DB: {0}", userReqAto.getEmail());
-                return null;//todo change return object
-            }
+
+            // Update the existing user only with new values and copy previous values for the empty fields
+            if (!userReqAto.getFirst_name().isBlank())
+                existingUser.setFirst_name(userReqAto.getFirst_name());
+            if (!userReqAto.getLast_name().isBlank())
+                existingUser.setLast_name(userReqAto.getLast_name());
+            if (!userReqAto.getPassword().isBlank())
+                existingUser.setPassword(passwordEncoder.encode(userReqAto.getPassword()));
+            if (!userReqAto.getPhone_number().isBlank())
+                existingUser.setPhone_number(userReqAto.getPhone_number());
+            existingUser.setLlmSelection(userReqAto.getAccount_llm());
+
+            // Save the updated user
+            User updatedUser = userRepo.save(existingUser);
+
+            logger.info("User updated successfully: " + updatedUser);
+
+            return updatedUser;
+        } else {
+            logger.log(Level.INFO, "User not found in the DB: {0}", userReqAto.getEmail());
+            return null;//todo change return object
+        }
     }
 
 }

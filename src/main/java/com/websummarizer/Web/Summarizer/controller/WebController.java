@@ -226,7 +226,7 @@ public class WebController {
         logger.info("User update request for the following user: " + user);
 
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
-        if (user != null) {
+        if (user != null) { //todo
             if (Objects.equals(user.getAccount_llm(), "bart")) {
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
