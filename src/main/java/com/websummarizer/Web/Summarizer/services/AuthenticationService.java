@@ -94,10 +94,14 @@ public class AuthenticationService {
                 logger.log(Level.INFO, "User found in the DB: {0}", userReqAto.getEmail());
 
                 // Update the existing user with new values
-                existingUser.setFirst_name(userReqAto.getFirst_name());
-                existingUser.setLast_name(userReqAto.getLast_name());
-                existingUser.setPassword(passwordEncoder.encode(userReqAto.getPassword()));
-                existingUser.setPhone_number(userReqAto.getPhone_number());
+                if(!userReqAto.getFirst_name().isBlank())
+                    existingUser.setFirst_name(userReqAto.getFirst_name());
+                if(!userReqAto.getLast_name().isBlank())
+                    existingUser.setLast_name(userReqAto.getLast_name());
+                if(!userReqAto.getPassword().isBlank())
+                    existingUser.setPassword(passwordEncoder.encode(userReqAto.getPassword()));
+                if(!userReqAto.getPhone_number().isBlank())
+                    existingUser.setPhone_number(userReqAto.getPhone_number());
                 existingUser.setLlmSelection(userReqAto.getAccount_llm());
 
                 // Save the updated user
