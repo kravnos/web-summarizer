@@ -8,25 +8,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ContextConfiguration(classes = {Bart.class, String.class})
+@ContextConfiguration(classes = {OpenAi.class, String.class})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class BartControllerTest {
-
+public class OpenAiTest {
     @Value("${API_URL_BART}")
     private String apiUrl;
     @Value("${AUTH_TOKEN_BART}")
     private String authToken;
+    @Value("${MODEL}")
+    private String model;
 
     /**
-     * Method under test: {@link Bart#queryModel(String)}
+     * Method under test: {@link OpenAi#queryModel(String)}
      */
     @Test
     void testQueryModel(){
-        Bart bart = new Bart(apiUrl, authToken);
+        OpenAi openAi = new OpenAi(apiUrl, authToken, model);   // Need valid credentials in env.properties
 
-        Assertions.assertNotEquals("Cannot summarize at the moment. Please try again later.", bart.queryModel("InputText"));
-        Assertions.assertNotEquals("An error occurred. Please try again later.", bart.queryModel("InputText"));
-        Assertions.assertFalse(bart.queryModel("InputText").startsWith("Error: "));
+        Assertions.assertNotEquals("Cannot summarize at the moment. Please try again later.", openAi.queryModel("InputText"));
+        Assertions.assertNotEquals("An error occurred. Please try again later.", openAi.queryModel("InputText"));
+        Assertions.assertFalse(openAi.queryModel("InputText").startsWith("Error: "));
     }
 }
