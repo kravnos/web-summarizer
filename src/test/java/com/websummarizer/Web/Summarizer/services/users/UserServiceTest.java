@@ -1,13 +1,10 @@
 package com.websummarizer.Web.Summarizer.services.users;
 
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
-import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
-import com.websummarizer.Web.Summarizer.controller.user.UsersResAto;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.user.UserResAto;
+import com.websummarizer.Web.Summarizer.model.user.UsersResAto;
 import com.websummarizer.Web.Summarizer.model.User;
-import jakarta.persistence.Table;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.bind.annotation.GetMapping;
 
 class UserServiceTest {

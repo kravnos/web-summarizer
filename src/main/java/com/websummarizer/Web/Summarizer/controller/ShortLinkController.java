@@ -1,12 +1,9 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 
-import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
-import com.websummarizer.Web.Summarizer.services.users.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +14,7 @@ public class ShortLinkController {
     private HistoryService historyService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     // Get mapping to retrieve a short link record based on shortlink
     @GetMapping("/{shortlink}")

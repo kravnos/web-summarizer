@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Domain object for Affiliate (represents a row in table "history")
@@ -26,21 +27,15 @@ public class History {
     @JoinColumn(name = "UID")
     private User user;
 
-    @Setter
-    @Column(name = "history_content", length = 100000)
-    private String historyContent;
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL)
+    private List<HistoryContent> historyContents;
 
-    @Setter
     @Column(name = "linkURL", length = 1000)
     private String linkURL;
 
-    @Setter
     @Column(name = "short_link", unique = true, nullable = false)
     private String shortLink;
 
-    @Setter
     @Column(name = "upload_time")
     private LocalDateTime uploadTime;
-
-
 }

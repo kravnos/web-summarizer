@@ -13,14 +13,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.websummarizer.Web.Summarizer.common.exceptions.CCNotFoundException;
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
-import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
-import com.websummarizer.Web.Summarizer.controller.user.UsersResAto;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.user.UserResAto;
+import com.websummarizer.Web.Summarizer.model.user.UsersResAto;
 import com.websummarizer.Web.Summarizer.model.User;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -35,7 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DisabledInAotMode
 class UserServiceDiffblueTest {
   @MockBean
-  private UserRepository userRepository;
+  private UserRepo userRepository;
 
   @Autowired
   private UserService userService;

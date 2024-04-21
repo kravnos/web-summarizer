@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.controller.history;
+package com.websummarizer.Web.Summarizer.model.history;
 
 import lombok.Builder;
 import lombok.Getter;

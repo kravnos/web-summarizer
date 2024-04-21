@@ -1,11 +1,13 @@
-package com.websummarizer.Web.Summarizer.controller.history;
+package com.websummarizer.Web.Summarizer.model.history;
 
+import com.websummarizer.Web.Summarizer.model.HistoryContent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Domain object for Affiliate (represents a row in table "history")
@@ -28,7 +30,7 @@ public class HistoryResAto {
 
     @NonNull
     @ToString.Include
-    private String history_content;
+    private List<HistoryContent> historyContents;
 
     @NonNull
     @ToString.Include

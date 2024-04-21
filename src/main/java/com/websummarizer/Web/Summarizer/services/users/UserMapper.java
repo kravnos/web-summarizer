@@ -1,7 +1,7 @@
 package com.websummarizer.Web.Summarizer.services.users;
 
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
-import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.user.UserResAto;
 import com.websummarizer.Web.Summarizer.model.User;
 
 public class UserMapper {

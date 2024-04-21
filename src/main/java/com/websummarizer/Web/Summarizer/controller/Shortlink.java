@@ -1,14 +1,16 @@
-package com.websummarizer.Web.Summarizer.controller.shortlink;
+package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.controller.BitLyController;
 import com.websummarizer.Web.Summarizer.controller.HistoryController;
-import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
-import com.websummarizer.Web.Summarizer.services.users.UserService;
+import com.websummarizer.Web.Summarizer.model.HistoryContent;
+import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,13 +25,13 @@ public class Shortlink {
     HistoryController historyController;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
-    public String Shortlink(String url, String output, HttpSession session){
+    public String Shortlink(String url, List<HistoryContent> output, HttpSession session){
 
         String email = (String) session.getAttribute("username");
 
-        long id = 1l;
+        long id = 1L;
         try {
             id = userService.getFoundId(email);
         } catch (Exception e){

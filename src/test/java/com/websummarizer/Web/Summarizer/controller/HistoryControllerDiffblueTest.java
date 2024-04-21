@@ -5,9 +5,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.websummarizer.Web.Summarizer.controller.history.HistoriesResAto;
-import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
-import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoriesResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 
 import java.time.LocalDate;

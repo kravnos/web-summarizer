@@ -1,15 +1,12 @@
 package com.websummarizer.Web.Summarizer.services.history;
 
-import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
-import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryServiceTest {
 

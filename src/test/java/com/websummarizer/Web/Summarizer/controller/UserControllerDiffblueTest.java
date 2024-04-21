@@ -5,10 +5,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
-import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
-import com.websummarizer.Web.Summarizer.controller.user.UsersResAto;
-import com.websummarizer.Web.Summarizer.services.users.UserService;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.user.UserResAto;
+import com.websummarizer.Web.Summarizer.model.user.UsersResAto;
 
 import java.util.ArrayList;
 

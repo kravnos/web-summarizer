@@ -1,8 +1,8 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
-import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
-import com.websummarizer.Web.Summarizer.controller.history.HistoriesResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoriesResAto;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
