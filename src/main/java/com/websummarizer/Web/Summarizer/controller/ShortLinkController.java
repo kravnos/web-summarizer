@@ -20,6 +20,7 @@ public class ShortLinkController {
     @GetMapping("/{shortlink}")
     public String getShortLink(@PathVariable String shortlink, Model model) {
 
+        //todo exception handling
         var shortLinkResAto = historyService.getShortLink(shortlink);
         var userName = userService.getUserName(shortLinkResAto.getUID());
 

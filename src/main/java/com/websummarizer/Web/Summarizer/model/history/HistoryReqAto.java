@@ -1,11 +1,8 @@
 package com.websummarizer.Web.Summarizer.model.history;
 
-import com.websummarizer.Web.Summarizer.model.History;
-import com.websummarizer.Web.Summarizer.model.HistoryContent;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * model representing API request model to add / register a "history"
@@ -22,7 +19,7 @@ public class HistoryReqAto {
 
     @NonNull
     @ToString.Include
-    private List<HistoryContent> historyContents;
+    private String history_content;
 
     @NonNull
     @ToString.Include

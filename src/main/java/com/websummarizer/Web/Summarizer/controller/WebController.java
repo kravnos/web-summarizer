@@ -51,6 +51,7 @@ public class WebController {
     private String webAddress;
 
     private Llm currentLlm;
+    private int counter = 0;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -112,12 +113,21 @@ public class WebController {
             }
         }
 
-        if(isLoggedIn.equals("true")){
+        if(isLoggedIn.equals("true") && counter == 0){ // if the user is logged in and it is the first summary
             logger.info("user is logged in saving the history now:");
+            //Generate a new link for the history
+            link = shortlink.Shortlink(input,output,session);
+
+
+        } else if(isLoggedIn.equals("true")){ // if the user is logged in and it is the first summary
+            logger.info("user is logged in saving the history now:");
+
+            //user the previous link to store the history
+
         }
         else {
             logger.info("user is not logged in saving the history in temp variable to avoid loss:");
-
+            //save the content in a temporary history object
         }
         //link = shortlink.Shortlink(input, output, session);
         //url = webAddress + link;
