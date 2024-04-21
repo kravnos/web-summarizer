@@ -3,10 +3,10 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
-import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.controller.Shortlink;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -86,7 +86,7 @@ public class WebController {
 
         String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
-        String url;      // This stores the shortened URL
+        String url = null;      // This stores the shortened URL
         String link;     // This stores the short link code
 
         input = input.trim();
@@ -112,8 +112,15 @@ public class WebController {
             }
         }
 
-        link = shortlink.Shortlink(input, output, session);
-        url = webAddress + link;
+        if(isLoggedIn.equals("true")){
+            logger.info("user is logged in saving the history now:");
+        }
+        else {
+            logger.info("user is not logged in saving the history in temp variable to avoid loss:");
+
+        }
+        //link = shortlink.Shortlink(input, output, session);
+        //url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
