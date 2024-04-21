@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.llmConnectors;
+package com.websummarizer.Web.Summarizer.parsers;
 
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import org.junit.jupiter.api.Test;
