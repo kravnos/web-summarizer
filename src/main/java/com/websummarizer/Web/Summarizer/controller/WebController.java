@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +61,7 @@ public class WebController {
      */
     public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
-        this.currentLlm=bart; //default llm as bart
+        this.currentLlm = bart; //default llm as bart
         this.openAi = openAi;
     }
 
@@ -83,7 +84,7 @@ public class WebController {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String username = (String)request.getSession().getAttribute("first_name");
+        String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
@@ -223,12 +224,13 @@ public class WebController {
             Model model
     ) {
         logger.info("User update request for the following user: " + user);
-        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
-        if(user!=null){
-            if(Objects.equals(user.getAccount_llm(), "bart")){
+
+        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
+        if (user != null) {
+            if (Objects.equals(user.getAccount_llm(), "bart")) {
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
-            }else if(Objects.equals(user.getAccount_llm(), "openai")){
+            } else if (Objects.equals(user.getAccount_llm(), "openai")) {
                 logger.info("llm selected : openai");
                 this.currentLlm = openAi;
             }
@@ -237,16 +239,19 @@ public class WebController {
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("isProUser", isProUser);
 
-        if (isValidUpdate != null) {
+        if (isValidUpdate.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
+        } else if (isValidUpdate.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Account settings for '" + email + "' cannot be updated as it is a google/github account");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
-
         return "user/account";
     }
 

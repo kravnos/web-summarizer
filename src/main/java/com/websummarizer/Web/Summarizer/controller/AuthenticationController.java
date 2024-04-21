@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
 import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
@@ -81,7 +82,11 @@ public class AuthenticationController {
                 logger.warning("Failed to update, returned user object is null");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
             }
-        } catch (Exception e) {
+        } catch (OauthUpdateNotAllowed e){
+            logger.warning("Failed to update user as user is oauth user: ");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update information for google/github users");
+        }
+        catch (Exception e) {
             logger.severe("Failed to update user due to an exception: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
         }

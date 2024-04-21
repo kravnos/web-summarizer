@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.services;
 
+import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
 import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.Provider;
@@ -86,12 +87,15 @@ public class AuthenticationService {
         }
     }
 
-    public User updateExistingUser(UserReqAto userReqAto) {
-        try {
+    public User updateExistingUser(UserReqAto userReqAto) throws OauthUpdateNotAllowed {
             User existingUser = userRepo.findByEmail(userReqAto.getEmail()).orElse(null);
 
             if(existingUser!=null) {
                 logger.log(Level.INFO, "User found in the DB: {0}", userReqAto.getEmail());
+
+                if(userReqAto.getProvider() != Provider.LOCAL){
+                    throw new OauthUpdateNotAllowed();
+                }
 
                 // Update the existing user with new values
                 if(!userReqAto.getFirst_name().isBlank())
@@ -115,10 +119,6 @@ public class AuthenticationService {
                 logger.log(Level.INFO, "User not found in the DB: {0}", userReqAto.getEmail());
                 return null;//todo change return object
             }
-        } catch (RuntimeException e) {
-            logger.log(Level.WARNING, "Failed to process update request due to an exception", e);
-            return null; //todo change return object
-        }
     }
 
 }

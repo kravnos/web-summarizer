@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller.user;
 
+import com.websummarizer.Web.Summarizer.model.Provider;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,4 +38,6 @@ public class UserReqAto {
     private String request_token;
 
     private String account_llm;
+
+    private Provider provider;
 }
