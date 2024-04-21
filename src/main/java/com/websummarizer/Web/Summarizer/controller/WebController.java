@@ -85,7 +85,8 @@ public class WebController {
 
         String username = (String)request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
-        String url = null;      // This stores the shortened URL***
+        String url;      // This stores the shortened URL
+        String link;     // This stores the short link code
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -97,34 +98,32 @@ public class WebController {
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                //***todo: add short links instead of using the actual URL
-                url = input;
                 output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
         } else {
+            logger.info("got the text:" + input);
             try {
-                logger.info("got the text:" + input);
                 output = currentLlm.queryModel(input);
-                url = webAddress;
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
             }
         }
 
-        String shortlinkCode = shortlink.Shortlink(input, output, session);
-
+        link = shortlink.Shortlink(input, output, session);
+        url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : " + shortlinkCode);
+        model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
+        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
+        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
+        model.addAttribute("link", url);
 
         return "api/summary";
     }
