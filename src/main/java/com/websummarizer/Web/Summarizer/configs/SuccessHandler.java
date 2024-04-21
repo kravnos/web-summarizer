@@ -37,10 +37,12 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         if(authentication.getPrincipal() instanceof DefaultOidcUser) {
             DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
             User user = oAuth2AuthenticationService.processOAuthPostLoginGoogle(oidcUser);
+            request.getSession().setAttribute("username",user.getEmail());
             logger.info("created following user at on success method: " + user);
         }else if (authentication.getPrincipal() instanceof UserOAuth2){
             UserOAuth2 oauth2User = (UserOAuth2) authentication.getPrincipal();
             User user = oAuth2AuthenticationService.processOAuthPostLoginGithub(oauth2User);
+            request.getSession().setAttribute("username",user.getEmail());
             logger.info("created following user at on success method: " + user);
         }
         new DefaultRedirectStrategy().sendRedirect(request,response,"/");
