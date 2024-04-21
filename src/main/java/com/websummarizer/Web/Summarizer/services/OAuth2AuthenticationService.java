@@ -59,7 +59,7 @@ public class OAuth2AuthenticationService {
             String lastName = oidcUser.getFamilyName();
             String phone = oidcUser.getPhoneNumber();
             //todo : retrieve user first and last name as well
-            User oauthUser = new User(firstName, lastName, email, null, phone, null, Provider.GOOGLE);
+            User oauthUser = new User(firstName, lastName, email, null, phone, null, "bart", Provider.GOOGLE);
             //todo: newUser.setEnabled(true);
             return registerUser(oauthUser);
         } else {
@@ -75,7 +75,8 @@ public class OAuth2AuthenticationService {
 
         if (uniqueUserName != null && user == null) {
             //todo: make sure google/github username and something else is not same
-            User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, null, null, null, Provider.GITHUB);
+            User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, null, null,
+                    null, "bart", Provider.GITHUB);
             return registerUser(oauthUser);
         } else {
             //TODO : check what will happen if the user has a email registered and then tries to loging using github

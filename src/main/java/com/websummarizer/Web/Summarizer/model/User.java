@@ -20,7 +20,7 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid")
     private long id;
 
@@ -77,13 +77,14 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public User(String first_name, String last_name, String email, String password, String phone_number, Set<Role> authorities, Provider provider) {
+    public User(String first_name, String last_name, String email, String password, String phone_number, Set<Role> authorities, String llmSelection, Provider provider) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
         this.phone_number = phone_number;
         this.authorities = authorities;
+        this.llmSelection=llmSelection;
         this.provider = provider;
     }
 
