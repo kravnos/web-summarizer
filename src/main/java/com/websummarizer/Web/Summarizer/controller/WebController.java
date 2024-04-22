@@ -59,8 +59,8 @@ public class WebController {
 
     private Llm currentLlm;
     private boolean flag = true;
-    long hid = -1;
-    String shortUrl;
+    private long hid = -1;
+    private String shortUrl;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -91,6 +91,7 @@ public class WebController {
             HttpSession session,
             Model model
     ) {
+        logger.info("flag "+ flag + " "+ hid);
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
@@ -243,17 +244,10 @@ public class WebController {
     }
 
     @PostMapping("/api/newchat")
-    public String newChat(
-            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
-            @RequestParam(value = "isProUser", required = false) String isProUser,
-            @RequestParam(value = "input") String input,
-            HttpServletRequest request,
-            HttpSession session,
-            Model model
-    ) {
-        flag = true;
-        hid = -1;
-
+    public String newChat() {
+        this.flag = true;
+        this.hid = -1;
+        logger.info("flag "+ flag + " "+ hid);
         return "api/summary";
     }
 

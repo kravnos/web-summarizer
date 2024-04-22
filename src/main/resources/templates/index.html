@@ -100,6 +100,35 @@
                                 <span id="button-summary-text" class="button-text">Summarize</span>
                                 <span id="button-summary-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
                             </button><!-- multiple spam clicks will be ignored until response -->
+
+                            <span id="button-new-chat" class="btn btn-primary btn-request position">New Chat</span>
+
+                            <script>
+                                document.getElementById('button-new-chat').addEventListener('click', function() {
+                                    // Send POST request
+                                    fetch('/api/newchat', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            // Add any data you want to send in the request body
+                                        })
+                                    })
+                                        .then(response => {
+                                            // Handle response
+                                            if (response.ok) {
+                                                // Success, do something
+                                            } else {
+                                                // Error, handle accordingly
+                                            }
+                                        })
+                                        .catch(error => {
+                                            // Handle error
+                                        });
+                                });
+                            </script>
+
                         </div>
                     </div>
                     <div id="feedback-length" class="mt-1 mb-1 px-4 fs-7 opacity-0">&nbsp;<!-- 0/5000 --></div>
