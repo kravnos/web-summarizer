@@ -75,55 +75,53 @@ public class WebController {
     public String getSummary(
             @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
-            @RequestParam(value = "first_name", required = false) String username,
             @RequestParam(value = "input") String input,
+            HttpServletRequest request,
             HttpSession session,
             Model model
     ) {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
+        String username = (String)request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
-        String url = null;      // This stores the shortened URL***
+        String url;      // This stores the shortened URL
+        String link;     // This stores the short link code
 
         input = input.trim();
         boolean isURL = isValidURL(input);
 
-        if ((username == null) || (username.equals("undefined"))) {
+        if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {
             username = "You";
         }
 
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                //***todo: add short links instead of using the actual URL
-                url = input;
                 output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
             }
         } else {
+            logger.info("got the text:" + input);
             try {
-                logger.info("got the text:" + input);
                 output = currentLlm.queryModel(input);
-                url = webAddress;
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
             }
         }
 
-        String shortlinkCode = shortlink.Shortlink(input, output, session);
-
+        link = shortlink.Shortlink(input, output, session);
+        url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
         model.addAttribute("input", input);
-        model.addAttribute("output", output + " : " + shortlinkCode);
+        model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url); //todo: add short links to share
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url); //todo: add short links to share
+        model.addAttribute("url", url);
+        model.addAttribute("link", link);
 
         return "api/summary";
     }
@@ -138,6 +136,7 @@ public class WebController {
             @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
+            HttpServletRequest request,
             Model model
     ) {
         if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
@@ -150,13 +149,9 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
-                /*
-                    TODO:
-                      Get all user details from db and add to model
-                      Require: first name, last, phone, email, do not add password.
-                */
 
                 return "user/account";
             }
@@ -175,22 +170,19 @@ public class WebController {
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             @ModelAttribute UserDTO userDTO,
-            Model model, HttpServletRequest request
+            HttpServletRequest request,
+            Model model
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
+            request.getSession().setAttribute("username", userDTO.getLogin_email());
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
-
-            // Retrieve the session associated with the user's request or create a new one if it doesn't exist
-            HttpSession session = request.getSession();
-            // Store the user's login email in the session under the attribute name "username"
-            session.setAttribute("username", userDTO.getLogin_email());
 
             if ((path != null) && (path.equals("pro"))) {
                 if ((isProUser != null) && (isProUser.equals("true"))) {
@@ -201,6 +193,7 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
                 return "user/account";
@@ -221,7 +214,7 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "email") String email,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @ModelAttribute UserReqAto user,
@@ -251,6 +244,7 @@ public class WebController {
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
+
         return "user/account";
     }
 
@@ -279,6 +273,7 @@ public class WebController {
             @RequestParam(value = "first_name") String first_name,
             @RequestParam(value = "email") String email,
             @ModelAttribute User user,
+            HttpServletRequest request,
             Model model
     ) {
         logger.info("Received user creation request: " + user);
@@ -302,7 +297,7 @@ public class WebController {
         }
 
         if (isRegistered) {
-            model.addAttribute("first_name", first_name);
+            request.getSession().setAttribute("first_name", first_name);
             model.addAttribute("email", email);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");

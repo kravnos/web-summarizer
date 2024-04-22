@@ -9,6 +9,7 @@ $(document).ready(function() {
     const minLength = 200;
     const maxLength = 5000;
     const typeSpeed = 15;
+    let index = -1;
     let timeout;
     let isDark = sessionStorage.getItem("isDark") || "false";           // sessionStorage must be a string, cannot be boolean false
     let isLoggedIn = sessionStorage.getItem("isLoggedIn") || "false";
@@ -42,7 +43,13 @@ $(document).ready(function() {
     */
     $("#input-main").on("input keyup", function(event) {
         let val = $("#input-main").val();
-        let ai = $(".ai").last();
+        let ai;
+
+        if (index >= 0) {
+            ai = $($(".ai").get(index));
+        } else {
+            ai = $(".ai").last();
+        }
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
@@ -79,8 +86,14 @@ $(document).ready(function() {
         }, sleep);
     });
 
-    $("#button-summary").on("htmx:beforeRequest", function() {
-        $(this).addClass("disabled").attr("aria-disabled", "true");
+    $("#button-summary, #wrapper-summary").on("htmx:beforeRequest", function(event) {
+        if (this.id == "wrapper-summary") {
+            index = $(event.detail.target).index();
+        } else {
+            index = -1;
+        }
+
+        $("#button-summary").addClass("disabled").attr("aria-disabled", "true");
         $("#button-summary-text").addClass("opacity-0");
         $("#button-summary-spinner").removeClass("d-none").removeAttr("aria-hidden");
         $("#input-main").val(null).focus();
@@ -92,8 +105,14 @@ $(document).ready(function() {
         $("#loader").show();
     });
 
-    $("#button-summary").on("htmx:afterRequest", function(event) {
-        let element = $(".text-output").last();
+    $("#button-summary, #wrapper-summary").on("htmx:afterRequest", function(event) {
+        let element;
+
+        if ((this.id == "wrapper-summary") && (index >= 0)) {
+            element = $($(".text-output").get(index));
+        } else {
+            element = $(".text-output").last();
+        }
 
         if (event.detail.successful == true) {
             let summary = element.html();
@@ -108,7 +127,7 @@ $(document).ready(function() {
                         $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
                         $("#input-main").trigger("input");
                     }
-                    if ((i > 0) && (height < element.height())) {
+                    if ((i > 0) && (index < 0) && (height < element.height())) {
                         height = element.height();
                         scroller.scrollTop(scroller[0].scrollHeight);
                     }
@@ -124,24 +143,40 @@ $(document).ready(function() {
 
     $("#main").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(sleep, function() {
-            let scroller = $(".scroll-main");
-            scroller.scrollTop(scroller[0].scrollHeight);
             $("#main").removeClass("opacity-0");
         });
     });
 
     /*
+        Clipboard
+    */
+    $("#wrapper-summary").on("click", ".copy .bi", function() {
+        let element = $(this);
+
+        navigator.clipboard.writeText(element.closest(".wrapper-summary").find(".text-output").text());
+        alert("Text copied to clipboard!");
+
+        element.removeClass("bi-clipboard").addClass("bi-clipboard-check");
+
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            element.removeClass("bi-clipboard-check").addClass("bi-clipboard");
+        }, messageTimer / 2);
+    });
+
+    /*
         Modals
     */
-    $("#wrapper-login").on("input keydown", ".validate input", function(event) {
+    $("#wrapper-login").on("input keydown", ".validate input:not(.disabled)", function(event) {
         if (event.key == "Enter") {
             $("#wrapper-login .btn-primary.btn-request").trigger("click");
         } else {
             let element = $(this);
             let required = element.prop("required");
+            let validate = element.attr("hx-validate");
             let type = element.attr("type");
 
-            if ((required) || ((type) && (type != "text"))) {
+            if ((required) || (validate == "true") || ((type) && (type != "text"))) {
                 if (element.val()) {
                     element.parent().addClass("was-validated");
                 } else {
@@ -159,26 +194,32 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:beforeRequest", ".btn-request", function(event) {
+        let needsValidation = true;
         let isValid = true;
         let successMessage;
         let errorMessage;
 
-        $("#wrapper-login .validate input").each(function() {
+        $("#wrapper-login .validate input:not(.disabled)").each(function() {
             let element = $(this);
             let required = element.prop("required");
+            let validate = element.attr("hx-validate");
             let type = element.attr("type");
 
-            if ((required) || ((type) && (type != "text"))) {
-                isValid = this.checkValidity();
+            if ((required) || (validate == "true") || ((type) && (type != "text"))) {
+                if (needsValidation) {
+                    isValid = this.checkValidity();
 
-                if (!isValid) {
-                    element.focus();
+                    if (!isValid) {
+                        element.focus();
 
-                    errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
-                    errorMessage += $("label[for='" + element.attr('id') + "']").text() + " error. " + this.validationMessage;
+                        errorMessage = "<span class='bi bi-exclamation-triangle-fill'></span> ";
+                        errorMessage += $("label[for='" + element.attr('id') + "']").text() + " error. " + this.validationMessage;
 
-                    return false;
+                        needsValidation = false;
+                    }
                 }
+
+                element.parent().addClass("was-validated");
             }
         });
 
@@ -205,8 +246,6 @@ $(document).ready(function() {
                 }, messageTimer);
             });
 
-            $("#wrapper-login .field-set.validate").addClass("was-validated");
-
             event.preventDefault();
             event.stopPropagation();
         }
@@ -217,7 +256,7 @@ $(document).ready(function() {
         let errorMessage;
 
         if (event.detail.successful == true) {
-            let inputs = $("#wrapper-login .validate input");
+            let inputs = $("#wrapper-login .validate input:not(.disabled)");
             inputs.first().focus();
 
             $(inputs.get().reverse()).each(function() {
@@ -263,14 +302,10 @@ $(document).ready(function() {
     $("#wrapper-login").on("htmx:afterRequest", function(event) {
         if (event.detail.successful == true) {
             $("#wrapper-login .btn-primary.btn-request, #wrapper-login .link-request").each(function() {
-                let name = $(this).data("ws-name");
                 let login = $(this).data("ws-login");
                 let pro = $(this).data("ws-pro");
                 let body = $("body");
 
-                if (name != null) {
-                    body.attr("data-ws-name", name);
-                }
                 if (login != null) {
                     body.attr("data-ws-login", login);
                     sessionStorage.setItem("isLoggedIn", login);
@@ -296,7 +331,7 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("click", "#button-logout", function() {
-        $("body").removeAttr("data-ws-name").attr("data-ws-login", "false");
+        $("body").attr("data-ws-login", "false");
         sessionStorage.setItem("isLoggedIn", "false");
         setTimeout("redirectTo('/')", longSleep);
         updateNavbar();
@@ -332,10 +367,6 @@ $(window).on("load", function() {
 /*
     Helpers
 */
-function getName() {
-    return $("body").attr("data-ws-name");
-}
-
 function getPath() {
     return $("body").attr("data-ws-path");
 }

@@ -1,4 +1,4 @@
-<div class="wrapper-summary"><!--th:id="${output.id}"-->
+<div class="wrapper-summary" hx-sync="this"><!--th:id="${output.id}"-->
     <div class="date text-black-50 text-center fs-7 w-100" th:text="${date}"></div>
     <div class="user fit-content ms-auto me-0 my-2 px-4">
         <h4 class="d-inline-block mt-0 me-2 mb-0 ms-0 bi bi-person-circle"></h4>
@@ -15,9 +15,22 @@
         <span class="text-chat text-output" th:utext="${output}"></span>
         <span class="ai spinner-grow spinner-grow-xs"></span>
     </div>
-    <div class="social-links fit-content ms-0 me-auto my-2 px-4">
-        <a th:href="${fb}" target="_blank"><img class="social-link invert w-125 h-125" src="https://static.addtoany.com/buttons/facebook.svg"></a>
-        <a th:href="${twitter}" target="_blank"><img class="social-link invert w-125 h-125" src="https://static.addtoany.com/buttons/x.svg"></a>
-        <a th:href="${email}" target="_blank"><img class="social-link invert w-125 h-125" src="https://static.addtoany.com/buttons/email.svg"></a>
+    <div class="share-links fit-content fs-7 ms-0 me-auto my-2 px-4">
+        <a class="url text-decoration-none me-2" th:href="${url}" target="_blank"><span class="bi bi-globe2"><span class="ms-1" th:text="${url}"></span></span></a>
+        <a class="link text-decoration-none me-2" th:href="${url}" target="_blank"><span class="bi bi-link-45deg"><span class="ms-1" th:text="${link}"></span></span></a>
+        <a class="fb text-reset text-decoration-none me-2" th:href="${'https://www.addtoany.com/add_to/facebook?linkurl=' + url}" target="_blank"><span class="bi bi-facebook"></span></a>
+        <a class="x text-reset text-decoration-none me-2" th:href="${'https://www.addtoany.com/add_to/x?linkurl=' + url}" target="_blank"><span class="bi bi-twitter-x"></span></a></a>
+        <a class="copy text-reset text-decoration-none me-2" href="#copy"><span class="bi bi-clipboard"></span></a>
+        <a
+            hx-trigger="click queue:none"
+            hx-post="/api/summary"
+            th:hx-vals='|javascript:{isLoggedIn: getIsLoggedIn(), isProUser: getIsProUser(), "input": "${input}"}|'
+            hx-target="closest .wrapper-summary"
+            hx-swap="outerHTML"
+            hx-disabled-elt="this"
+            class="redo text-reset text-decoration-none me-2"
+            href="#redo">
+            <span class="bi bi-arrow-clockwise"></span>
+        </a>
     </div>
 </div>
