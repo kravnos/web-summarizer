@@ -8,6 +8,7 @@ import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class WebController {
     Shortlink shortlink;
 
     @Autowired
+    private HistoryService historyService;
+
+    @Autowired
     BitLyController bitLyController;
 
     @Value("${WEBADDRESS}")
@@ -60,8 +64,8 @@ public class WebController {
      */
     public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
-        this.currentLlm=bart; //default llm as bart
         this.openAi = openAi;
+        this.currentLlm = bart; //default llm as bart
     }
 
     /**
@@ -149,6 +153,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
+                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
@@ -193,6 +199,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
+                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
