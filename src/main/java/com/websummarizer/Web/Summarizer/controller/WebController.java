@@ -12,13 +12,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,7 +57,6 @@ public class WebController {
     private Llm currentLlm;
     private boolean flag = true;
     long hid = -1;
-    HttpSession httpSession;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -118,7 +119,7 @@ public class WebController {
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("is user authenticated?"+authentication);
+        System.out.println("is user authenticated?" + authentication);
 
         //todo check the logic if this is correct
         if (isLoggedIn.equals("true") && flag) { // if the user is logged in and it is the first summary
@@ -126,19 +127,47 @@ public class WebController {
             //Generate a new link for the history
 
             String jwt = (String) session.getAttribute("jwt");
+            String email = (String) session.getAttribute("email");
+
+
+            logger.severe("sending jwt in request: "+jwt);
+            logger.severe("sending email in request: "+email);
+
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(jwt);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // Create the request body as form data
+            MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+            map.add("output", output);
+            map.add("email", email);
 
 
 
-            hid = (int) authenticationController.addNewHistory(output);
+            // Create an entity which includes the headers and the body
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+            // Make the request
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "http://localhost:8080/users/add-new-history",
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            hid = (int) authenticationController.addNewHistory(output,email);
             flag = false;
 
 
         } else if (isLoggedIn.equals("true")) { // if the user is logged in, and it is not the first summary so add to previous
             logger.info("user is logged in saving the history now:");
-            if(hid != -1) {
+            if (hid != -1) {
                 ResponseEntity<?> historyResponse = authenticationController.addToPreviousHistory(hid, output);
-            }
-            else{
+            } else {
                 logger.severe("failed to add history to previous history");
             }
         } else {
@@ -207,6 +236,7 @@ public class WebController {
             @RequestParam(value = "path", required = false) String path,
             @ModelAttribute UserDTO userDTO,
             HttpServletRequest request,
+            HttpSession session,
             Model model
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
@@ -215,9 +245,12 @@ public class WebController {
 
         LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
         assert loginResponseDTO != null;
-        logger.info("jwt:"+loginResponseDTO);
+        logger.info("jwt:" + loginResponseDTO);
 
-        httpSession.setAttribute("jwt",loginResponseDTO.getJwt());
+
+        session.setAttribute("jwt", loginResponseDTO.getJwt());
+        session.setAttribute("email", loginResponseDTO.getUser().getEmail());
+
 
 
         if (isValidLogin) {
@@ -326,14 +359,14 @@ public class WebController {
         logger.info("Received user creation request: " + user);
         boolean isRegistered = false;
 
-        //check password
-        if (!shortLinkGenerator.checkPassword(user.getPassword())) {
-            model.addAttribute("isValid", false);
-            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
-
-            return "user/register";
-        }
+        //check password /todo put back
+//        if (!shortLinkGenerator.checkPassword(user.getPassword())) {
+//            model.addAttribute("isValid", false);
+//            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+//            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+//
+//            return "user/register";
+//        }
 
         try {
             user.setLlmSelection("bart");//added default llm as bart while registration

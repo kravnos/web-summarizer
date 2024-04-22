@@ -4,6 +4,7 @@ import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,6 @@ public class UserController {
     @Autowired
     private HistoryService historyService; //todo service remove
     @Autowired
-    private HistoryController historyController;
-    @Autowired
     private UserRepo userRepo;
     @Autowired
     private ShortLinkGenerator shortLinkGenerator;
@@ -34,21 +33,12 @@ public class UserController {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    @GetMapping("/add-new-history")
-    public ResponseEntity<?> addNewHistory(String output) {
+    @PostMapping("/add-new-history")
+    public ResponseEntity<?> addNewHistory(String output,String email) {
         try {
-            // Get the currently authenticated user
-            String userEmail = this.getAuthenticatedUserEmail();
-            logger.info(userEmail);
-            User user = userRepo.findByEmail(userEmail).orElse(null);
-
-            if (user == null) {
-                logger.warning("Failed to create new user history. User is not authenticated.");
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("User is not authenticated.");
-            }
-
-
+            User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
+            logger.info("new history request from : " + email);
             History history = new History();
             history.setUser(user);
             history.setHistoryContent(output);
@@ -78,14 +68,11 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("User is not authenticated.");
             }
 
-
             // Create a new history for the user
             History history = new History();
             history.setUser(user);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
-
-
 
             // Save the new history
             History savedHistory = historyService.save(history);

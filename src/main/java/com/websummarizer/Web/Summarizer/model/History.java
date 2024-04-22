@@ -26,6 +26,7 @@ public class History {
     @Column(name = "HID")
     private Long id;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "UID")
     private User user;

@@ -96,8 +96,8 @@ public class AuthenticationController {
         }
     }
 
-    public long addNewHistory(String output) {
-       ResponseEntity<?> history = userController.addNewHistory(output);
+    public long addNewHistory(String output,String email) {
+       ResponseEntity<?> history = userController.addNewHistory(output, email);
        if(history.getStatusCode().is2xxSuccessful()) {
            History history1 = (History) history.getBody();
            assert history1 != null;

@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.model.history;
 
+import com.websummarizer.Web.Summarizer.model.ShortLink;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class HistoryReqAto {
 
     @NonNull
     @ToString.Include
-    private String short_link;
+    private ShortLink short_link;
 
     @NonNull
     @ToString.Include
