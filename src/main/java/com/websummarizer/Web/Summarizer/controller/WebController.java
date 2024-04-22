@@ -3,7 +3,7 @@ package com.websummarizer.Web.Summarizer.controller;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
-import com.websummarizer.Web.Summarizer.controller.Shortlink;
+import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +44,7 @@ public class WebController {
     private AuthenticationController authenticationController;
 
     @Autowired
-    Shortlink shortlink;
+    ShortLinkGenerator shortLinkGenerator;
 
     @Autowired
     BitLyController bitLyController;
@@ -51,7 +53,9 @@ public class WebController {
     private String webAddress;
 
     private Llm currentLlm;
-    private int counter = 0;
+    private boolean flag = true;
+    long hid = -1;
+    HttpSession httpSession;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -113,23 +117,35 @@ public class WebController {
             }
         }
 
-        if(isLoggedIn.equals("true") && counter == 0){ // if the user is logged in and it is the first summary
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("is user authenticated?"+authentication);
+
+        //todo check the logic if this is correct
+        if (isLoggedIn.equals("true") && flag) { // if the user is logged in and it is the first summary
             logger.info("user is logged in saving the history now:");
             //Generate a new link for the history
-            link = shortlink.Shortlink(input,output,session);
+
+            String jwt = (String) session.getAttribute("jwt");
 
 
-        } else if(isLoggedIn.equals("true")){ // if the user is logged in and it is the first summary
+
+            hid = (int) authenticationController.addNewHistory(output);
+            flag = false;
+
+
+        } else if (isLoggedIn.equals("true")) { // if the user is logged in, and it is not the first summary so add to previous
             logger.info("user is logged in saving the history now:");
-
-            //user the previous link to store the history
-
-        }
-        else {
+            if(hid != -1) {
+                ResponseEntity<?> historyResponse = authenticationController.addToPreviousHistory(hid, output);
+            }
+            else{
+                logger.severe("failed to add history to previous history");
+            }
+        } else {
             logger.info("user is not logged in saving the history in temp variable to avoid loss:");
             //save the content in a temporary history object
         }
-        //link = shortlink.Shortlink(input, output, session);
+        //link = shortlink.ShortLinkGenerator(input, output, session);
         //url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
@@ -196,6 +212,13 @@ public class WebController {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
+
+        LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
+        assert loginResponseDTO != null;
+        logger.info("jwt:"+loginResponseDTO);
+
+        httpSession.setAttribute("jwt",loginResponseDTO.getJwt());
+
 
         if (isValidLogin) {
             request.getSession().setAttribute("username", userDTO.getLogin_email());
@@ -304,7 +327,7 @@ public class WebController {
         boolean isRegistered = false;
 
         //check password
-        if (!shortlink.checkPassword(user.getPassword())) {
+        if (!shortLinkGenerator.checkPassword(user.getPassword())) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
