@@ -73,6 +73,8 @@ public class User implements UserDetails {
 
     private String llmSelection;
 
+    private boolean isPro;
+
     public User(String email) {
         this.email = email;
     }

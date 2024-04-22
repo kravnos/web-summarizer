@@ -32,6 +32,7 @@ public class AuthenticationController {
     public ResponseEntity<?> registerUser(User user) {
         logger.info("Received user creation request: " + user);
         try {
+            user.setPro(false);
             User registeredUser = authenticationService.registerUser(user);
             if (registeredUser != null) {
                 logger.info("User registered successfully: " + user.getEmail());
