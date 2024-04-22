@@ -120,10 +120,8 @@ public class WebController {
         model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
-        model.addAttribute("link", url);
+        model.addAttribute("url", url);
+        model.addAttribute("link", link);
 
         return "api/summary";
     }
