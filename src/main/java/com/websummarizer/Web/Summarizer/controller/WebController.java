@@ -214,12 +214,25 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-            @RequestParam(value = "email") String email,
+            @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @ModelAttribute UserReqAto user,
             Model model
     ) {
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("isProUser", isProUser);
+
+        if ((email == null) || (email.equals(""))) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Failed to save settings. Email not found for user account.");
+
+            return "user/account";
+        } else {
+            model.addAttribute("email", email);
+        }
+
         logger.info("User update request for the following user: " + user);
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
         if(user!=null){
@@ -231,9 +244,6 @@ public class WebController {
                 this.currentLlm = openAi;
             }
         }
-        model.addAttribute("email", email);
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("isProUser", isProUser);
 
         if (isValidUpdate != null) {
             model.addAttribute("isValid", true);
