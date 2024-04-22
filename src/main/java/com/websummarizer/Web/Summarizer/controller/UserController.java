@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/add-new-history")
-    public ResponseEntity<?> addNewHistory(String output,String email) {
+    public ResponseEntity<?> addNewHistory(String output, String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/{short_link}/append-history")
-    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String output,String email) {
+    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String output, String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
@@ -81,6 +82,25 @@ public class UserController {
         } catch (Exception e) {
             logger.severe("failed to create new user history." + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to append new user history.");
+        }
+    }
+
+    @GetMapping("/histories")
+    public ResponseEntity<?> addToPreviousHistory(String email) {
+        try {
+            User user = userRepo.findByEmail(email).orElse(null);
+            // Create a new history for the user
+            logger.info("fetching histories for : " + email);
+
+            // Save the new history
+            assert user != null;
+            List<History> allHistories = historyService.findAllHistory(user.getId());
+
+            logger.info("returning all histories for : "+email);
+            return ResponseEntity.ok(allHistories);
+        } catch (Exception e) {
+            logger.severe("failed to return histories." + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to return histories.");
         }
     }
 }

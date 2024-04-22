@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,11 +71,8 @@ public class HistoryService {
     }
 
     // Retrieve all history records
-    public HistoriesResAto findAllHistory() {
-        var historys = new ArrayList<HistoryResAto>();
-        historyRepo.findAll().forEach((history) -> historys.add(HistoryMapper.mapHistoryEtoResAto(history)));
-
-        return HistoriesResAto.builder().histories(historys).build();
+    public List<History> findAllHistory(long uid) {
+        return historyRepo.findAllByUserId(uid);
     }
 
     public History save(History history) {
