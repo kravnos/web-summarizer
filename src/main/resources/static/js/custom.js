@@ -148,6 +148,23 @@ $(document).ready(function() {
     });
 
     /*
+        Clipboard
+    */
+    $("#wrapper-summary").on("click", ".copy .bi", function() {
+        let element = $(this);
+
+        navigator.clipboard.writeText(element.closest(".wrapper-summary").find(".text-output").text());
+        alert("Text copied to clipboard!");
+
+        element.removeClass("bi-clipboard").addClass("bi-clipboard-check");
+
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            element.removeClass("bi-clipboard-check").addClass("bi-clipboard");
+        }, messageTimer / 2);
+    });
+
+    /*
         Modals
     */
     $("#wrapper-login").on("input keydown", ".validate input:not(.disabled)", function(event) {
