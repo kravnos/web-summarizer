@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface HistoryRepo extends CrudRepository<History, Long> {
 
     //find user's history summarize using short link
-//    @Query("SELECT h FROM History h WHERE h.shortLink = ?1")
-//    Optional<History> findHistoryByShortLink(String shortLink); //SELECT * FROM history WHERE email = ...
+    @Query("SELECT h FROM History h WHERE h.shortLink = ?1")
+    History findHistoryByShortLink(String shortLink); //SELECT * FROM history WHERE email = ...
 }

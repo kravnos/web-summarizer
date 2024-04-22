@@ -2,9 +2,9 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.repo.HistoryRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,10 +40,11 @@ public class UserController {
             // Create a new history for the user
             logger.info("new history request from : " + email);
             History history = new History();
+            assert user != null;
             history.setUser(user);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
-            history.setLinkURL(shortLinkGenerator.generateShortUrl());
+            history.setShortLink(shortLinkGenerator.generateShortUrl());
 
             // Save the new history
             History savedHistory = historyService.save(history);
@@ -56,32 +57,30 @@ public class UserController {
         }
     }
 
-    @GetMapping("{sid}/append-history")
-    public ResponseEntity<?> addToPreviousHistory(long hid, String output) {
+    @PostMapping("/{short_link}/append-history")
+    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String output,String email) {
         try {
-            // Get the currently authenticated user
-            String userEmail = this.getAuthenticatedUserEmail();
-            User user = userRepo.findByEmail(userEmail).orElse(null);
-
-            if (user == null) {
-                logger.warning("Failed to create new user history. User is not authenticated.");
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("User is not authenticated.");
-            }
-
+            User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
+            logger.info("new history append request from : " + email);
             History history = new History();
+            assert user != null;
             history.setUser(user);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
 
+            //String shortLink = String.valueOf(historyRepo.findHistoryByShortLink(short_link));
+
+            history.setShortLink(short_link);
+
             // Save the new history
             History savedHistory = historyService.save(history);
 
-            logger.info("New user history created successfully: " + savedHistory.getId());
+            logger.info("new user history created successfully: " + savedHistory.getId());
             return ResponseEntity.ok(savedHistory);
         } catch (Exception e) {
-            logger.severe("Failed to create new user history." + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create new user history.");
+            logger.severe("failed to create new user history." + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to append new user history.");
         }
     }
 }

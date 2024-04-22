@@ -1,5 +1,8 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
@@ -57,6 +60,7 @@ public class WebController {
     private Llm currentLlm;
     private boolean flag = true;
     long hid = -1;
+    String shortUrl;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -121,21 +125,16 @@ public class WebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("is user authenticated?" + authentication);
 
+        String jwt = (String) session.getAttribute("jwt");
+        String email = (String) session.getAttribute("email");
+        logger.info("sending jwt in request: "+jwt);
+        logger.info("sending email in request: "+email);
+
         //todo check the logic if this is correct
         if (isLoggedIn.equals("true") && flag) { // if the user is logged in and it is the first summary
             logger.info("user is logged in saving the history now:");
             //Generate a new link for the history
-
-            String jwt = (String) session.getAttribute("jwt");
-            String email = (String) session.getAttribute("email");
-
-
-            logger.severe("sending jwt in request: "+jwt);
-            logger.severe("sending email in request: "+email);
-
-
             RestTemplate restTemplate = new RestTemplate();
-
             // Create headers
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(jwt);
@@ -147,29 +146,81 @@ public class WebController {
             map.add("email", email);
 
 
+            // Create an entity which includes the headers and the body
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+            // Make the request
+            ResponseEntity<String> response = restTemplate.exchange(
+                    webAddress+"users/add-new-history",
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            if(response.getStatusCode().is2xxSuccessful()){
+                logger.info("new history response body: " + response.getBody());
+
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = null;
+                try {
+                    rootNode = mapper.readTree(response.getBody());
+                } catch (JsonProcessingException e) {
+                    //todo
+                    logger.severe("error creating json object of history");
+                }
+
+                assert rootNode != null;
+                int id = rootNode.get("id").asInt();
+                hid=id;
+                shortUrl = rootNode.get("shortLink").asText();
+                logger.info("extracted history id: " + id);
+            }
+            flag = false;
+
+        } else if (isLoggedIn.equals("true")) { // if the user is logged in, and it is not the first summary so add to previous
+            logger.info("user is logged in appending history now:");
+            //Generate a new link for the history
+            RestTemplate restTemplate = new RestTemplate();
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(jwt);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // Create the request body as form data
+            MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+            map.add("output", output);
+            map.add("email", email);
+
 
             // Create an entity which includes the headers and the body
             HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
 
             // Make the request
             ResponseEntity<String> response = restTemplate.exchange(
-                    "http://localhost:8080/users/add-new-history",
+                    webAddress+"/users/"+shortUrl+"/append-history",
                     HttpMethod.POST,
                     requestEntity,
                     String.class
             );
 
-            hid = (int) authenticationController.addNewHistory(output,email);
-            flag = false;
+            if(response.getStatusCode().is2xxSuccessful()){
+                logger.info("new history append body: " + response.getBody());
 
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = null;
+                try {
+                    rootNode = mapper.readTree(response.getBody());
+                } catch (JsonProcessingException e) {
+                    //todo
+                    logger.severe("error creating json object of history");
+                }
 
-        } else if (isLoggedIn.equals("true")) { // if the user is logged in, and it is not the first summary so add to previous
-            logger.info("user is logged in saving the history now:");
-            if (hid != -1) {
-                ResponseEntity<?> historyResponse = authenticationController.addToPreviousHistory(hid, output);
-            } else {
-                logger.severe("failed to add history to previous history");
+                assert rootNode != null;
+                int id = rootNode.get("id").asInt();
+                hid=id;
+                logger.info("extracted history id: " + id);
             }
+
         } else {
             logger.info("user is not logged in saving the history in temp variable to avoid loss:");
             //save the content in a temporary history object
@@ -187,6 +238,21 @@ public class WebController {
         model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
         model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
         model.addAttribute("link", url);
+
+        return "api/summary";
+    }
+
+    @PostMapping("/api/newchat")
+    public String newChat(
+            @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
+            @RequestParam(value = "isProUser", required = false) String isProUser,
+            @RequestParam(value = "input") String input,
+            HttpServletRequest request,
+            HttpSession session,
+            Model model
+    ) {
+        flag = true;
+        hid = -1;
 
         return "api/summary";
     }
@@ -250,7 +316,6 @@ public class WebController {
 
         session.setAttribute("jwt", loginResponseDTO.getJwt());
         session.setAttribute("email", loginResponseDTO.getUser().getEmail());
-
 
 
         if (isValidLogin) {

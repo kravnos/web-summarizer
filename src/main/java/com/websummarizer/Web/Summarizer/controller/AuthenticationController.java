@@ -1,7 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
-import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
@@ -94,19 +93,5 @@ public class AuthenticationController {
             logger.severe("Failed to update user due to an exception: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
         }
-    }
-
-    public long addNewHistory(String output,String email) {
-       ResponseEntity<?> history = userController.addNewHistory(output, email);
-       if(history.getStatusCode().is2xxSuccessful()) {
-           History history1 = (History) history.getBody();
-           assert history1 != null;
-           return history1.getId();
-       }
-       return -1;
-    }
-
-    public ResponseEntity<?> addToPreviousHistory(long hid, String output) {
-        return userController.addToPreviousHistory(hid,output);
     }
 }
