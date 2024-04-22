@@ -154,7 +154,7 @@ public class WebController {
                 }
             } else {
                 model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
-                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user
+                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user, either "bart" or "openai"
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
@@ -200,7 +200,7 @@ public class WebController {
                 }
             } else {
                 model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
-                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user
+                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user, either "bart" or "openai"
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
