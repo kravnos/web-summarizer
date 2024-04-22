@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class History {
 
+    public History(String historyContent){
+        this.historyContent=historyContent;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "HID")
@@ -26,19 +30,12 @@ public class History {
     @JoinColumn(name = "UID")
     private User user;
 
-    @Setter
     @Column(name = "history_content", length = 100000)
     private String historyContent;
 
-    @Setter
     @Column(name = "linkURL", length = 1000)
     private String linkURL;
 
-    @Setter
-    @Column(name = "short_link", unique = true, nullable = false)
-    private String shortLink;
-
-    @Setter
     @Column(name = "upload_time")
     private LocalDateTime uploadTime;
 

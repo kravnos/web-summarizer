@@ -1,6 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
+import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
@@ -25,6 +26,8 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private UserController userController;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(User user) {
@@ -52,6 +55,7 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(UserDTO userDTO) {
+
         logger.info("User login request for: " + userDTO.getLogin_email());
         try {
             LoginResponseDTO loginResponseDTO = authenticationService.loginUser(userDTO.getLogin_email(), userDTO.getLogin_password());
@@ -92,4 +96,17 @@ public class AuthenticationController {
         }
     }
 
+    public long addNewHistory(String output) {
+       ResponseEntity<?> history = userController.addNewHistory(output);
+       if(history.getStatusCode().is2xxSuccessful()) {
+           History history1 = (History) history.getBody();
+           assert history1 != null;
+           return history1.getId();
+       }
+       return -1;
+    }
+
+    public ResponseEntity<?> addToPreviousHistory(long hid, String output) {
+        return userController.addToPreviousHistory(hid,output);
+    }
 }
