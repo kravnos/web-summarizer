@@ -3,7 +3,6 @@ package com.websummarizer.Web.Summarizer.services.history;
 import com.websummarizer.Web.Summarizer.common.exceptions.CCNotFoundException;
 import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
-import com.websummarizer.Web.Summarizer.model.history.HistoriesResAto;
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.repo.HistoryRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;

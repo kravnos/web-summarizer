@@ -96,7 +96,7 @@ public class UserController {
 
             // Save the new history
             assert user != null;
-            List<HistoryResAto> allHistories = historyService.findHistoryId(user.getId());
+            List<History> allHistories = historyService.findAllHistory(user.getId());
 
             logger.info("returning all histories for : "+email);
             return ResponseEntity.ok(allHistories);
