@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,6 +77,7 @@ public class HistoryService {
         return HistoriesResAto.builder().histories(historys).build();
     }
 
+
     // Get shortlink for a history
     public HistoryResAto getShortLink(String shortlink) {
         // Find the history in the repository by its shortlink
@@ -84,6 +86,18 @@ public class HistoryService {
         // Otherwise, throw a CCNotFoundException
         return maybeFoundHistory.map(HistoryMapper::mapHistoryEtoResAto)
                 .orElseThrow(CCNotFoundException::new);
+    }
+
+    public List<HistoryResAto> findHistoryId(long id) {
+        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
+
+        for(var h: historyRepository.findAll()){
+            HistoryResAto history = HistoryMapper.mapHistoryEtoResAto(h);
+            if(history.getUID() == id){
+                result.add(history);
+            }
+        }
+        return result;
     }
 
 }
