@@ -101,7 +101,7 @@ public class AuthenticationService {
 //                        existingUser.getPassword().equals(userReqAto.getPassword()) +"\n"+
 //                        existingUser.getPhone_number().equals(userReqAto.getPhone_number()) +"\n"+
 //                        existingUser.getProvider().equals(userReqAto.getProvider()));
-
+                logger.log(Level.INFO, "User is a LOCAL user", userReqAto.getEmail());
                 if (userReqAto.getFirst_name().isBlank() &&
                         userReqAto.getLast_name().isBlank() &&
                         existingUser.getEmail().equals(userReqAto.getEmail()) &&
@@ -115,10 +115,12 @@ public class AuthenticationService {
                     logger.info("User updated successfully: " + updatedUser);
 
                     return updatedUser;
-                }else {
-                    throw new OauthUpdateNotAllowed();
                 }
             }
+            else {
+                    throw new OauthUpdateNotAllowed();
+                }
+
 
             // Update the existing user only with new values and copy previous values for the empty fields
             if (!userReqAto.getFirst_name().isBlank())
