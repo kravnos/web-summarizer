@@ -61,7 +61,7 @@
                     <ol class="list-group" th:each="history: ${histories}">
                         <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
                             <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                                <div class="fs-7 text-uppercase fw-bold" th:text="${history.upload_time}"></div>
+                                <div class="fs-7 text-uppercase fw-bold" th:text="${history.short_link + ' (' + #temporals.format(history.upload_time, 'yyyy/MM/dd h:mm:ss a') + ')'}"></div>
                                 <span th:text="${history.history_content}"></span>
                             </div>
                             <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" th:href="${history.short_link}" target="_blank" tabindex="-1">View</a>
@@ -72,7 +72,7 @@
                     <ol class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
                             <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                                <div class="fs-7 text-uppercase fw-bold">&lt;upload_time&gt;</div>
+                                <div class="fs-7 text-uppercase fw-bold">&lt;short_link&gt; @ &lt;upload_time&gt;</div>
                                 <span>&lt;history_content&gt;</span>
                             </div>
                             <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>

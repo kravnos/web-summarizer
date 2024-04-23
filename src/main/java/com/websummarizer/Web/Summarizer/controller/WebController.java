@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
@@ -9,6 +10,7 @@ import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+import com.websummarizer.Web.Summarizer.services.users.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -43,6 +46,9 @@ public class WebController {
 
     @Autowired
     Shortlink shortlink;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private HistoryService historyService;
@@ -153,7 +159,10 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.findAllHistory());
+                User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+
+                model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
@@ -184,7 +193,7 @@ public class WebController {
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
-            request.getSession().setAttribute("username", userDTO.getLogin_email());
+            request.getSession().setAttribute("username", email);
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
@@ -199,7 +208,10 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.findAllHistory());
+                User user = userService.getFoundUser(email);
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+
+                model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
