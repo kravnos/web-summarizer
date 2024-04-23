@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.configs;
 
+import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserOAuth2;
 import com.websummarizer.Web.Summarizer.services.OAuth2AuthenticationService;
@@ -36,9 +37,12 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         logger.info("Authentication of oauth 2 user request: "+ authentication);
         if(authentication.getPrincipal() instanceof DefaultOidcUser) {
             DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-            User user = oAuth2AuthenticationService.processOAuthPostLoginGoogle(oidcUser);
-            request.getSession().setAttribute("username",user.getEmail());
-            logger.info("created following user at on success method: " + user);
+            LoginResponseDTO loginResponseDTO = oAuth2AuthenticationService.processOAuthPostLoginGoogle(oidcUser);
+            logger.info("user after processOAuthPostLoginGoogle:"+loginResponseDTO);
+            request.getSession().setAttribute("username",loginResponseDTO.getUser().getEmail());
+            request.getSession().setAttribute("email",loginResponseDTO.getUser().getEmail());
+            request.getSession().setAttribute("jwt",loginResponseDTO.getJwt());
+            logger.info("created following user at on success method: " + loginResponseDTO);
         }else if (authentication.getPrincipal() instanceof UserOAuth2){
             UserOAuth2 oauth2User = (UserOAuth2) authentication.getPrincipal();
             User user = oAuth2AuthenticationService.processOAuthPostLoginGithub(oauth2User);
