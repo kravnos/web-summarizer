@@ -1,5 +1,7 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.controller.user.UserResAto;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
@@ -8,6 +10,8 @@ import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+import com.websummarizer.Web.Summarizer.services.users.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -39,6 +44,12 @@ public class WebController {
 
     @Autowired
     private AuthenticationController authenticationController;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private HistoryService historyService;
 
     @Autowired
     Shortlink shortlink;
@@ -190,7 +201,15 @@ public class WebController {
             // Retrieve the session associated with the user's request or create a new one if it doesn't exist
             HttpSession session = request.getSession();
             // Store the user's login email in the session under the attribute name "username"
-            session.setAttribute("username", userDTO.getLogin_email());
+            session.setAttribute("username", email);
+
+            User user = (User)userService.getFoundUser(email);
+
+            List<HistoryResAto> content = historyService.findHistoryId(user.getId());
+            model.addAttribute("content",content);
+
+            model.addAttribute("user",user);
+            session.setAttribute("user", user);
 
             if ((path != null) && (path.equals("pro"))) {
                 if ((isProUser != null) && (isProUser.equals("true"))) {
