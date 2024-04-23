@@ -64,7 +64,7 @@ public class OAuth2AuthenticationService {
             return registerUser(oauthUser);
         } else {
             //TODO : check what will happen if the user has a email registered and then tries to loging using google
-            return null;
+            return userRepo.findByEmail(email).orElse(null);
         }
     }
 

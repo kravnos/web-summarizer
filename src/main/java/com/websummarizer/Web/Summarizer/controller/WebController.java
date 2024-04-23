@@ -82,29 +82,33 @@ public class WebController {
         String email = (String) session.getAttribute("email");
         ResponseEntity<String> response = null;
         if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
-            logger.info("user is logged making a post request");
-            //Generate a new link for the history
-            RestTemplate restTemplate = new RestTemplate();
-            // Create headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(jwt);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            try {
+                logger.info("user is logged making a post request");
+                //Generate a new link for the history
+                RestTemplate restTemplate = new RestTemplate();
+                // Create headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(jwt);
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            // Create the request body as form data
-            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.add("output", historyContent);
-            map.add("email", email);
+                // Create the request body as form data
+                MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+                map.add("output", historyContent);
+                map.add("email", email);
 
-            // Create an entity which includes the headers and the body
-            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+                // Create an entity which includes the headers and the body
+                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
 
-            // Make the request
-            response = restTemplate.exchange(
-                    httpUrl,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
+                // Make the request
+                response = restTemplate.exchange(
+                        httpUrl,
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class
+                );
+            }catch (Exception e){
+                return null;
+            }
         }
         return response;
     }
@@ -207,6 +211,9 @@ public class WebController {
                 if (response != null && response.getStatusCode().is2xxSuccessful()) {
                     extractHistoryData1(response);
                 }
+                else {
+                     output = "Failed to process request please try again";
+                }
             }
         }
 
@@ -307,7 +314,7 @@ public class WebController {
 
         LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
         assert loginResponseDTO != null;
-        logger.info("jwt:" + loginResponseDTO);
+        logger.info("jwt:" + loginResponseDTO.getJwt());
 
 
         session.setAttribute("jwt", loginResponseDTO.getJwt());
