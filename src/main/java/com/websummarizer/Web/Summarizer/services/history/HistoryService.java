@@ -3,6 +3,7 @@ package com.websummarizer.Web.Summarizer.services.history;
 import com.websummarizer.Web.Summarizer.common.exceptions.CCNotFoundException;
 import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
 import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoriesResAto;
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.repo.HistoryRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
@@ -69,6 +70,10 @@ public class HistoryService {
         historyRepo.deleteById(id);
     }
 
+    // Retrieve all history records
+    public List<History> findAllHistory(long uid) {
+        return historyRepo.findAllByUserId(uid);
+    }
 
     public History save(History history) {
         return historyRepo.save(history); //todo fix
@@ -84,15 +89,4 @@ public class HistoryService {
 //                .orElseThrow(CCNotFoundException::new);
 //    }
 
-    public List<HistoryResAto> findHistoryId(long id) {
-        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
-
-        for(var h: historyRepo.findAll()){
-            HistoryResAto history = HistoryMapper.mapHistoryEtoResAto(h);
-            if(history.getUID() == id){
-                result.add(history);
-            }
-        }
-        return result;
-    }
 }
