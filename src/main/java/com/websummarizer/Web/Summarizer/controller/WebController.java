@@ -153,8 +153,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
-                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user, either "bart" or "openai"
+                model.addAttribute("histories", historyService.findAllHistory(453));
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
@@ -199,8 +199,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.getHistory(1));  // TODO: get ALL History for user, not just 1...
-                model.addAttribute("llm", "bart");                      // TODO: get llm_selection for user, either "bart" or "openai"
+                model.addAttribute("histories", historyService.findAllHistory(453));
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
@@ -223,9 +223,11 @@ public class WebController {
     @PostMapping("/user/account")
     public String account(
             @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "account_llm", required = false) String llm,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @ModelAttribute UserReqAto user,
+            HttpServletRequest request,
             Model model
     ) {
         model.addAttribute("isLoggedIn", isLoggedIn);
@@ -245,9 +247,11 @@ public class WebController {
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
         if(user!=null){
             if(Objects.equals(user.getAccount_llm(), "bart")){
+                request.getSession().setAttribute("llm", "bart");
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
             }else if(Objects.equals(user.getAccount_llm(), "openai")){
+                request.getSession().setAttribute("llm", "openai");
                 logger.info("llm selected : openai");
                 this.currentLlm = openAi;
             }
