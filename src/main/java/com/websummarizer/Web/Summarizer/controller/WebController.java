@@ -16,8 +16,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -75,6 +73,79 @@ public class WebController {
         this.openAi = openAi;
     }
 
+    private ResponseEntity<String> createPostRequestForHistory(HttpSession session,
+                                                               String isLoggedIn,
+                                                               String historyContent,
+                                                               String httpUrl) {
+        //todo check the logic if this is correct
+        String jwt = (String) session.getAttribute("jwt");
+        String email = (String) session.getAttribute("email");
+        ResponseEntity<String> response = null;
+        if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
+            logger.info("user is logged making a post request");
+            //Generate a new link for the history
+            RestTemplate restTemplate = new RestTemplate();
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(jwt);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // Create the request body as form data
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("output", historyContent);
+            map.add("email", email);
+
+            // Create an entity which includes the headers and the body
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+            // Make the request
+            response = restTemplate.exchange(
+                    httpUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+        }
+        return response;
+    }
+
+    private void extractHistoryData1(ResponseEntity<String> response){
+        logger.info("new history response body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        shortUrl = rootNode.get("shortLink").asText();
+        flag = false;
+        logger.info("extracted history id: " + id);
+    }
+
+    private void extractHistoryData2(ResponseEntity<String> response) {
+        logger.info("new history append body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        logger.info("extracted history id: " + id);
+    }
+
     /**
      * Endpoint for getting a summary.
      *
@@ -91,7 +162,8 @@ public class WebController {
             HttpSession session,
             Model model
     ) {
-        logger.info("flag "+ flag + " "+ hid);
+        boolean isValidOutput = true;
+        logger.info("flag " + flag + " " + hid);
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
@@ -113,6 +185,7 @@ public class WebController {
                 output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
+                isValidOutput = false;
             }
         } else {
             logger.info("got the text:" + input);
@@ -120,111 +193,40 @@ public class WebController {
                 output = currentLlm.queryModel(input);
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
+                isValidOutput = false;
             }
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("is user authenticated?" + authentication);
-
-        String jwt = (String) session.getAttribute("jwt");
-        String email = (String) session.getAttribute("email");
-        logger.info("sending jwt in request: "+jwt);
-        logger.info("sending email in request: "+email);
-
-        //todo check the logic if this is correct
-        if (isLoggedIn.equals("true") && flag) { // if the user is logged in and it is the first summary
-            logger.info("user is logged in saving the history now:");
-            //Generate a new link for the history
-            RestTemplate restTemplate = new RestTemplate();
-            // Create headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(jwt);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            // Create the request body as form data
-            MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-            map.add("output", output);
-            map.add("email", email);
-
-
-            // Create an entity which includes the headers and the body
-            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
-
-            // Make the request
-            ResponseEntity<String> response = restTemplate.exchange(
-                    webAddress+"users/add-new-history",
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
-
-            if(response.getStatusCode().is2xxSuccessful()){
-                logger.info("new history response body: " + response.getBody());
-
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode rootNode = null;
-                try {
-                    rootNode = mapper.readTree(response.getBody());
-                } catch (JsonProcessingException e) {
-                    //todo
-                    logger.severe("error creating json object of history");
-                }
-
-                assert rootNode != null;
-                int id = rootNode.get("id").asInt();
-                hid=id;
-                shortUrl = rootNode.get("shortLink").asText();
-                logger.info("extracted history id: " + id);
-            }
-            flag = false;
-
-        } else if (isLoggedIn.equals("true")) { // if the user is logged in, and it is not the first summary so add to previous
+        // if the user is logged in and it is the first summary
+        if (isLoggedIn.equals("true") && flag) {
             logger.info("user is logged in appending history now:");
-            //Generate a new link for the history
-            RestTemplate restTemplate = new RestTemplate();
-            // Create headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(jwt);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            // Create the request body as form data
-            MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-            map.add("output", output);
-            map.add("email", email);
-
-
-            // Create an entity which includes the headers and the body
-            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
-
-            // Make the request
-            ResponseEntity<String> response = restTemplate.exchange(
-                    webAddress+"/users/"+shortUrl+"/append-history",
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
-
-            if(response.getStatusCode().is2xxSuccessful()){
-                logger.info("new history append body: " + response.getBody());
-
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode rootNode = null;
-                try {
-                    rootNode = mapper.readTree(response.getBody());
-                } catch (JsonProcessingException e) {
-                    //todo
-                    logger.severe("error creating json object of history");
+            String httpUrl = webAddress + "users/add-new-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData1(response);
                 }
+            }
+        }
 
-                assert rootNode != null;
-                int id = rootNode.get("id").asInt();
-                hid=id;
-                logger.info("extracted history id: " + id);
+        // if the user is logged in, and it is not the first summary so add to previous
+        else if (isLoggedIn.equals("true") && !flag) {
+            logger.info("user is logged in appending history now:");
+            String httpUrl = webAddress + "/users/" + shortUrl + "/append-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData2(response);
+                }
             }
 
-        } else {
+        }
+
+        else {
             logger.info("user is not logged in saving the history in temp variable to avoid loss:");
-            //save the content in a temporary history object
+            //save the content in a temporary history object //todo
         }
         //link = shortlink.ShortLinkGenerator(input, output, session);
         //url = webAddress + link;
@@ -525,7 +527,7 @@ public class WebController {
      * Checks if a string is a valid URL.
      *
      * @param urlStr The string to check.
-     * @return true if the string is a valid URL, false otherwise.
+     * @return true if the string is a valid URL, falsef otherwise.
      */
     private static boolean isValidURL(String urlStr) {
         try {
