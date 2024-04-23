@@ -153,7 +153,7 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.findAllHistory(453));
+                model.addAttribute("histories", historyService.findAllHistory());
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
@@ -199,7 +199,7 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                model.addAttribute("histories", historyService.findAllHistory(453));
+                model.addAttribute("histories", historyService.findAllHistory());
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
