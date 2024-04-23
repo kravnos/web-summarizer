@@ -11,21 +11,21 @@
             <div class="row mb-3">
                 <div class="field required col-4">
                     <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                    <input id="register-first-name" class="form-control" name="first_name" type="text" th:value=${first_name} hx-validate="true" hx-preserve="true" required />
+                    <input id="register-first-name" class="form-control" name="first_name" type="text" th:value=${user.first_name} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field required col-4">
                     <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                    <input id="register-last-name" class="form-control" name="last_name" type="text" th:value=${last_name} hx-validate="true" hx-preserve="true" required />
+                    <input id="register-last-name" class="form-control" name="last_name" type="text" th:value=${user.last_name} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field col-4">
                     <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
-                    <input id="register-phone-number" class="form-control" name="phone_number" type="tel" th:value=${phone} hx-validate="true" hx-preserve="true" />
+                    <input id="register-phone-number" class="form-control" name="phone_number" type="tel" th:value=${user.phone_number} hx-validate="true" hx-preserve="true" />
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="field required col-6">
                     <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                    <input id="register-email" class="form-control" name="email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                    <input id="register-email" class="form-control" name="email" type="email" th:value=${user.email} hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field required col-6">
                     <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
@@ -57,35 +57,14 @@
         <fieldset class="field-set scroll-summary p-3">
             <legend class="m-0 px-2 py-0">Summary History <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
             <div class="wrapper-list">
-                <ol class="list-group">
+                <ol class="list-group" th:each="h: ${content}">
                     <!-- TODO: th:for each loop through actual histories -->
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" tabindex="-1">
                         <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
+                           <div class="fs-7 text-uppercase fw-bold" th:text="${h.short_link+' : '+h.upload_time}">shortlink</div>
+                            <div class="fs-7 " th:utext="${h.history_content}">content</div>
                         </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
+                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" th:href="@{|/${h.short_link}|}"  tabindex="-1" target="_blank">View</a>
                     </li>
                 </ol>
             </div>
