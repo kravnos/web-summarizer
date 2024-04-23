@@ -14,6 +14,9 @@ body {
 .container-custom {
     max-width: 992px!important;
 }
+#input-main {
+    padding-right: 2.75rem!important
+}
 .scroll-main {
     margin-top: 5rem;
     /*max-height: calc(100vh - 62px);*/
@@ -38,6 +41,12 @@ body {
 }
 .modal-header, .modal-footer {
     border: 0;
+}
+.div-control {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
 }
 .field.required .form-label:after {
     content: ' *';
@@ -64,8 +73,15 @@ body {
 .shadow-google {
     box-shadow: 0 1px 6px 0 #20212447;
 }
-.date:not(:first-child) {
+.wrapper-summary:not(:first-child) {
     margin-top: 3rem!important;
+}
+.wrapper-newchat {
+    margin-bottom: 3rem!important;
+}
+.newchat {
+    top: 0.5rem!important;
+    right: 1rem!important;
 }
 .chat {
     max-width: 80%;
@@ -142,7 +158,6 @@ body {
   overflow: hidden;
   text-align: center;
 }
-
 .login-or::before, .login-or::after {
   background-color: var(--bs-border-color);
   content: "";
@@ -152,18 +167,19 @@ body {
   vertical-align: middle;
   width: 50%;
 }
-
 .login-or::before {
   right: 0.5em;
   margin-left: -50%;
 }
-
 .login-or::after {
   left: 0.5em;
   margin-right: -50%;
 }
 .login-icon {
     max-height: 22px;
+}
+.bi-clipboard::before, bi-clipboard-check::before, .bi-arrow-clockwise::before {
+    font-weight: bold!important;
 }
 /* custom darkmode */
 body[data-bs-theme=dark] .navbar .form-check-input:checked {

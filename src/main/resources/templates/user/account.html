@@ -10,26 +10,26 @@
             <legend class="m-0 px-2 py-0">Account Details</legend>
             <div class="row mb-3">
                 <div class="field col-4">
-                    <label for="register-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                    <input id="register-first-name" class="form-control" name="first_name" type="text" th:value=${first_name} hx-validate="true" hx-preserve="true" />
+                    <label for="account-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
+                    <input id="account-first-name" class="form-control" name="first_name" type="text" th:value="${first_name}" hx-validate="true" hx-preserve="true" />
                 </div>
                 <div class="field col-4">
-                    <label for="register-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                    <input id="register-last-name" class="form-control" name="last_name" type="text" th:value=${last_name} hx-validate="true" hx-preserve="true" />
+                    <label for="account-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
+                    <input id="account-last-name" class="form-control" name="last_name" type="text" th:value="${last_name}" hx-validate="true" hx-preserve="true" />
                 </div>
                 <div class="field col-4">
-                    <label for="register-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
-                    <input id="register-phone-number" class="form-control" name="phone_number" type="tel" th:value=${phone} hx-validate="true" hx-preserve="true" />
+                    <label for="account-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
+                    <input id="account-phone-number" class="form-control" name="phone_number" type="tel" th:value="${phone}" hx-validate="true" hx-preserve="true" />
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="field required col-6">
-                    <label for="register-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                    <input id="register-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value=${email} tabindex="-1" aria-disabled="disabled" hx-validate="true" hx-preserve="true" required />
+                    <label for="account-email" class="form-label pe-none user-select-none m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                    <input id="account-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value="${email}" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field col-6">
-                    <label for="register-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
-                    <input id="register-password" class="form-control" name="password" type="password" hx-validate="true" />
+                    <label for="account-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>
+                    <input id="account-password" class="form-control" name="password" type="password" hx-validate="true" />
                 </div>
             </div>
         </fieldset>
@@ -40,54 +40,45 @@
                     <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
                         <div class="form-check me-auto fs-8 m-0 p-0">
                             <div class="fs-7 text-uppercase fw-bold">Bart Model</div>
-                            Model trained with de-noising as pretraining objective
+                            <div>Model trained with de-noising as pretraining objective</div>
                         </div>
-                        <input class="form-check-input transition-0" name="account_llm" value="bart" type="radio" tabindex="-1" hx-preserve="true" checked />
+                        <input id="account-llm-bart" class="form-check-input transition-0" name="account_llm" value="bart" type="radio" tabindex="-1" th:checked="${llm != 'openai'} ? 'true' : 'false'" hx-preserve="true" />
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
                         <div class="form-check me-auto fs-8 m-0 p-0">
                             <div class="fs-7 text-uppercase fw-bold">Open AI</div>
-                            Model trained to understand natural and formal language
+                            <div>Model trained to understand natural and formal language</div>
                         </div>
-                        <input class="form-check-input transition-0" name="account_llm" value="openai" type="radio" tabindex="-1" hx-preserve="true" />
+                        <input id="account-llm-openai" class="form-check-input transition-0" name="account_llm" value="openai" type="radio" tabindex="-1" th:checked="${isProUser == 'true' and llm == 'openai'} ? 'true' : 'false'" hx-preserve="true" />
                     </li>
                 </ol>
             </div>
         </fieldset>
-        <fieldset class="field-set scroll-summary p-3">
+        <fieldset id="account-list" class="field-set scroll-summary p-3" hx-preserve="true">
             <legend class="m-0 px-2 py-0">Summary History <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
-            <div class="wrapper-list">
-                <ol class="list-group">
-                    <!-- TODO: th:for each loop through actual histories -->
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
-                        <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
-                            <div class="fs-7 text-uppercase fw-bold">&lt;UID&gt; &lt;short_link&gt;</div>
-                            &lt;history_content&gt;
-                        </div>
-                        <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
-                    </li>
-                </ol>
+            <div class="wrapper-list" th:classappend="${isProUser != 'true'} ? 'opacity-50 pe-none user-select-none blur disabled'">
+                <th:block th:if="${histories}">
+                    <ol class="list-group" th:each="history: ${histories}">
+                        <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                            <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                                <div class="fs-7 text-uppercase fw-bold" th:text="${history.short_link + ' (' + #temporals.format(history.upload_time, 'yyyy/MM/dd h:mm:ss a') + ')'}"></div>
+                                <span th:text="${history.history_content}"></span>
+                            </div>
+                            <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" th:href="${history.short_link}" target="_blank" tabindex="-1">View</a>
+                        </li>
+                    </ol>
+                </th:block>
+                <th:block th:unless="${histories}">
+                    <ol class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                            <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
+                                <div class="fs-7 text-uppercase fw-bold">&lt;short_link&gt; @ &lt;upload_time&gt;</div>
+                                <span>&lt;history_content&gt;</span>
+                            </div>
+                            <a class="badge text-bg-primary rounded-pill text-decoration-none my-auto" href="#summary" tabindex="-1" data-bs-dismiss="modal">View</a>
+                        </li>
+                        <ol class="list-group">
+                </th:block>
             </div>
         </fieldset>
     </div>
@@ -106,8 +97,8 @@
                 class="btn btn-primary btn-request position-relative"
                 type="submit"
                 th:data-ws-login="${isLoggedIn} ? true : false">
-                <span id="button-account-text" class="button-text">Save</span>
-                <span id="button-account-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
+            <span id="button-account-text" class="button-text">Save</span>
+            <span id="button-account-spinner" class="button-spinner spinner-border spinner-border-sm position-absolute top-0 bottom-0 start-0 end-0 m-auto d-none" role="status" aria-hidden="true"></span>
         </button>
     </div>
 </div>

@@ -9,6 +9,7 @@ $(document).ready(function() {
     const minLength = 200;
     const maxLength = 5000;
     const typeSpeed = 15;
+    let index = -1;
     let timeout;
     let isDark = sessionStorage.getItem("isDark") || "false";           // sessionStorage must be a string, cannot be boolean false
     let isLoggedIn = sessionStorage.getItem("isLoggedIn") || "false";
@@ -42,7 +43,13 @@ $(document).ready(function() {
     */
     $("#input-main").on("input keyup", function(event) {
         let val = $("#input-main").val();
-        let ai = $(".ai").last();
+        let ai;
+
+        if (index >= 0) {
+            ai = $($(".ai").get(index));
+        } else {
+            ai = $(".ai").last();
+        }
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
@@ -79,8 +86,14 @@ $(document).ready(function() {
         }, sleep);
     });
 
-    $("#button-summary").on("htmx:beforeRequest", function() {
-        $(this).addClass("disabled").attr("aria-disabled", "true");
+    $("#button-summary, #wrapper-summary").on("htmx:beforeRequest", function(event) {
+        if (this.id == "wrapper-summary") {
+            index = $(event.detail.target).index();
+        } else {
+            index = -1;
+        }
+
+        $("#button-summary").addClass("disabled").attr("aria-disabled", "true");
         $("#button-summary-text").addClass("opacity-0");
         $("#button-summary-spinner").removeClass("d-none").removeAttr("aria-hidden");
         $("#input-main").val(null).focus();
@@ -92,8 +105,19 @@ $(document).ready(function() {
         $("#loader").show();
     });
 
-    $("#button-summary").on("htmx:afterRequest", function(event) {
-        let element = $(".text-output").last();
+    $("#button-summary, #wrapper-summary").on("htmx:afterRequest", function(event) {
+        let output = $(".text-output");
+        let element;
+
+        if ((this.id == "wrapper-summary") && (index >= 0)) {
+            if ($(".wrapper-newchat").length > 0) {
+                element = $(output.get(index - 1));
+            } else {
+                element = $(output.get(index));
+            }
+        } else {
+            element = output.last();
+        }
 
         if (event.detail.successful == true) {
             let summary = element.html();
@@ -108,7 +132,7 @@ $(document).ready(function() {
                         $("#button-summary-spinner").addClass("d-none").attr("aria-hidden", "true");
                         $("#input-main").trigger("input");
                     }
-                    if ((i > 0) && (height < element.height())) {
+                    if ((i > 0) && (index < 0) && (height < element.height())) {
                         height = element.height();
                         scroller.scrollTop(scroller[0].scrollHeight);
                     }
@@ -124,10 +148,40 @@ $(document).ready(function() {
 
     $("#main").on("htmx:afterSettle", function() {
         $("#loader").fadeOut(sleep, function() {
-            let scroller = $(".scroll-main");
-            scroller.scrollTop(scroller[0].scrollHeight);
             $("#main").removeClass("opacity-0");
         });
+    });
+
+    /*
+        New Chat
+    */
+    $("#link-newchat").on("htmx:beforeRequest", function() {
+        let element = $(".wrapper-summary");
+
+        if (element.length > 0) {
+            element.remove();
+            $("#intro").hide();
+        } else {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+    /*
+        Clipboard
+    */
+    $("#wrapper-summary").on("click", ".copy .bi", function() {
+        let element = $(this);
+
+        navigator.clipboard.writeText(element.closest(".wrapper-summary").find(".text-output").text());
+        alert("Text copied to clipboard!");
+
+        element.removeClass("bi-clipboard").addClass("bi-clipboard-check");
+
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            element.removeClass("bi-clipboard-check").addClass("bi-clipboard");
+        }, messageTimer / 2);
     });
 
     /*
