@@ -1,5 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
+import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
@@ -8,6 +9,8 @@ import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
+import com.websummarizer.Web.Summarizer.services.users.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import java.net.URL;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -44,12 +48,20 @@ public class WebController {
     Shortlink shortlink;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private HistoryService historyService;
+
+    @Autowired
     BitLyController bitLyController;
 
     @Value("${WEBADDRESS}")
     private String webAddress;
 
     private Llm currentLlm;
+    private boolean flag = true;
+    private long hid = -1;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -60,8 +72,8 @@ public class WebController {
      */
     public WebController(Bart bart, OpenAi openAi) {
         this.bart = bart;
-        this.currentLlm=bart; //default llm as bart
         this.openAi = openAi;
+        this.currentLlm = bart; //default llm as bart
     }
 
     /**
@@ -88,7 +100,7 @@ public class WebController {
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
 
-        input = input.trim();
+        input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ -]", "").trim(); // Sanitize user input
         boolean isURL = isValidURL(input);
 
         if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {
@@ -126,6 +138,15 @@ public class WebController {
         return "api/summary";
     }
 
+    @PostMapping("/api/newchat")
+    public String newChat() {
+        this.flag = true;
+        this.hid = -1;
+        logger.info("flag "+ flag + " "+ hid);
+
+        return "api/newchat";
+    }
+
     /**
      * Endpoint for user sign in.
      *
@@ -149,6 +170,11 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+
+                model.addAttribute("histories", histories);
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
@@ -178,7 +204,7 @@ public class WebController {
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
-            request.getSession().setAttribute("username", userDTO.getLogin_email());
+            request.getSession().setAttribute("username", email);
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
@@ -193,6 +219,11 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                User user = userService.getFoundUser(email);
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+
+                model.addAttribute("histories", histories);
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
@@ -214,26 +245,40 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-            @RequestParam(value = "email") String email,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "account_llm", required = false) String llm,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @ModelAttribute UserReqAto user,
+            HttpServletRequest request,
             Model model
     ) {
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("isProUser", isProUser);
+
+        if ((email == null) || (email.equals(""))) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Failed to save settings. Email not found for user account.");
+
+            return "user/account";
+        } else {
+            model.addAttribute("email", email);
+        }
+
         logger.info("User update request for the following user: " + user);
-        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);      /* TODO: push user changes to the DB */
+        ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
         if(user!=null){
             if(Objects.equals(user.getAccount_llm(), "bart")){
+                request.getSession().setAttribute("llm", "bart");
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
             }else if(Objects.equals(user.getAccount_llm(), "openai")){
+                request.getSession().setAttribute("llm", "openai");
                 logger.info("llm selected : openai");
                 this.currentLlm = openAi;
             }
         }
-        model.addAttribute("email", email);
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("isProUser", isProUser);
 
         if (isValidUpdate != null) {
             model.addAttribute("isValid", true);

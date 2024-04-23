@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,4 +87,15 @@ public class HistoryService {
                 .orElseThrow(CCNotFoundException::new);
     }
 
+    public List<HistoryResAto> findHistoryId(long id) {
+        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
+
+        for(var h: historyRepository.findAll()){
+            HistoryResAto history = HistoryMapper.mapHistoryEtoResAto(h);
+            if(history.getUID() == id){
+                result.add(history);
+            }
+        }
+        return result;
+    }
 }

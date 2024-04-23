@@ -80,9 +80,23 @@
             <div class="row">
                 <div class="col">
                     <div class="invalid-feedback transition-0 mt-0 mb-1 px-4 fs-7"></div>
-                    <div class="input-group">
+                    <span class="input-group">
                         <!--<span class="input-group-text">http(s)://</span>-->
-                        <input id="input-main" class="form-control shadow-google" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
+                        <div class="div-control">
+                            <input id="input-main" class="form-control shadow-google" name="input" type="text" maxlength="5000" placeholder="Enter text or a URL" autofocus required />
+                            <a
+                                    hx-trigger="click queue:none"
+                                    hx-post="/api/newchat"
+                                    hx-target="#wrapper-summary"
+                                    hx-swap="innerHTML"
+                                    hx-disabled-elt="this"
+                                    id="link-newchat"
+                                    class="newchat position-absolute text-decoration-none shadow-0"
+                                    title="Start a new chat"
+                                    href="#newchat">
+                                <span class="bi bi-pencil-square"></span>
+                            </a>
+                        </div>
                         <div class="input-group-append ms-2">
                             <button
                                 hx-trigger="click queue:none"
