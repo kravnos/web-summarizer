@@ -60,6 +60,8 @@ public class WebController {
     private String webAddress;
 
     private Llm currentLlm;
+    private boolean flag = true;
+    private long hid = -1;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -98,7 +100,7 @@ public class WebController {
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
 
-        input = input.trim();
+        input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ -]", "").trim(); // Sanitize user input
         boolean isURL = isValidURL(input);
 
         if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {
@@ -134,6 +136,15 @@ public class WebController {
         model.addAttribute("link", link);
 
         return "api/summary";
+    }
+
+    @PostMapping("/api/newchat")
+    public String newChat() {
+        this.flag = true;
+        this.hid = -1;
+        logger.info("flag "+ flag + " "+ hid);
+
+        return "api/newchat";
     }
 
     /**
