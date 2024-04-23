@@ -52,6 +52,7 @@ public class AuthenticationService {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setProvider(Provider.LOCAL);
+        user.setLlmSelection("bart");
 
         Role userRole = roleRepo.findByAuthority("USER")
                 .orElseThrow(() -> new IllegalStateException("Default role not found"));

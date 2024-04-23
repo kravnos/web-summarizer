@@ -2,6 +2,8 @@ package com.websummarizer.Web.Summarizer.controller;
 
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.User;
+import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.repo.HistoryRepo;
 import com.websummarizer.Web.Summarizer.repo.UserRepo;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
@@ -13,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -81,6 +84,25 @@ public class UserController {
         } catch (Exception e) {
             logger.severe("failed to create new user history." + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to append new user history.");
+        }
+    }
+
+    @GetMapping("/histories")
+    public ResponseEntity<?> addToPreviousHistory(String email) {
+        try {
+            User user = userRepo.findByEmail(email).orElse(null);
+            // Create a new history for the user
+            logger.info("fetching histories for : " + email);
+
+            // Save the new history
+            assert user != null;
+            List<HistoryResAto> allHistories = historyService.findHistoryId(user.getId());
+
+            logger.info("returning all histories for : "+email);
+            return ResponseEntity.ok(allHistories);
+        } catch (Exception e) {
+            logger.severe("failed to return histories." + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to return histories.");
         }
     }
 }

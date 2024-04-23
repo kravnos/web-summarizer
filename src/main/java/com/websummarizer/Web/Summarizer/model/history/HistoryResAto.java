@@ -30,13 +30,8 @@ public class HistoryResAto {
     @ToString.Include
     private String history_content;
 
-    @NonNull
     @ToString.Include
-    private String linkURL;
-
-    @NonNull
-    @ToString.Include
-    private String short_link;
+    private String shortLink;
 
     @NonNull
     @ToString.Include
