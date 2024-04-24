@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.model.user;
+package com.websummarizer.Web.Summarizer.model;
 
 import com.websummarizer.Web.Summarizer.model.Provider;
 import lombok.Builder;
