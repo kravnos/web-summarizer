@@ -119,9 +119,17 @@ public class WebController {
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                output = currentLlm.queryModel(HTMLParser.parser(input));
+                String extract = HTMLParser.parser(input);
+                if(Objects.equals(extract, "")){
+                    isValidOutput = false;
+                    throw new Exception("Invalid input exception");
+                }
+                output = currentLlm.queryModel(extract);
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
+                isValidOutput = false;
+            }catch (Exception e) {
+                output = "Content cannot be Summarized. Either it is too short or nothing to read.";
                 isValidOutput = false;
             }
         } else {
