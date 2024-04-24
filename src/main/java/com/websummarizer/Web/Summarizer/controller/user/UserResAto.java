@@ -1,6 +1,6 @@
-package com.websummarizer.Web.Summarizer.model.user;
+package com.websummarizer.Web.Summarizer.controller.user;
 
-import com.websummarizer.Web.Summarizer.model.Provider;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,9 +10,13 @@ import lombok.ToString;
 @Getter
 @ToString(onlyExplicitlyIncluded = true)
 /**
- * model representing API request model to add / register a user
+ * model representing API response model to add / register a user
  */
-public class UserReqAto {
+public final class UserResAto {
+
+    @NonNull
+    @ToString.Include
+    private Long id;
 
     @NonNull
     @ToString.Include
@@ -24,20 +28,17 @@ public class UserReqAto {
 
     @NonNull
     @ToString.Include
-    private String email;
+    String email;
 
     @NonNull
     @ToString.Include
-    private String password;
+    String password;
 
     @NonNull
     @ToString.Include
-    private String phone_number;
+    String phone_number;
 
+    @NonNull
     @ToString.Include
-    private String request_token;
-
-    private String account_llm;
-
-    private Provider provider;
+    String request_token;
 }

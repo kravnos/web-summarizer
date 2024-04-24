@@ -1,7 +1,6 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
-import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.User;
@@ -25,8 +24,6 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
-    @Autowired
-    private UserController userController;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(User user) {
@@ -54,7 +51,6 @@ public class AuthenticationController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(UserDTO userDTO) {
-
         logger.info("User login request for: " + userDTO.getLogin_email());
         try {
             LoginResponseDTO loginResponseDTO = authenticationService.loginUser(userDTO.getLogin_email(), userDTO.getLogin_password());
@@ -85,13 +81,10 @@ public class AuthenticationController {
                 logger.warning("Failed to update, returned user object is null");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
             }
-        } catch (OauthUpdateNotAllowed e){
-            logger.warning("Failed to update user as user is oauth user: ");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update information for google/github users");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.severe("Failed to update user due to an exception: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user.");
         }
     }
+
 }

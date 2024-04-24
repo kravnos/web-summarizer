@@ -1,9 +1,9 @@
 package com.websummarizer.Web.Summarizer.services.history;
 
+import com.websummarizer.Web.Summarizer.controller.history.HistoryReqAto;
+import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.User;
-import com.websummarizer.Web.Summarizer.model.history.HistoryReqAto;
-import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 
 public class HistoryMapper {
 
@@ -12,8 +12,8 @@ public class HistoryMapper {
         return History.builder()
                 .user(user)
                 .historyContent(reqAto.getHistory_content())
-                //.linkURL(reqAto.getLinkURL())
-                .short_link(reqAto.getShort_link())
+                .linkURL(reqAto.getLinkURL())
+                .shortLink(reqAto.getShort_link())
                 .uploadTime(reqAto.getUpload_time())
                 .build();
     }
@@ -24,8 +24,8 @@ public class HistoryMapper {
                 .HID(history.getId())
                 .UID(history.getUser().getId())
                 .history_content(history.getHistoryContent())
-                //.linkURL(history.getLinkURL())
-                .short_link(String.valueOf(history.getShort_link()))
+                .linkURL(history.getLinkURL())
+                .short_link(history.getShortLink())
                 .upload_time(history.getUploadTime())
                 .build();
     }
@@ -34,8 +34,8 @@ public class HistoryMapper {
     public static void updateHistory(History history, User user, HistoryReqAto update) {
         history.setUser(user);
         history.setHistoryContent(update.getHistory_content());
-        //history.setLinkURL(update.getLinkURL());
-        //history.setShortLink(update.getShort_link());
+        history.setLinkURL(update.getLinkURL());
+        history.setShortLink(update.getShort_link());
         history.setUploadTime(update.getUpload_time());
     }
 
