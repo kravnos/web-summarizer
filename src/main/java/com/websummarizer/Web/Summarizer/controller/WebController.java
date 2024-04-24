@@ -46,18 +46,25 @@ public class WebController {
 
     @Autowired
     private final Bart bart;
+
     @Autowired
     private final OpenAi openAi;
+
     @Autowired
     private AuthenticationController authenticationController;
+
+//    @Autowired
+//    Shortlink shortlink;
+
     @Autowired
-    ShortLinkGenerator shortLinkGenerator;
+    private UserServiceImpl userService;
+
+    @Autowired
+    private HistoryService historyService;
+
     @Autowired
     BitLyController bitLyController;
-    @Autowired
-    HistoryService historyService;
-    @Autowired
-    UserServiceImpl userService;
+
     @Value("${WEBADDRESS}")
     private String webAddress;
 
@@ -239,7 +246,7 @@ public class WebController {
         String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
         String url = null;      // This stores the shortened URL
-        String link;     // This stores the short link code
+        String link = null;     // This stores the short link code
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -309,10 +316,8 @@ public class WebController {
         model.addAttribute("output", output);
 
         // Share Button Attributes
-        model.addAttribute("fb", "https://www.addtoany.com/add_to/facebook?linkurl=" + url);
-        model.addAttribute("twitter", "https://www.addtoany.com/add_to/x?linkurl=" + url);
-        model.addAttribute("email", "https://www.addtoany.com/add_to/email?linkurl=" + url);
-        model.addAttribute("link", url);
+        model.addAttribute("url", url);
+        model.addAttribute("link", link);
 
         return "api/summary";
     }
@@ -322,7 +327,8 @@ public class WebController {
         this.flag = true;
         this.hid = -1;
         logger.info("flag "+ flag + " "+ hid);
-        return "api/summary";
+
+        return "api/newchat";
     }
 
     /**
@@ -412,6 +418,11 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                User user = userService.getFoundUser(email);
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+
+                model.addAttribute("histories", histories);
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
                 model.addAttribute("isProUser", isProUser);
 
@@ -433,20 +444,37 @@ public class WebController {
      */
     @PostMapping("/user/account")
     public String account(
-            @RequestParam(value = "email") String email,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "account_llm", required = false) String llm,
             @RequestParam(value = "isLoggedIn") String isLoggedIn,
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @ModelAttribute UserReqAto user,
+            HttpServletRequest request,
             Model model
     ) {
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("isProUser", isProUser);
+
+        if ((email == null) || (email.equals(""))) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Failed to save settings. Email not found for user account.");
+
+            return "user/account";
+        } else {
+            model.addAttribute("email", email);
+        }
+
         logger.info("User update request for the following user: " + user);
 
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
-        if (user != null) { //todo
-            if (Objects.equals(user.getAccount_llm(), "bart")) {
+        if(user!=null){
+            if(Objects.equals(user.getAccount_llm(), "bart")){
+                request.getSession().setAttribute("llm", "bart");
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
-            } else if (Objects.equals(user.getAccount_llm(), "openai")) {
+            }else if(Objects.equals(user.getAccount_llm(), "openai")){
+                request.getSession().setAttribute("llm", "openai");
                 logger.info("llm selected : openai");
                 this.currentLlm = openAi;
             }
@@ -502,14 +530,14 @@ public class WebController {
         logger.info("Received user creation request: " + user);
         boolean isRegistered = false;
 
-        //check password /todo put back
-//        if (!shortLinkGenerator.checkPassword(user.getPassword())) {
-//            model.addAttribute("isValid", false);
-//            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-//            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
-//
-//            return "user/register";
-//        }
+        //check password
+        if (false/*!shortlink.checkPassword(user.getPassword())*/) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+
+            return "user/register";
+        }
 
         try {
             user.setLlmSelection("bart");//added default llm as bart while registration
@@ -609,7 +637,7 @@ public class WebController {
      * Checks if a string is a valid URL.
      *
      * @param urlStr The string to check.
-     * @return true if the string is a valid URL, falsef otherwise.
+     * @return true if the string is a valid URL, false otherwise.
      */
     private static boolean isValidURL(String urlStr) {
         try {
