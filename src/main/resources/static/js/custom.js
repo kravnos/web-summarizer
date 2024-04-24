@@ -155,7 +155,7 @@ $(document).ready(function() {
     /*
         New Chat
     */
-    $("#link-newchat").on("htmx:beforeRequest", function() {
+    $("#link-newchat").on("htmx:beforeRequest", function(event) {
         let element = $(".wrapper-summary");
 
         if (element.length > 0) {
