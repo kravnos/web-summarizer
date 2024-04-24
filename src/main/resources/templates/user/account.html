@@ -37,14 +37,14 @@
             <legend class="m-0 px-2 py-0">LLM Selection <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
             <div class="wrapper-list">
                 <ol class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                    <li class="list-group-item d-flex justify-content-between align-items-start border-0">
                         <div class="form-check me-auto fs-8 m-0 p-0">
                             <div class="fs-7 text-uppercase fw-bold">Bart Model</div>
                             <div>Model trained with de-noising as pretraining objective</div>
                         </div>
                         <input id="account-llm-bart" class="form-check-input transition-0" name="account_llm" value="bart" type="radio" tabindex="-1" th:checked="${llm != 'openai'} ? 'true' : 'false'" hx-preserve="true" />
                     </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-0 border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
+                    <li class="list-group-item d-flex justify-content-between align-items-start border-0" th:classappend="${isProUser != 'true'} ? 'opacity-50 user-select-none blur disabled'">
                         <div class="form-check me-auto fs-8 m-0 p-0">
                             <div class="fs-7 text-uppercase fw-bold">Open AI</div>
                             <div>Model trained to understand natural and formal language</div>
@@ -57,9 +57,9 @@
         <fieldset id="account-list" class="field-set scroll-summary p-3" hx-preserve="true">
             <legend class="m-0 px-2 py-0">Summary History <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
             <div class="wrapper-list" th:classappend="${isProUser != 'true'} ? 'opacity-50 pe-none user-select-none blur disabled'">
-                <th:block th:if="${histories != null}">
-                    <ol class="list-group" th:each="history: ${histories}">
-                        <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                <th:block th:unless="${#lists.isEmpty(histories)}">
+                    <ol class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-start border-0" th:each="history: ${histories}">
                             <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
                                 <div class="fs-7 text-uppercase fw-bold" th:text="${history.short_link + ' (' + #temporals.format(history.upload_time, 'yyyy/MM/dd h:mm:ss a') + ')'}"></div>
                                 <span th:text="${history.history_content}"></span>
@@ -68,9 +68,9 @@
                         </li>
                     </ol>
                 </th:block>
-                <th:block th:unless="${histories == null}">
+                <th:block th:if="${#lists.isEmpty(histories)}">
                     <ol class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-start px-0 pt-0 pb-3 border-0">
+                        <li class="list-group-item d-flex justify-content-between align-items-start border-0">
                             <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
                                 <div class="fs-7 text-uppercase fw-bold">History</div>
                                 <span>No histories found for user</span>
@@ -83,7 +83,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" id="button-logout" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Logout</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button
                 hx-trigger="click queue:none"
                 hx-post="/user/account"
