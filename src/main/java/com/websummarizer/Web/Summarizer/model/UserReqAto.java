@@ -1,13 +1,10 @@
 package com.websummarizer.Web.Summarizer.model;
 
 import com.websummarizer.Web.Summarizer.model.Provider;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 @Builder
-@Getter
+@Data
 @ToString(onlyExplicitlyIncluded = true)
 /**
  * model representing API request model to add / register a user
