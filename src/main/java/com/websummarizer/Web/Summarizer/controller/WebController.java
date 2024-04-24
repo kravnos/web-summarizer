@@ -52,8 +52,6 @@ public class WebController {
     @Autowired
     private AuthenticationController authenticationController;
 
-//    @Autowired
-//    Shortlink shortlink;
 
     @Autowired
     private UserServiceImpl userService;
@@ -171,7 +169,7 @@ public class WebController {
             //save the content in a temporary history object //todo
         }
 
-        link = "link";//shortlink.Shortlink(input, output, session);
+        link = shortUrl;
         url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
