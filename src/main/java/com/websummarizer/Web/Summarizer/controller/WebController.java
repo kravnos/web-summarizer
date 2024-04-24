@@ -564,7 +564,7 @@ public class WebController {
         assert rootNode != null;
         int id = rootNode.get("id").asInt();
         hid = id;
-        shortUrl = rootNode.get("shortLink").asText();
+        shortUrl = rootNode.get("short_link").asText();
         flag = false;
         logger.info("extracted history id: " + id);
     }

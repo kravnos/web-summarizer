@@ -29,8 +29,8 @@ public class History {
     @Column(name = "history_content", length = 100000)
     private String historyContent;
 
-    @Column(name = "linkURL", length = 1000)
-    private String shortLink;
+    @Column(name = "short_link", length = 1000)
+    private String short_link;
 
     @Column(name = "upload_time")
     private LocalDateTime uploadTime;

@@ -31,7 +31,7 @@ public class HistoryResAto {
     private String history_content;
 
     @ToString.Include
-    private String shortLink;
+    private String short_link;
 
     @NonNull
     @ToString.Include

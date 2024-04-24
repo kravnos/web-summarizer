@@ -44,7 +44,7 @@ public class UserController {
             history.setUser(user);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
-            history.setShortLink(shortLinkGenerator.generateShortUrl());
+            history.setShort_link(shortLinkGenerator.generateShortUrl());
 
             // Save the new history
             History savedHistory = historyService.save(history);
@@ -71,7 +71,7 @@ public class UserController {
 
             //String shortLink = String.valueOf(historyRepo.findHistoryByShortLink(short_link));
 
-            history.setShortLink(short_link);
+            history.setShort_link(short_link);
 
             // Save the new history
             History savedHistory = historyService.save(history);

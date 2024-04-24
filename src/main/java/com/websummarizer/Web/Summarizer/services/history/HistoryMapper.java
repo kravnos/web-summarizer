@@ -13,7 +13,7 @@ public class HistoryMapper {
                 .user(user)
                 .historyContent(reqAto.getHistory_content())
                 //.linkURL(reqAto.getLinkURL())
-                //.shortLink(reqAto.getShort_link())
+                .short_link(reqAto.getShort_link())
                 .uploadTime(reqAto.getUpload_time())
                 .build();
     }
@@ -25,7 +25,7 @@ public class HistoryMapper {
                 .UID(history.getUser().getId())
                 .history_content(history.getHistoryContent())
                 //.linkURL(history.getLinkURL())
-                //.short_link(String.valueOf(history.getShortLink()))
+                .short_link(String.valueOf(history.getShort_link()))
                 .upload_time(history.getUploadTime())
                 .build();
     }

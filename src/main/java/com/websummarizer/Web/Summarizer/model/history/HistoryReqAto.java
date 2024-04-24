@@ -25,7 +25,7 @@ public class HistoryReqAto {
     private String linkURL;
 
     @ToString.Include
-    private String shortLink;
+    private String short_link;
 
     @NonNull
     @ToString.Include
