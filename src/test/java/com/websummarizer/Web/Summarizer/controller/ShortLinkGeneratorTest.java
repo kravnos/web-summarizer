@@ -17,12 +17,6 @@ class ShortLinkGeneratorTest {
      */
     @Test
     void testGenerateShortUrl() {
-        // TODO: Diffblue Cover was only able to create a partial test for this method:
-        //   Reason: Missing observers.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Add getters for the following fields or make them package-private:
-        //     ShortLinkGenerator.webAddress
-
         // Arrange and Act
         shortLinkGenerator.generateShortUrl();
     }

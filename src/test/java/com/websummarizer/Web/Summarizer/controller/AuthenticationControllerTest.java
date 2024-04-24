@@ -104,8 +104,6 @@ class AuthenticationControllerTest {
      */
     @Test
     void testUpdateUser() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange and Act
         ResponseEntity<?> actualUpdateUserResult = (new AuthenticationController()).updateUser(null);
 
@@ -120,8 +118,6 @@ class AuthenticationControllerTest {
      */
     @Test
     void testUpdateUser2() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange and Act
         ResponseEntity<?> actualUpdateUserResult = (new AuthenticationController()).updateUser(mock(UserReqAto.class));
 

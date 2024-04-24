@@ -65,21 +65,7 @@ class WebControllerTest {
      * {@link WebController#authUser(String, String, String, String, UserDTO, HttpServletRequest, HttpSession, Model)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
     void testAuthUser() {
-        // TODO: Diffblue Cover was only able to create a partial test for this method:
-        //   Reason: No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   jakarta.servlet.ServletException: Request processing failed: java.lang.NullPointerException: Cannot invoke "org.springframework.http.HttpStatusCode.is2xxSuccessful()" because the return value of "org.springframework.http.ResponseEntity.getStatusCode()" is null
-        //       at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-        //       at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-        //   java.lang.NullPointerException: Cannot invoke "org.springframework.http.HttpStatusCode.is2xxSuccessful()" because the return value of "org.springframework.http.ResponseEntity.getStatusCode()" is null
-        //       at com.websummarizer.Web.Summarizer.controller.WebController.authUser(WebController.java:258)
-        //       at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-        //       at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-        //   See https://diff.blue/R013 to resolve this issue.
-
         // Arrange
         Bart bart = new Bart("https://example.org/example", "ABC123");
 
@@ -100,8 +86,6 @@ class WebControllerTest {
      */
     @Test
     void testAccount() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange
         Bart bart = new Bart("https://example.org/example", "ABC123");
 
@@ -129,8 +113,6 @@ class WebControllerTest {
      */
     @Test
     void testAccount2() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange
         Bart bart = new Bart("https://example.org/example", "ABC123");
 
@@ -158,8 +140,6 @@ class WebControllerTest {
      */
     @Test
     void testAccount3() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange
         Bart bart = new Bart("https://example.org/example", "ABC123");
 
@@ -187,8 +167,6 @@ class WebControllerTest {
      */
     @Test
     void testCreateUser() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange
         Bart bart = new Bart("https://example.org/example", "ABC123");
 
@@ -218,8 +196,6 @@ class WebControllerTest {
      */
     @Test
     void testCreateUser2() {
-        //   Diffblue Cover was unable to create a Spring-specific test for this Spring method.
-
         // Arrange
         Bart bart = mock(Bart.class);
         WebController webController = new WebController(bart, new OpenAi("https://example.org/example", "ABC123", "Model"));
