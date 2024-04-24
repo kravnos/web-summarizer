@@ -55,9 +55,6 @@ public class WebController {
     private AuthenticationController authenticationController;
 
     @Autowired
-    private ShortLinkGenerator shortLinkGenerator;
-
-    @Autowired
     private UserServiceImpl userService;
 
     @Autowired
@@ -107,8 +104,8 @@ public class WebController {
 
         String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
-        String url = null;      // This stores the shortened URL
-        String link = null;     // This stores the short link code
+        String url;      // This stores the shortened URL
+        String link;     // This stores the short link code
 
         input = input.trim();
         boolean isURL = isValidURL(input);
@@ -122,7 +119,6 @@ public class WebController {
             try {
                 String extract = HTMLParser.parser(input);
                 if(Objects.equals(extract, "")){
-                    isValidOutput = false;
                     throw new Exception("Invalid input exception");
                 }
                 output = currentLlm.queryModel(extract);
@@ -607,7 +603,7 @@ public class WebController {
         // Compile the pattern
         Pattern regex = Pattern.compile(pattern);
 
-        // Create a Matcher object
+        // Create a Matcher objectco
         Matcher matcher = regex.matcher(password);
         return matcher.matches();
     }
