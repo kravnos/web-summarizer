@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ContextConfiguration(classes = {AuthenticationController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class AuthenticationControllerDiffblueTest {
+class AuthenticationControllerTest {
     @Autowired
     private AuthenticationController authenticationController;
 

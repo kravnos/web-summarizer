@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {AdminController.class})
 @ExtendWith(SpringExtension.class)
-class AdminControllerDiffblueTest {
+class AdminControllerTest {
     @Autowired
     private AdminController adminController;
 

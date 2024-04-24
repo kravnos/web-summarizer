@@ -6,10 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
-class GlobalExceptionHandlerDiffblueTest {
+class GlobalExceptionHandlerTest {
     /**
      * Method under test: {@link GlobalExceptionHandler#handleException(Exception)}
      */

@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
-class HistoryMapperDiffblueTest {
+class HistoryMapperTest {
     /**
      * Method under test: {@link HistoryMapper#mapHistoryEtoResAto(History)}
      */

@@ -34,7 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {SuccessHandler.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class SuccessHandlerDiffblueTest {
+class SuccessHandlerTest {
     @MockBean
     private OAuth2AuthenticationService oAuth2AuthenticationService;
 

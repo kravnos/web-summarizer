@@ -41,7 +41,7 @@ import org.springframework.ui.Model;
 @ContextConfiguration(classes = {WebController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class WebControllerDiffblueTest {
+class WebControllerTest {
     @MockBean
     private AuthenticationController authenticationController;
 

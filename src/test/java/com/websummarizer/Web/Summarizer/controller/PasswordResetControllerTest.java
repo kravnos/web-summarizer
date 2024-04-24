@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.HeaderLinksResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,7 +31,7 @@ import org.springframework.ui.Model;
 @ContextConfiguration(classes = {PasswordResetController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class PasswordResetControllerDiffblueTest {
+class PasswordResetControllerTest {
     @MockBean
     private AuthenticationController authenticationController;
 

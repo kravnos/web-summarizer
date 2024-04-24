@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ContextConfiguration(classes = {UserController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class UserControllerDiffblueTest {
+class UserControllerTest {
     @MockBean
     private HistoryService historyService;
 

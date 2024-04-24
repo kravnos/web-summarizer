@@ -8,7 +8,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {ShortLinkGenerator.class})
 @ExtendWith(SpringExtension.class)
-class ShortLinkGeneratorDiffblueTest {
+class ShortLinkGeneratorTest {
     @Autowired
     private ShortLinkGenerator shortLinkGenerator;
 

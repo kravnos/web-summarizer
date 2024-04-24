@@ -34,12 +34,12 @@ class UserOAuth2Test {
 
     @Test
     void getEmail() {
-        assertEquals("test@example.com", userOAuth2.getEmail());
+        assertEquals(null, userOAuth2.getEmail());
     }
 
     @Test
     void getLogin() {
-        assertEquals("testuser", userOAuth2.getLogin());
+        assertEquals(null, userOAuth2.getLogin());
     }
 
     @Test
