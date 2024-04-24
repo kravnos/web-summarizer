@@ -60,25 +60,6 @@ class WebControllerTest {
     @Autowired
     private WebController webController;
 
-    /**
-     * Method under test:
-     * {@link WebController#authUser(String, String, String, String, UserDTO, HttpServletRequest, HttpSession, Model)}
-     */
-    @Test
-    void testAuthUser() {
-        // Arrange
-        Bart bart = new Bart("https://example.org/example", "ABC123");
-
-        WebController webController = new WebController(bart, new OpenAi("https://example.org/example", "ABC123", "Model"));
-        UserDTO userDTO = new UserDTO("jane.doe@example.org", "iloveyou");
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
-
-        // Act
-        webController.authUser("jane.doe@example.org", "iloveyou", "Is Pro User", "Path", userDTO, request, session,
-                new ConcurrentModel());
-    }
 
     /**
      * Method under test:

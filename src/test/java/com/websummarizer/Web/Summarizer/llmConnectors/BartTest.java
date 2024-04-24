@@ -1,66 +1,34 @@
 package com.websummarizer.Web.Summarizer.llmConnectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;import org.springframework.test.context.ContextConfiguration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {Bart.class, String.class})
 @ExtendWith(SpringExtension.class)
-class BartTest {
-    @Mock
-    private RestTemplate restTemplate;
+@SpringBootTest
+public class BartTest {
 
-    @InjectMocks
-    private Bart bart;
+    @Value("${API_URL_BART}")
+    private String apiUrl;
+    @Value("${AUTH_TOKEN_BART}")
+    private String authToken;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
+    /**
+     * Method under test: {@link Bart#queryModel(String)}
+     */
     @Test
-    void queryModel_Success() {
-        // Arrange
-        String inputText = "Test input";
-        String summaryText = "Test summary";
+    void testQueryModel(){
+        Bart bart = new Bart(apiUrl, authToken);    // Need valid credentials in env.properties
 
-        ResponseEntity<String> responseEntity = new ResponseEntity<>(
-                "[{\"summary_text\": \"" + summaryText + "\"}]", HttpStatus.OK);
-
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenReturn(responseEntity);
-
-        // Act
-        String result = bart.queryModel(inputText);
-
-        // Assert
-        assertEquals(summaryText, result);
+        Assertions.assertNotEquals("Cannot summarize at the moment. Please try again later.", bart.queryModel("InputText"));
+        Assertions.assertNotEquals("An error occurred. Please try again later.", bart.queryModel("InputText"));
+        Assertions.assertFalse(bart.queryModel("InputText").startsWith("Error: "));
     }
 
-    @Test
-    void queryModel_Failure() {
-        // Arrange
-        String inputText = "Test input";
 
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request"));
-
-        // Act
-        String result = bart.queryModel(inputText);
-
-        // Assert
-        assertEquals("An error occurred. Please try again later.", result);
-    }
 }

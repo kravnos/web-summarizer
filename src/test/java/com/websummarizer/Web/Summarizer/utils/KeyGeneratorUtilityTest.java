@@ -3,30 +3,21 @@ package com.websummarizer.Web.Summarizer.utils;
 import org.junit.jupiter.api.Test;
 
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 class KeyGeneratorUtilityTest {
 
     @Test
-    void testGenerateRsaKey() throws NoSuchAlgorithmException {
-        // Arrange
-        KeyPairGenerator keyPairGenerator = mock(KeyPairGenerator.class);
-        KeyPair keyPair = mock(KeyPair.class);
+    void testGenerateRsaKey() {
+        // Test key generation
+        KeyPair keyPair = KeyGeneratorUtility.generateRsaKey();
 
-        when(keyPairGenerator.generateKeyPair()).thenReturn(keyPair);
-        when(KeyPairGenerator.getInstance("RSA")).thenReturn(keyPairGenerator);
+        // Verify key pair is not null
+        assertNotNull(keyPair);
 
-        // Act
-        KeyPair result = KeyGeneratorUtility.generateRsaKey();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(keyPair, result);
+        // Verify public and private keys are not null
+        assertNotNull(keyPair.getPublic());
+        assertNotNull(keyPair.getPrivate());
     }
 }
