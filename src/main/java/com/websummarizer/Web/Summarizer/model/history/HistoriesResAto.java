@@ -1,6 +1,5 @@
-package com.websummarizer.Web.Summarizer.controller.history;
+package com.websummarizer.Web.Summarizer.model.history;
 
-import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
