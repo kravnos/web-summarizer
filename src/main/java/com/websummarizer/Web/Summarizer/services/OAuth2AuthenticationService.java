@@ -105,19 +105,50 @@ public class OAuth2AuthenticationService {
         }
     }
 
-    public User processOAuthPostLoginGithub(UserOAuth2 oauth2User) {
+    public LoginResponseDTO processOAuthPostLoginGithub(UserOAuth2 oauth2User) {
         String uniqueUserName = oauth2User.getLogin();
         logger.info("received oauth 2 GITHUB user creation request: " + uniqueUserName);
         User user = userRepo.findByEmail(uniqueUserName).orElse(null);
 
         if (uniqueUserName != null && user == null) {
-            //todo: make sure google/github username and something else is not same
-            User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, null, null,
+
+            User oauthUser = new User(uniqueUserName, uniqueUserName, uniqueUserName, passwordEncoder.encode(uniqueUserName), null,
                     null, "bart", Provider.GITHUB);
-            return registerUser(oauthUser);
+
+            try{
+                registerUser(oauthUser);
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(uniqueUserName, uniqueUserName)
+                );
+                String token = tokenService.generateJwt(authentication);
+                User loggedInUser = userRepo.findByEmail(uniqueUserName).orElse(null);
+                logger.log(Level.INFO, "User login successful: {0}", uniqueUserName);
+                return new LoginResponseDTO(loggedInUser, token);
+            }catch (AuthenticationException e) {
+                logger.log(Level.WARNING, "Failed to login user: {0}", uniqueUserName);
+                return new LoginResponseDTO(null, "");
+            }
+
+
+
+
         } else {
-            //TODO : check what will happen if the user has a email registered and then tries to loging using github
-            return null;
+            //TODO : check what will happen if the user has a email registered and then tries to loging using google
+            User user1 = userRepo.findByEmail(uniqueUserName).orElse(null);
+            try {
+                assert user1 != null;
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(user1.getEmail(), uniqueUserName)
+                );
+                String token = tokenService.generateJwt(authentication);
+                User loggedInUser = userRepo.findByEmail(uniqueUserName).orElse(null);
+                logger.log(Level.INFO, "User login successful: {0}", uniqueUserName);
+
+                return new LoginResponseDTO(loggedInUser, token);
+            } catch (AuthenticationException e) {
+                logger.log(Level.WARNING, "Failed to login user: {0}", uniqueUserName);
+                return new LoginResponseDTO(null, "");
+            }
         }
     }
 }

@@ -45,9 +45,12 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
             logger.info("created following user at on success method: " + loginResponseDTO);
         }else if (authentication.getPrincipal() instanceof UserOAuth2){
             UserOAuth2 oauth2User = (UserOAuth2) authentication.getPrincipal();
-            User user = oAuth2AuthenticationService.processOAuthPostLoginGithub(oauth2User);
-            request.getSession().setAttribute("username",user.getEmail());
-            logger.info("created following user at on success method: " + user);
+            LoginResponseDTO loginResponseDTO = oAuth2AuthenticationService.processOAuthPostLoginGithub(oauth2User);
+            logger.info("user after processOAuthPostLoginGithub:"+loginResponseDTO);
+            request.getSession().setAttribute("username",loginResponseDTO.getUser().getEmail());
+            request.getSession().setAttribute("email",loginResponseDTO.getUser().getEmail());
+            request.getSession().setAttribute("jwt",loginResponseDTO.getJwt());
+            logger.info("created following user at on success method: " + loginResponseDTO.getUser());
         }
         new DefaultRedirectStrategy().sendRedirect(request,response,"/");
     }
