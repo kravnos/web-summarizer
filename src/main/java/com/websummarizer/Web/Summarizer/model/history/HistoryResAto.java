@@ -1,4 +1,4 @@
-package com.websummarizer.Web.Summarizer.controller.history;
+package com.websummarizer.Web.Summarizer.model.history;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -30,11 +30,6 @@ public class HistoryResAto {
     @ToString.Include
     private String history_content;
 
-    @NonNull
-    @ToString.Include
-    private String linkURL;
-
-    @NonNull
     @ToString.Include
     private String short_link;
 
@@ -43,4 +38,3 @@ public class HistoryResAto {
     private LocalDateTime upload_time;
 
 }
-

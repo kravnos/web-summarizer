@@ -1,25 +1,32 @@
 package com.websummarizer.Web.Summarizer.controller;
 
-import com.websummarizer.Web.Summarizer.controller.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
-import com.websummarizer.Web.Summarizer.controller.shortlink.Shortlink;
-import com.websummarizer.Web.Summarizer.controller.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
+import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
+import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
 import com.websummarizer.Web.Summarizer.services.history.HistoryService;
-import com.websummarizer.Web.Summarizer.services.users.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -28,6 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Controller for web-related actions.
@@ -45,16 +55,10 @@ public class WebController {
     private AuthenticationController authenticationController;
 
     @Autowired
-    Shortlink shortlink;
-
-    @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
     private HistoryService historyService;
-
-    @Autowired
-    BitLyController bitLyController;
 
     @Value("${WEBADDRESS}")
     private String webAddress;
@@ -62,6 +66,7 @@ public class WebController {
     private Llm currentLlm;
     private boolean flag = true;
     private long hid = -1;
+    private String shortUrl;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -92,15 +97,17 @@ public class WebController {
             HttpSession session,
             Model model
     ) {
+        boolean isValidOutput = true;
+        logger.info("flag " + flag + " " + hid);
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String username = (String)request.getSession().getAttribute("first_name");
+        String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
 
-        input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ -]", "").trim(); // Sanitize user input
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
         if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {
@@ -110,9 +117,17 @@ public class WebController {
         if (isURL) {
             logger.info("got the URL:" + input);
             try {
-                output = currentLlm.queryModel(HTMLParser.parser(input));
+                String extract = HTMLParser.parser(input);
+                if(Objects.equals(extract, "")){
+                    throw new Exception("Invalid input exception");
+                }
+                output = currentLlm.queryModel(extract);
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
+                isValidOutput = false;
+            }catch (Exception e) {
+                output = "Content cannot be Summarized. Either it is too short or nothing to read.";
+                isValidOutput = false;
             }
         } else {
             logger.info("got the text:" + input);
@@ -120,10 +135,46 @@ public class WebController {
                 output = currentLlm.queryModel(input);
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
+                isValidOutput = false;
             }
         }
 
-        link = shortlink.Shortlink(input, output, session);
+        // if the user is logged in and it is the first summary
+        if (isLoggedIn.equals("true") && flag) {
+            logger.info("user is logged in appending history now:");
+            String httpUrl = webAddress + "users/add-new-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData1(response);
+                }
+                else {
+                    output = "Failed to process request please try again";
+                }
+            }
+        }
+
+        // if the user is logged in, and it is not the first summary so add to previous
+        else if (isLoggedIn.equals("true") && !flag) {
+            logger.info("user is logged in appending history now:");
+            String httpUrl = webAddress + "/users/" + shortUrl + "/append-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData2(response);
+                }
+            }
+
+        }
+
+        else {
+            logger.info("user is not logged in saving the history in temp variable to avoid loss:");
+            //save the content in a temporary history object //todo
+        }
+
+        link = shortUrl;
         url = webAddress + link;
 
         model.addAttribute("date", dateFormat.format(date));
@@ -171,7 +222,9 @@ public class WebController {
                 }
             } else {
                 User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                logger.info("finding histories for username: "+user.getEmail());
                 List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+                logger.info("finding histories for username: "+histories);
 
                 model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
@@ -197,14 +250,24 @@ public class WebController {
             @RequestParam(value = "path", required = false) String path,
             @ModelAttribute UserDTO userDTO,
             HttpServletRequest request,
+            HttpSession session,
             Model model
     ) {
         ResponseEntity<?> loginResponse = authenticationController.loginUser(userDTO);
 
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
+        LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
+        assert loginResponseDTO != null;
+        logger.info("jwt:" + loginResponseDTO.getJwt());
+
+
+        session.setAttribute("jwt", loginResponseDTO.getJwt());
+        session.setAttribute("email", loginResponseDTO.getUser().getEmail());
+
+
         if (isValidLogin) {
-            request.getSession().setAttribute("username", email);
+            request.getSession().setAttribute("username", userDTO.getLogin_email());
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
@@ -267,6 +330,16 @@ public class WebController {
         }
 
         logger.info("User update request for the following user: " + user);
+
+        if (!user.getPassword().isBlank()) {
+            if(!checkPassword(user.getPassword())) {
+                model.addAttribute("isValid", false);
+                model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+                return "user/account";
+            }
+        }
+
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
         if(user!=null){
             if(Objects.equals(user.getAccount_llm(), "bart")){
@@ -280,16 +353,19 @@ public class WebController {
             }
         }
 
-        if (isValidUpdate != null) {
+        if (isValidUpdate.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "Account settings for '" + email + "' have been updated.");
+        } else if (isValidUpdate.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) {
+            model.addAttribute("isValid", false);
+            model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+            model.addAttribute("message", "Account settings for '" + email + "' cannot be updated as it is a google/github account");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
-
         return "user/account";
     }
 
@@ -325,7 +401,7 @@ public class WebController {
         boolean isRegistered = false;
 
         //check password
-        if (!shortlink.checkPassword(user.getPassword())) {
+        if (!checkPassword(user.getPassword())) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
@@ -443,4 +519,94 @@ public class WebController {
             return false;
         }
     }
+
+
+    private ResponseEntity<String> createPostRequestForHistory(HttpSession session,
+                                                               String isLoggedIn,
+                                                               String historyContent,
+                                                               String httpUrl) {
+        //todo check the logic if this is correct
+        String jwt = (String) session.getAttribute("jwt");
+        String email = (String) session.getAttribute("email");
+        ResponseEntity<String> response = null;
+        if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
+            try {
+                logger.info("user is logged making a post request");
+                //Generate a new link for the history
+                RestTemplate restTemplate = new RestTemplate();
+                // Create headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(jwt);
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+                // Create the request body as form data
+                MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+                map.add("output", historyContent);
+                map.add("email", email);
+
+                // Create an entity which includes the headers and the body
+                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+                // Make the request
+                response = restTemplate.exchange(
+                        httpUrl,
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class
+                );
+            }catch (Exception e){
+                return null; // todo
+            }
+        }
+        return response;
+    }
+
+    private void extractHistoryData1(ResponseEntity<String> response){
+        logger.info("new history response body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        shortUrl = rootNode.get("short_link").asText();
+        flag = false;
+        logger.info("extracted history id: " + id);
+    }
+    private void extractHistoryData2(ResponseEntity<String> response) {
+        logger.info("new history append body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        logger.info("extracted history id: " + id);
+    }
+
+    public boolean checkPassword(String password){
+        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        // Compile the pattern
+        Pattern regex = Pattern.compile(pattern);
+
+        // Create a Matcher objectco
+        Matcher matcher = regex.matcher(password);
+        return matcher.matches();
+    }
+
+
 }
