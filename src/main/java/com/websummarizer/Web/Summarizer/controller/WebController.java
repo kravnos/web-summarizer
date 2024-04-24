@@ -351,6 +351,11 @@ public class WebController {
                 User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
                 List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
 
+                logger.info("list of histories:");
+                for(HistoryResAto historyResAto : histories){
+                    logger.info("historyResAto"+historyResAto);
+                }
+
                 model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
