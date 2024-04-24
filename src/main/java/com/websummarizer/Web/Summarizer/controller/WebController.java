@@ -20,7 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -29,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+
 
 /**
  * Controller for web-related actions.
@@ -63,6 +70,7 @@ public class WebController {
     private Llm currentLlm;
     private boolean flag = true;
     private long hid = -1;
+    private String shortUrl;
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
@@ -93,15 +101,17 @@ public class WebController {
             HttpSession session,
             Model model
     ) {
+        boolean isValidOutput = true;
+        logger.info("flag " + flag + " " + hid);
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:mm:ss a");
 
-        String username = (String)request.getSession().getAttribute("first_name");
+        String username = (String) request.getSession().getAttribute("first_name");
         String output;   // This stores the summarized web content
-        String url;      // This stores the shortened URL
-        String link;     // This stores the short link code
+        String url = null;      // This stores the shortened URL
+        String link = null;     // This stores the short link code
 
-        input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ -]", "").trim(); // Sanitize user input
+        input = input.trim();
         boolean isURL = isValidURL(input);
 
         if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {
@@ -114,6 +124,7 @@ public class WebController {
                 output = currentLlm.queryModel(HTMLParser.parser(input));
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
+                isValidOutput = false;
             }
         } else {
             logger.info("got the text:" + input);
@@ -121,7 +132,43 @@ public class WebController {
                 output = currentLlm.queryModel(input);
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
+                isValidOutput = false;
             }
+        }
+
+        // if the user is logged in and it is the first summary
+        if (isLoggedIn.equals("true") && flag) {
+            logger.info("user is logged in appending history now:");
+            String httpUrl = webAddress + "users/add-new-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData1(response);
+                }
+                else {
+                    output = "Failed to process request please try again";
+                }
+            }
+        }
+
+        // if the user is logged in, and it is not the first summary so add to previous
+        else if (isLoggedIn.equals("true") && !flag) {
+            logger.info("user is logged in appending history now:");
+            String httpUrl = webAddress + "/users/" + shortUrl + "/append-history";
+            // Make the request only if output is valid
+            if(isValidOutput) {
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData2(response);
+                }
+            }
+
+        }
+
+        else {
+            logger.info("user is not logged in saving the history in temp variable to avoid loss:");
+            //save the content in a temporary history object //todo
         }
 
         link = "link";//shortlink.Shortlink(input, output, session);
@@ -172,7 +219,9 @@ public class WebController {
                 }
             } else {
                 User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                logger.info("finding histories for username: "+user.getEmail());
                 List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+                logger.info("finding histories for username: "+histories);
 
                 model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
@@ -458,5 +507,82 @@ public class WebController {
             // If an exception occurs, URL is not valid
             return false;
         }
+    }
+
+
+    private ResponseEntity<String> createPostRequestForHistory(HttpSession session,
+                                                               String isLoggedIn,
+                                                               String historyContent,
+                                                               String httpUrl) {
+        //todo check the logic if this is correct
+        String jwt = (String) session.getAttribute("jwt");
+        String email = (String) session.getAttribute("email");
+        ResponseEntity<String> response = null;
+        if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
+            try {
+                logger.info("user is logged making a post request");
+                //Generate a new link for the history
+                RestTemplate restTemplate = new RestTemplate();
+                // Create headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(jwt);
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+                // Create the request body as form data
+                MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+                map.add("output", historyContent);
+                map.add("email", email);
+
+                // Create an entity which includes the headers and the body
+                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+                // Make the request
+                response = restTemplate.exchange(
+                        httpUrl,
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class
+                );
+            }catch (Exception e){
+                return null; // todo
+            }
+        }
+        return response;
+    }
+
+    private void extractHistoryData1(ResponseEntity<String> response){
+        logger.info("new history response body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        shortUrl = rootNode.get("shortLink").asText();
+        flag = false;
+        logger.info("extracted history id: " + id);
+    }
+    private void extractHistoryData2(ResponseEntity<String> response) {
+        logger.info("new history append body: " + response.getBody());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            //todo
+            logger.severe("error creating json object of history");
+        }
+
+        assert rootNode != null;
+        int id = rootNode.get("id").asInt();
+        hid = id;
+        logger.info("extracted history id: " + id);
     }
 }
