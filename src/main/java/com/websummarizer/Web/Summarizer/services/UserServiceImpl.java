@@ -82,4 +82,18 @@ public class UserServiceImpl implements UserDetailsService {
 
         return id;
     }
+
+    public User getFoundUser(String email){
+//        long id = 1l;
+
+        Optional<User> maybeFoundEmail = userRepo.findByEmail(email);
+//        try {
+//            id = maybeFoundEmail.get().getId();
+//        }catch (Exception e){
+//
+//        }
+
+        return maybeFoundEmail.get();
+    }
 }
+

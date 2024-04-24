@@ -13,6 +13,8 @@ import com.websummarizer.Web.Summarizer.model.UserDTO;
 import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
+import com.websummarizer.Web.Summarizer.services.UserServiceImpl;
+import com.websummarizer.Web.Summarizer.services.history.HistoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,19 +46,18 @@ public class WebController {
 
     @Autowired
     private final Bart bart;
-
     @Autowired
     private final OpenAi openAi;
-
     @Autowired
     private AuthenticationController authenticationController;
-
     @Autowired
     ShortLinkGenerator shortLinkGenerator;
-
     @Autowired
     BitLyController bitLyController;
-
+    @Autowired
+    HistoryService historyService;
+    @Autowired
+    UserServiceImpl userService;
     @Value("${WEBADDRESS}")
     private String webAddress;
 
@@ -335,7 +336,6 @@ public class WebController {
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             HttpServletRequest request,
-            HttpSession session,
             Model model
     ) {
         if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
@@ -348,20 +348,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                //User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
-                //List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
-                List<History> histories;
-                ResponseEntity<String> response = createPostRequestForFetchHistory(session, isLoggedIn);
-                if (response != null && response.getStatusCode().is2xxSuccessful()) {
-                    extractHistoryData2(response);
-                }
-
-                if (response != null && response.getStatusCode().is2xxSuccessful()) {
-                    histories = extractAllHistories(response);
-                }
-                else {
-                    histories = null;
-                }
+                User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
 
                 model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));

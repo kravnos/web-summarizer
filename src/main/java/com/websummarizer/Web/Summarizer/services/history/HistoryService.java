@@ -78,14 +78,16 @@ public class HistoryService {
         return historyRepo.save(history); //todo fix
     }
 
-    // Get shortlink for a history
-//    public HistoryResAto getShortLink(String shortlink) {
-//        // Find the history in the repository by its shortlink
-//        Optional<History> maybeFoundHistory = historyRepo.findHistoryByShortLink(shortlink);
-//        // If the history is found, map it to a HistoryResAto object using HistoryMapper
-//        // Otherwise, throw a CCNotFoundException
-//        return maybeFoundHistory.map(HistoryMapper::mapHistoryEtoResAto)
-//                .orElseThrow(CCNotFoundException::new);
-//    }
+    public List<HistoryResAto> findHistoryId(long id) {
+        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
+
+        for(var h: historyRepo.findAll()){
+            HistoryResAto history = HistoryMapper.mapHistoryEtoResAto(h);
+            if(history.getUID() == id){
+                result.add(history);
+            }
+        }
+        return result;
+    }
 
 }
