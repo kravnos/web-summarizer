@@ -1,7 +1,7 @@
 package com.websummarizer.Web.Summarizer.services;
 
 import com.websummarizer.Web.Summarizer.common.exceptions.OauthUpdateNotAllowed;
-import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
+import com.websummarizer.Web.Summarizer.model.UserReqAto;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.Provider;
 import com.websummarizer.Web.Summarizer.model.Role;

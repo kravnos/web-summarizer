@@ -54,7 +54,6 @@ public class User implements UserDetails {
     @Column(name = "phone_number")
     private String phone_number;
 
-    @Setter
     @Column(name = "request_token")
     String request_token;
     /**
