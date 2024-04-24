@@ -26,11 +26,6 @@ public class History {
     @Column(name = "HID")
     private Long id;
 
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "UID")
-    private User user;
-
     @Column(name = "history_content", length = 100000)
     private String historyContent;
 
@@ -39,6 +34,11 @@ public class History {
 
     @Column(name = "upload_time")
     private LocalDateTime uploadTime;
+
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "UID")
+    private User user;
 
 
 }

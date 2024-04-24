@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.websummarizer.Web.Summarizer.llmConnectors.Bart;
 import com.websummarizer.Web.Summarizer.llmConnectors.Llm;
 import com.websummarizer.Web.Summarizer.llmConnectors.OpenAi;
+import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.LoginResponseDTO;
 import com.websummarizer.Web.Summarizer.model.User;
 import com.websummarizer.Web.Summarizer.model.UserDTO;
+import com.websummarizer.Web.Summarizer.model.history.HistoryResAto;
 import com.websummarizer.Web.Summarizer.model.user.UserReqAto;
 import com.websummarizer.Web.Summarizer.parsers.HTMLParser;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +28,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -108,12 +112,48 @@ public class WebController {
                         String.class
                 );
             }catch (Exception e){
-                return null;
+                return null; // todo
             }
         }
         return response;
     }
 
+    private ResponseEntity<String> createPostRequestForFetchHistory(HttpSession session,
+                                                               String isLoggedIn) {
+        //todo check the logic if this is correct
+        String jwt = (String) session.getAttribute("jwt");
+        String email = (String) session.getAttribute("email");
+        ResponseEntity<String> response = null;
+        if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
+            try {
+                logger.info("user is logged making a post request to fetch all histories");
+                //Generate a new link for the history
+                RestTemplate restTemplate = new RestTemplate();
+                // Create headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(jwt);
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+                // Create the request body as form data
+                MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+                map.add("email", email);
+
+                // Create an entity which includes the headers and the body
+                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+                // Make the request
+                response = restTemplate.exchange(
+                        webAddress+"/users/histories",
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class
+                );
+            }catch (Exception e){
+                return null; //todo
+            }
+        }
+        return response;
+    }
     private void extractHistoryData1(ResponseEntity<String> response){
         logger.info("new history response body: " + response.getBody());
 
@@ -132,7 +172,6 @@ public class WebController {
         flag = false;
         logger.info("extracted history id: " + id);
     }
-
     private void extractHistoryData2(ResponseEntity<String> response) {
         logger.info("new history append body: " + response.getBody());
 
@@ -149,6 +188,30 @@ public class WebController {
         int id = rootNode.get("id").asInt();
         hid = id;
         logger.info("extracted history id: " + id);
+    }
+    public List<History> extractAllHistories(ResponseEntity<String> response) {
+        logger.info("Extracting the histories from response histories: " + response.getBody());
+
+        List<History> histories = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            JsonNode rootNode = mapper.readTree(response.getBody());
+            for (JsonNode node : rootNode) {
+                History history = new History();
+                history.setHistoryContent(node.get("historyContent").asText());
+                history.setShortLink(node.get("shortLink").asText());
+                histories.add(history);
+            }
+            for(History history:histories){
+                logger.severe("histories are: "+history);
+            }
+        } catch (JsonProcessingException e) {
+            logger.severe("Error creating JSON object while fetching histories: " + e.getMessage());
+            // Handle exception
+        }
+
+        return histories;
     }
 
     /**
@@ -272,6 +335,7 @@ public class WebController {
             @RequestParam(value = "isProUser", required = false) String isProUser,
             @RequestParam(value = "path", required = false) String path,
             HttpServletRequest request,
+            HttpSession session,
             Model model
     ) {
         if ((isLoggedIn != null) && (isLoggedIn.equals("true"))) {
@@ -284,6 +348,23 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
+                //User user = userService.getFoundUser((String)request.getSession().getAttribute("username"));
+                //List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+                List<History> histories;
+                ResponseEntity<String> response = createPostRequestForFetchHistory(session, isLoggedIn);
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    extractHistoryData2(response);
+                }
+
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    histories = extractAllHistories(response);
+                }
+                else {
+                    histories = null;
+                }
+
+                model.addAttribute("histories", histories);
+                model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", request.getSession().getAttribute("username"));
                 model.addAttribute("isLoggedIn", true);
                 model.addAttribute("isProUser", isProUser);
