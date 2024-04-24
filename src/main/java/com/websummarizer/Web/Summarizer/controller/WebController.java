@@ -257,6 +257,7 @@ public class WebController {
 
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
+        if (isValidLogin) {
         LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
         assert loginResponseDTO != null;
         logger.info("jwt:" + loginResponseDTO.getJwt());
@@ -266,7 +267,6 @@ public class WebController {
         session.setAttribute("email", loginResponseDTO.getUser().getEmail());
 
 
-        if (isValidLogin) {
             request.getSession().setAttribute("username", userDTO.getLogin_email());
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
