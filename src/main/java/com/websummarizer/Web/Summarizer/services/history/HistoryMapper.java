@@ -23,6 +23,7 @@ public class HistoryMapper {
         return HistoryResAto.builder()
                 .HID(history.getId())
                 .UID(history.getUser().getId())
+                .first_name(history.getUser().getFirst_name())
                 .history_content(history.getHistoryContent())
                 .linkURL(history.getLinkURL())
                 .short_link(history.getShortLink())

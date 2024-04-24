@@ -11,21 +11,21 @@
             <div class="row mb-3">
                 <div class="field col-4">
                     <label for="account-first-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">First Name</label>
-                    <input id="account-first-name" class="form-control" name="first_name" type="text" th:value="${first_name}" hx-validate="true" hx-preserve="true" />
+                    <input id="account-first-name" class="form-control" name="first_name" type="text" th:value="${User.first_name}" hx-validate="true" hx-preserve="true" />
                 </div>
                 <div class="field col-4">
                     <label for="account-last-name" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Last Name</label>
-                    <input id="account-last-name" class="form-control" name="last_name" type="text" th:value="${last_name}" hx-validate="true" hx-preserve="true" />
+                    <input id="account-last-name" class="form-control" name="last_name" type="text" th:value="${User.last_name}" hx-validate="true" hx-preserve="true" />
                 </div>
                 <div class="field col-4">
                     <label for="account-phone-number" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Phone Number</label>
-                    <input id="account-phone-number" class="form-control" name="phone_number" type="tel" th:value="${phone}" hx-validate="true" hx-preserve="true" />
+                    <input id="account-phone-number" class="form-control" name="phone_number" type="tel" th:value="${User.phone_number}" hx-validate="true" hx-preserve="true" />
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="field required col-6">
                     <label for="account-email" class="form-label pe-none user-select-none m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                    <input id="account-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value="${email}" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
+                    <input id="account-email" class="form-control pe-none user-select-none disabled" name="email" type="email" th:value="${User.email}" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
                 </div>
                 <div class="field col-6">
                     <label for="account-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Password</label>

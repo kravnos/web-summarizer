@@ -28,6 +28,10 @@ public class HistoryResAto {
 
     @NonNull
     @ToString.Include
+    private String first_name;
+
+    @NonNull
+    @ToString.Include
     private String history_content;
 
     @NonNull

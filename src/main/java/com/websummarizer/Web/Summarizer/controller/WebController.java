@@ -124,7 +124,8 @@ public class WebController {
         }
 
         link = shortlink.Shortlink(input, output, session);
-        url = webAddress + link;
+        String valueURL = (String) session.getAttribute("valueURL");
+        url = valueURL + "/" + link;
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
@@ -204,11 +205,20 @@ public class WebController {
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
-            request.getSession().setAttribute("username", email);
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("isValid", true);
             model.addAttribute("html", "<span class=\"bi bi-check-circle-fill\"></span>");
             model.addAttribute("message", "User '" + email + "' logged in successfully.");
+
+            // Retrieve the session associated with the user's request or create a new one if it doesn't exist
+            HttpSession session = request.getSession();
+            // Store the user's login email in the session under the attribute name "username"
+            session.setAttribute("username", email);
+            User user = userService.getFoundUser(email);
+            List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
+            session.setAttribute("User", user);
+            String valueURL = (""+request.getRequestURL()).replace(request.getRequestURI(),"");
+            session.setAttribute("valueURL", valueURL);
 
             if ((path != null) && (path.equals("pro"))) {
                 if ((isProUser != null) && (isProUser.equals("true"))) {
@@ -219,9 +229,8 @@ public class WebController {
                     return "user/pro";
                 }
             } else {
-                User user = userService.getFoundUser(email);
-                List<HistoryResAto> histories = historyService.findHistoryId(user.getId());
 
+                model.addAttribute("User", user);
                 model.addAttribute("histories", histories);
                 model.addAttribute("llm", request.getSession().getAttribute("llm"));
                 model.addAttribute("email", email);
