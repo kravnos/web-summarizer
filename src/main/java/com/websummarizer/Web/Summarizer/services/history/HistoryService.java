@@ -38,4 +38,12 @@ public class HistoryService {
         return result;
     }
 
+    // Get shortlink for a history
+    public List<History> getShortLink(String shortlink) {
+        // Find the history in the repository by its shortlink
+        // If the history is found, map it to a HistoryResAto object using HistoryMapper
+        // Otherwise, throw a CCNotFoundException
+        return historyRepo.findHistoryByShortLink(shortlink);
+    }
+
 }

@@ -11,7 +11,7 @@ public interface HistoryRepo extends CrudRepository<History, Long> {
 
     //find user's history summarize using short link
     @Query("SELECT h FROM History h WHERE h.short_link = ?1")
-    History findHistoryByShortLink(String shortLink); //SELECT * FROM history WHERE email = ...
+    List<History> findHistoryByShortLink(String shortLink); //SELECT * FROM history WHERE email = ...
 
     List<History> findAllByUserId(Long userId);
 
