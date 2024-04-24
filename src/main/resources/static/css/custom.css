@@ -141,6 +141,12 @@ body {
     height: 44px;
     width: auto;
 }
+.wrapper-account .list-group-item {
+    padding: 0 0 1rem 0!important;
+}
+.wrapper-account .list-group-item:last-of-type {
+    padding: 0!important;
+}
 .wrapper-account fieldset {
     border: var(--bs-border-width) solid var(--bs-border-color);
 }
