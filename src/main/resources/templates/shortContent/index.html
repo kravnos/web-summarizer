@@ -32,7 +32,7 @@
                     <h3 class="d-inline-block m-0" th:text="${user}"></h3>
                 </div>
                 <div class="chat input fit-content shadow-google border-0 ms-auto me-0 my-2">
-                    <span class="text-chat text-input" th:text="${history.short_link}"></span>
+                    <span class="text-chat text-input" th:text="${history.getInputText()}"></span>
                 </div>
                 <div class="bot fit-content ms-0 me-auto my-2 px-4">
                     <h3 class="d-inline-block m-0">Jarvis</h3>

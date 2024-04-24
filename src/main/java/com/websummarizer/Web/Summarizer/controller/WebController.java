@@ -145,7 +145,7 @@ public class WebController {
             String httpUrl = webAddress + "users/add-new-history";
             // Make the request only if output is valid
             if(isValidOutput) {
-                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, input, output, httpUrl);
                 if (response != null && response.getStatusCode().is2xxSuccessful()) {
                     extractHistoryData1(response);
                 }
@@ -161,7 +161,7 @@ public class WebController {
             String httpUrl = webAddress + "/users/" + shortUrl + "/append-history";
             // Make the request only if output is valid
             if(isValidOutput) {
-                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, output, httpUrl);
+                ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn,input, output, httpUrl);
                 if (response != null && response.getStatusCode().is2xxSuccessful()) {
                     extractHistoryData2(response);
                 }
@@ -523,6 +523,7 @@ public class WebController {
 
     private ResponseEntity<String> createPostRequestForHistory(HttpSession session,
                                                                String isLoggedIn,
+                                                               String inputText,
                                                                String historyContent,
                                                                String httpUrl) {
         //todo check the logic if this is correct
@@ -541,6 +542,7 @@ public class WebController {
 
                 // Create the request body as form data
                 MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+                map.add("inputText", inputText);
                 map.add("output", historyContent);
                 map.add("email", email);
 

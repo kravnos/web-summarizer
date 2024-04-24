@@ -24,7 +24,6 @@ public class ShortLinkController {
 
         List<History> histories = historyService.getShortLink(shortlink);
         String userName = "User";
-        History history = null;
         if (!histories.isEmpty()) {
             userName = userService.getUserName(histories.get(0).getUser().getId());
         }

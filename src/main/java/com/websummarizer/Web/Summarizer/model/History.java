@@ -29,6 +29,9 @@ public class History {
     @Column(name = "history_content", length = 100000)
     private String historyContent;
 
+    @Column(name = "input_content", length = 100000)
+    private String inputText;
+
     @Column(name = "short_link", length = 1000)
     private String short_link;
 

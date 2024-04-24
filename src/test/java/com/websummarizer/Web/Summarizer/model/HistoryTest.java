@@ -1,112 +1,92 @@
 package com.websummarizer.Web.Summarizer.model;
 
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class HistoryTest {
+public class HistoryTest {
 
     @Test
-    void testConstructorAndGetters() {
-        // Arrange
-        Long id = 1L;
-        String historyContent = "Test history content";
-        String shortLink = "shortLink";
-        LocalDateTime uploadTime = LocalDateTime.now();
+    public void testHistoryConstructorAndGetters() {
+        // Create a User
         User user = new User();
+        user.setId(1L);
+        user.setEmail("example@example.com");
+        user.setPassword("password");
 
-        // Act
-        History history = new History(historyContent);
-        history.setId(id);
-        history.setShort_link(shortLink);
+        // Create a History
+        LocalDateTime uploadTime = LocalDateTime.now();
+        History history = new History("Test History");
+        history.setId(1L);
+        history.setInputText("Test Input Text");
+        history.setShort_link("Test Short Link");
         history.setUploadTime(uploadTime);
         history.setUser(user);
 
-        // Assert
-        assertEquals(id, history.getId());
-        assertEquals(historyContent, history.getHistoryContent());
-        assertEquals(shortLink, history.getShort_link());
+        // Test constructor
+        assertNotNull(history);
+        assertEquals("Test History", history.getHistoryContent());
+
+        // Test getters
+        assertEquals(1L, history.getId());
+        assertEquals("Test Input Text", history.getInputText());
+        assertEquals("Test Short Link", history.getShort_link());
         assertEquals(uploadTime, history.getUploadTime());
         assertEquals(user, history.getUser());
     }
 
     @Test
-    void testNoArgsConstructor() {
-        // Arrange & Act
+    public void testHistorySetters() {
+        // Create a History
         History history = new History();
 
-        // Assert
-        assertNotNull(history);
-    }
-
-    @Test
-    void testSetterAndGetters() {
-        // Arrange
-        History history = new History();
-        String historyContent = "Test history content";
-        String shortLink = "shortLink";
+        // Set values using setters
         LocalDateTime uploadTime = LocalDateTime.now();
         User user = new User();
+        user.setId(2L);
+        user.setEmail("test@example.com");
+        user.setPassword("password");
 
-        // Act
-        history.setHistoryContent(historyContent);
-        history.setShort_link(shortLink);
+        history.setId(2L);
+        history.setHistoryContent("Test Content");
+        history.setInputText("Test Input Text");
+        history.setShort_link("Test Short Link");
         history.setUploadTime(uploadTime);
         history.setUser(user);
 
-        // Assert
-        assertEquals(historyContent, history.getHistoryContent());
-        assertEquals(shortLink, history.getShort_link());
+        // Test getters to ensure values are set correctly
+        assertEquals(2L, history.getId());
+        assertEquals("Test Content", history.getHistoryContent());
+        assertEquals("Test Input Text", history.getInputText());
+        assertEquals("Test Short Link", history.getShort_link());
         assertEquals(uploadTime, history.getUploadTime());
         assertEquals(user, history.getUser());
     }
     @Test
-    void testAllArgsConstructor() {
-        // Arrange
-        Long id = 1L;
-        String historyContent = "Test history content";
-        String shortLink = "shortLink";
-        LocalDateTime uploadTime = LocalDateTime.now();
+    public void testHistoryBuilder() {
+        // Create a User
         User user = new User();
+        user.setId(1L);
+        user.setEmail("example@example.com");
+        user.setPassword("password");
 
-        // Act
-        History history = new History(id, historyContent, shortLink, uploadTime, user);
-
-        // Assert
-        assertNotNull(history);
-        assertEquals(id, history.getId());
-        assertEquals(historyContent, history.getHistoryContent());
-        assertEquals(shortLink, history.getShort_link());
-        assertEquals(uploadTime, history.getUploadTime());
-        assertEquals(user, history.getUser());
-    }
-
-    @Test
-    void testBuilder() {
-        // Arrange
-        Long id = 1L;
-        String historyContent = "Test history content";
-        String shortLink = "shortLink";
+        // Create a History using the builder
         LocalDateTime uploadTime = LocalDateTime.now();
-        User user = new User();
-
-        // Act
         History history = History.builder()
-                .id(id)
-                .historyContent(historyContent)
-                .short_link(shortLink)
+                .id(1L)
+                .historyContent("Test History")
+                .inputText("Test Input Text")
+                .short_link("Test Short Link")
                 .uploadTime(uploadTime)
                 .user(user)
                 .build();
 
-        // Assert
-        assertNotNull(history);
-        assertEquals(id, history.getId());
-        assertEquals(historyContent, history.getHistoryContent());
-        assertEquals(shortLink, history.getShort_link());
+        // Test builder-generated instance
+        assertEquals(1L, history.getId());
+        assertEquals("Test History", history.getHistoryContent());
+        assertEquals("Test Input Text", history.getInputText());
+        assertEquals("Test Short Link", history.getShort_link());
         assertEquals(uploadTime, history.getUploadTime());
         assertEquals(user, history.getUser());
     }

@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/add-new-history")
-    public ResponseEntity<?> addNewHistory(String output,String email) {
+    public ResponseEntity<?> addNewHistory(String inputText, String output,String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
@@ -42,6 +42,7 @@ public class UserController {
             History history = new History();
             assert user != null;
             history.setUser(user);
+            history.setInputText(inputText);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
             history.setShort_link(shortLinkGenerator.generateShortUrl());
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/{short_link}/append-history")
-    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String output,String email) {
+    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String inputText, String output,String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
@@ -66,6 +67,7 @@ public class UserController {
             History history = new History();
             assert user != null;
             history.setUser(user);
+            history.setInputText(inputText);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
 
