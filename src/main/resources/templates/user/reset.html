@@ -8,8 +8,8 @@
         <th:block th:replace="~{fragments/message.html :: message}"></th:block>
         <fieldset class="field-set validate">
             <div class="field required mb-3">
-                <label for="reset-email" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
-                <input id="reset-email" class="form-control" name="reset_email" type="email" th:value=${email} hx-validate="true" hx-preserve="true" required />
+                <label for="reset-email" class="form-label pe-none user-select-none m-0 p-0 fs-7 fw-bold text-uppercase">Email Address</label>
+                <input id="reset-email" class="form-control pe-none user-select-none disabled" name="reset_email" type="email" th:value="${email}" tabindex="-1" aria-disabled="true" hx-validate="true" hx-preserve="true" required />
             </div>
             <div class="field required mb-3">
                 <label for="reset-password" class="form-label m-0 p-0 fs-7 fw-bold text-uppercase">New Password</label>
