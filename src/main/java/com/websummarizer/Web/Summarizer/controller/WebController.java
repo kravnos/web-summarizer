@@ -35,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -52,15 +54,14 @@ public class WebController {
     @Autowired
     private AuthenticationController authenticationController;
 
+    @Autowired
+    private ShortLinkGenerator shortLinkGenerator;
 
     @Autowired
     private UserServiceImpl userService;
 
     @Autowired
     private HistoryService historyService;
-
-    @Autowired
-    BitLyController bitLyController;
 
     @Value("${WEBADDRESS}")
     private String webAddress;
@@ -334,6 +335,15 @@ public class WebController {
 
         logger.info("User update request for the following user: " + user);
 
+        if (!user.getPassword().isBlank()) {
+            if(!checkPassword(user.getPassword())) {
+                model.addAttribute("isValid", false);
+                model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
+                model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+                return "user/account";
+            }
+        }
+
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
         if(user!=null){
             if(Objects.equals(user.getAccount_llm(), "bart")){
@@ -395,8 +405,7 @@ public class WebController {
         boolean isRegistered = false;
 
         //check password
-//        if (!shortlink.checkPassword(user.getPassword())) {
-        if (false) {
+        if (!checkPassword(user.getPassword())) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
@@ -591,4 +600,17 @@ public class WebController {
         hid = id;
         logger.info("extracted history id: " + id);
     }
+
+    public boolean checkPassword(String password){
+        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        // Compile the pattern
+        Pattern regex = Pattern.compile(pattern);
+
+        // Create a Matcher object
+        Matcher matcher = regex.matcher(password);
+        return matcher.matches();
+    }
+
+
 }
