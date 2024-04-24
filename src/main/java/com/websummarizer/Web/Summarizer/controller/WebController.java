@@ -107,7 +107,7 @@ public class WebController {
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
 
-        input = input.trim();
+        input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ _-]", "").trim(); // Sanitize user input
         boolean isURL = isValidURL(input);
 
         if ((username == null) || (username.equals("undefined")) || (!isLoggedIn.equals("true"))) {

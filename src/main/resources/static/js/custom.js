@@ -43,17 +43,22 @@ $(document).ready(function() {
     */
     $("#input-main").on("input keyup", function(event) {
         let val = $("#input-main").val();
-        let ai;
+        let ai = $(".ai");
+        let element;
 
         if (index >= 0) {
-            ai = $($(".ai").get(index));
+            if ($(".wrapper-newchat").length > 0) {
+                element = $(ai.get(index - 1));
+            } else {
+                element = $(ai.get(index));
+            }
         } else {
-            ai = $(".ai").last();
+            element = ai.last();
         }
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
-            if ((val.length) && ($("#loader").css("display") == "none") && ((!ai.length) || (ai.css("display") == "none"))) {
+            if ((val.length) && ($("#loader").css("display") == "none") && ((!element.length) || (element.css("display") == "none"))) {
                 $("#feedback-length").text(val.length + "/" + maxLength).removeClass("opacity-0");
 
                 if ((val.toLowerCase().startsWith("http") == true) || (val.toLowerCase().indexOf("www") >= 0)) {
