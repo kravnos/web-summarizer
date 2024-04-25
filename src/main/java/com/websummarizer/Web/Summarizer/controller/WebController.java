@@ -60,6 +60,9 @@ public class WebController {
     @Autowired
     private HistoryService historyService;
 
+    @Autowired
+    private ShortLinkGenerator shortLinkGenerator;
+
     @Value("${WEBADDRESS}")
     private String webAddress;
 
@@ -107,6 +110,8 @@ public class WebController {
         String url;      // This stores the shortened URL
         String link;     // This stores the short link code
 
+        shortUrl = shortLinkGenerator.generateShortUrl();
+
         input = input.replaceAll("[^a-zA-Z0-9:;.?!#/ _-]", "").trim(); // Sanitize user input
         boolean isURL = isValidURL(input);
 
@@ -150,6 +155,7 @@ public class WebController {
                     extractHistoryData1(response);
                 }
                 else {
+
                     output = "Failed to process request please try again";
                 }
             }
@@ -173,9 +179,9 @@ public class WebController {
             logger.info("user is not logged in saving the history in temp variable to avoid loss:");
             //save the content in a temporary history object //todo
         }
-
+        String valueAddress = (""+request.getRequestURL()).replace(request.getRequestURI(),"");
         link = shortUrl;
-        url = webAddress + link;
+        url = valueAddress +"/" + link;
 
         model.addAttribute("date", dateFormat.format(date));
         model.addAttribute("user", username);
