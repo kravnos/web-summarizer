@@ -158,7 +158,7 @@ public class WebController {
         // if the user is logged in, and it is not the first summary so add to previous
         else if (isLoggedIn.equals("true") && !flag) {
             logger.info("user is logged in appending history now:");
-            String httpUrl = webAddress + "/users/" + shortUrl + "/append-history";
+            String httpUrl = webAddress + "users/" + shortUrl + "/append-history";
             // Make the request only if output is valid
             if(isValidOutput) {
                 ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn,input, output, httpUrl);
