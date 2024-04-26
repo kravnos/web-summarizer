@@ -142,7 +142,7 @@ public class WebController {
         // if the user is logged in and it is the first summary
         if (isLoggedIn.equals("true") && flag) {
             logger.info("user is logged in adding new history now:");
-            String httpUrl = webAddress + "users/add-new-history/";
+            String httpUrl = webAddress + "users/add-new-history";
             // Make the request only if output is valid
             if(isValidOutput) {
                 logger.info("The output from llm is valid, making a post request to save history at link: "+httpUrl);
@@ -162,7 +162,7 @@ public class WebController {
         // if the user is logged in, and it is not the first summary so add to previous
         else if (isLoggedIn.equals("true") && !flag) {
             logger.info("user is logged in appending history now:");
-            String httpUrl = webAddress + "users/" + shortUrl + "/append-history/";
+            String httpUrl = webAddress + "users/" + shortUrl + "/append-history";
             // Make the request only if output is valid
             if(isValidOutput) {
                 logger.info("The output from llm is valid, making a post request to save history at link: "+httpUrl);
