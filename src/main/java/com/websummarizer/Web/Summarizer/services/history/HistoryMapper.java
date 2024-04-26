@@ -11,9 +11,13 @@ public class HistoryMapper {
                 .HID(history.getId())
                 .UID(history.getUser().getId())
                 .history_content(history.getHistoryContent())
-                .short_link(String.valueOf(history.getShort_link()))
+                .short_link(history.getShort_link())
                 .upload_time(history.getUploadTime())
-                .build();
+                .input_content(history.getInputText())
+                .email(history.getUser().getEmail())
+                .first_name(history.getUser().getFirst_name())
+                .last_name(history.getUser().getLast_name())
+               .build();
     }
 
 }
