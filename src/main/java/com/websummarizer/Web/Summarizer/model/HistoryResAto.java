@@ -37,4 +37,20 @@ public class HistoryResAto {
     @ToString.Include
     private LocalDateTime upload_time;
 
+    @NonNull
+    @ToString.Include
+    private String input_content;
+
+    @NonNull
+    @ToString.Include
+    private String email;
+
+    @NonNull
+    @ToString.Include
+    private String first_name;
+
+    @NonNull
+    @ToString.Include
+    private String last_name;
+
 }
