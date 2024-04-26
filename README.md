@@ -3,6 +3,10 @@ This is our team organization page for COSC 4P02 Software Engineering II at Broc
 
 Project documents are located in the [doc](doc) folder.
 
+## Project Website 🌐
+Visit the live site at [web-summarizer-nf8x.onrender.com](https://web-summarizer-nf8x.onrender.com/)
+
+⚠️ Free hosting service will spin down on inactivity, please be patient on first load! ⚠️
 
 ## Project Description 📝
 - Web Summarizer and Shortener
