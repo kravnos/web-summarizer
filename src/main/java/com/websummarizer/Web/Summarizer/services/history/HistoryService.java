@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,12 +39,16 @@ public class HistoryService {
         return result;
     }
 
+
+
     // Get shortlink for a history
-    public List<History> getShortLink(String shortlink) {
-        // Find the history in the repository by its shortlink
-        // If the history is found, map it to a HistoryResAto object using HistoryMapper
-        // Otherwise, throw a CCNotFoundException
-        return historyRepo.findHistoryByShortLink(shortlink);
+    public List<HistoryResAto> getShortLink(String shortlink) {
+
+        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
+        historyRepo.findHistoryByShortLink(shortlink).forEach((history) -> result.add(HistoryMapper.mapHistoryEtoResAto(history)));
+
+        Collections.sort(result, new HistoryComparator());
+        return result;
     }
 
 }
