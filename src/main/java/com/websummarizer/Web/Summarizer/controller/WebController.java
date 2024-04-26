@@ -145,11 +145,15 @@ public class WebController {
             String httpUrl = webAddress + "users/add-new-history";
             // Make the request only if output is valid
             if(isValidOutput) {
+                logger.info("The output from llm is valid, making a post request to save history");
                 ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, input, output, httpUrl);
+                logger.info("createPostRequestForHistory request passed, response is : "+response);
                 if (response != null && response.getStatusCode().is2xxSuccessful()) {
+                    logger.info("response is not null and response is successful");
                     extractHistoryData1(response);
                 }
                 else {
+                    logger.info("failed to precess request response is "+response);
                     output = "Failed to process request please try again";
                 }
             }
