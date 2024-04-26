@@ -141,14 +141,14 @@ public class WebController {
 
         // if the user is logged in and it is the first summary
         if (isLoggedIn.equals("true") && flag) {
-            logger.info("user is logged in appending history now:");
-            String httpUrl = webAddress + "users/add-new-history";
+            logger.info("user is logged in adding new history now:");
+            String httpUrl = webAddress + "users/add-new-history/";
             // Make the request only if output is valid
             if(isValidOutput) {
                 logger.info("The output from llm is valid, making a post request to save history at link: "+httpUrl);
                 ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, input, output, httpUrl);
                 logger.info("createPostRequestForHistory request passed, response is : "+response);
-                if (response != null && response.getStatusCode().is2xxSuccessful() || Objects.requireNonNull(response).getStatusCode().is3xxRedirection()) {
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
                     logger.info("response is not null and response is successful or being redirected");
                     extractHistoryData1(response);
                 }
@@ -162,14 +162,14 @@ public class WebController {
         // if the user is logged in, and it is not the first summary so add to previous
         else if (isLoggedIn.equals("true") && !flag) {
             logger.info("user is logged in appending history now:");
-            String httpUrl = webAddress + "users/" + shortUrl + "/append-history";
+            String httpUrl = webAddress + "users/" + shortUrl + "/append-history/";
             // Make the request only if output is valid
             if(isValidOutput) {
                 logger.info("The output from llm is valid, making a post request to save history at link: "+httpUrl);
                 ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn,input, output, httpUrl);
                 logger.info("createPostRequestForHistory request passed, response is : "+response);
 
-                if (response != null && response.getStatusCode().is2xxSuccessful() || Objects.requireNonNull(response).getStatusCode().is3xxRedirection()) {
+                if (response != null && response.getStatusCode().is2xxSuccessful()) {
                     logger.info("response is not null and response is successful");
                     extractHistoryData2(response);
                 }
@@ -538,41 +538,43 @@ public class WebController {
                                                                String inputText,
                                                                String historyContent,
                                                                String httpUrl) {
-        //todo check the logic if this is correct
-        String jwt = (String) session.getAttribute("jwt");
-        String email = (String) session.getAttribute("email");
-        ResponseEntity<String> response = null;
-        if (isLoggedIn.equals("true")) { // if the user is logged in and it is the first summary
-            try {
-                logger.info("user is logged making a post request");
-                //Generate a new link for the history
-                RestTemplate restTemplate = new RestTemplate();
-                // Create headers
-                HttpHeaders headers = new HttpHeaders();
-                headers.setBearerAuth(jwt);
-                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-                // Create the request body as form data
-                MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-                map.add("inputText", inputText);
-                map.add("output", historyContent);
-                map.add("email", email);
-
-                // Create an entity which includes the headers and the body
-                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
-
-                // Make the request
-                response = restTemplate.exchange(
-                        httpUrl,
-                        HttpMethod.POST,
-                        requestEntity,
-                        String.class
-                );
-            }catch (Exception e){
-                return null; // todo
+        try {
+            if (!isLoggedIn.equals("true")) {
+                // User is not logged in, no need to make a request
+                return null;
             }
+
+            logger.info("User is logged in, making a post request");
+
+            // Generate a new link for the history
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth((String) session.getAttribute("jwt"));
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // Create the request body as form data
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("inputText", inputText);
+            map.add("output", historyContent);
+            map.add("email", (String) session.getAttribute("email"));
+
+            // Create an entity which includes the headers and the body
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+
+            // Make the request
+            return restTemplate.exchange(
+                    httpUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+        } catch (Exception e) {
+            logger.severe("Error while making the post request: "+ e.getMessage());
+            // Handle the exception appropriately (e.g., log, throw custom exception, etc.)
+            return null;
         }
-        return response;
     }
 
     private void extractHistoryData1(ResponseEntity<String> response){

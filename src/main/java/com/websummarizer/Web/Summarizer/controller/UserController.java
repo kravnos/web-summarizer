@@ -33,7 +33,7 @@ public class UserController {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    @PostMapping("/add-new-history")
+    @PostMapping("/add-new-history/")
     public ResponseEntity<?> addNewHistory(String inputText, String output,String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
@@ -58,7 +58,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{short_link}/append-history")
+    @PostMapping("/{short_link}/append-history/")
     public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String inputText, String output,String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
