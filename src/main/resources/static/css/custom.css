@@ -19,8 +19,8 @@ body {
 }
 .scroll-main {
     margin-top: 5rem;
-    /*max-height: calc(100vh - 62px);*/
-    max-height: calc(100vh - 10.375rem);
+    margin-bottom: 5.5rem;
+    max-height: calc(100vh - 10.5rem);
     overflow-y: auto;
 }
 .scroll-summary {
