@@ -76,9 +76,6 @@ body {
 .wrapper-summary:not(:first-child) {
     margin-top: 3rem!important;
 }
-.wrapper-newchat {
-    margin-bottom: 3rem!important;
-}
 .newchat {
     top: 0.5rem!important;
     right: 1rem!important;

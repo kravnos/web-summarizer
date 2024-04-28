@@ -56,8 +56,8 @@ class ShortLinkControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().size(2))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("histories", "user"))
-                .andExpect(MockMvcResultMatchers.view().name("shortContent/index"))
-                .andExpect(MockMvcResultMatchers.forwardedUrl("shortContent/index"));
+                .andExpect(MockMvcResultMatchers.view().name("api/shortlink"))
+                .andExpect(MockMvcResultMatchers.forwardedUrl("api/shortlink"));
     }
 
     /**
@@ -99,7 +99,7 @@ class ShortLinkControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().size(2))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("histories", "user"))
-                .andExpect(MockMvcResultMatchers.view().name("shortContent/index"))
-                .andExpect(MockMvcResultMatchers.forwardedUrl("shortContent/index"));
+                .andExpect(MockMvcResultMatchers.view().name("api/shortlink"))
+                .andExpect(MockMvcResultMatchers.forwardedUrl("api/shortlink"));
     }
 }
