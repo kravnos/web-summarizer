@@ -9,7 +9,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class) // Handle all exceptions
     public ModelAndView handleException(Exception ex) {
-        ModelAndView modelAndView = new ModelAndView("errorPage"); // Assuming "errorPage" is your error page name
+        ModelAndView modelAndView = new ModelAndView("error"); // Assuming "error" is your error page name
         modelAndView.addObject("errorMessage", ex.getMessage());
         return modelAndView;
     }
