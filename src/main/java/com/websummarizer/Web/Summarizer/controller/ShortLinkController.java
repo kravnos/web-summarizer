@@ -28,8 +28,9 @@ public class ShortLinkController {
             userName = userService.getUserName(histories.get(0).getUser().getId());
         }
 
+        model.addAttribute("shortlink", shortlink);
         model.addAttribute("histories", histories);
         model.addAttribute("user", userName);
-        return "shortContent/index";
+        return "index";
     }
 }

@@ -95,6 +95,10 @@ $(document).ready(function() {
         if (this.id == "wrapper-summary") {
             index = $(event.detail.target).index();
         } else {
+            if ($(".wrapper-chat-history").length > 0) {
+                $("#wrapper-summary").empty();
+            }
+
             index = -1;
         }
 
@@ -161,11 +165,10 @@ $(document).ready(function() {
         New Chat
     */
     $("#link-newchat").on("htmx:beforeRequest", function(event) {
-        let element = $(".wrapper-summary");
+        let element = $("#wrapper-summary");
 
-        if (element.length > 0) {
-            element.remove();
-            $("#intro").hide();
+        if (element.children().length > 0) {
+            element.empty();
         } else {
             event.preventDefault();
             event.stopPropagation();

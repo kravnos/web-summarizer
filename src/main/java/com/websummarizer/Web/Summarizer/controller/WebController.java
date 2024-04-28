@@ -122,6 +122,7 @@ public class WebController {
                     throw new Exception("Invalid input exception");
                 }
                 output = currentLlm.queryModel(extract);
+                output = output.replaceAll("[^a-zA-Z0-9:;.?!#/ _-]", "").trim(); // Sanitize llm output
             } catch (IOException e) {
                 output = "Error Occurred. Please try again.";
                 isValidOutput = false;
@@ -133,6 +134,7 @@ public class WebController {
             logger.info("got the text:" + input);
             try {
                 output = currentLlm.queryModel(input);
+                output = output.replaceAll("[^a-zA-Z0-9:;.?!#/ _-]", "").trim(); // Sanitize llm output
             } catch (Exception e) {
                 output = "Error Occurred while fetching your results. Please try again.";
                 isValidOutput = false;
@@ -144,7 +146,7 @@ public class WebController {
             logger.info("user is logged in adding new history now:");
             String httpUrl = webAddress + "users/add-new-history";
             // Make the request only if output is valid
-            if(isValidOutput) {
+            if (isValidOutput) {
                 logger.info("The output from llm is valid, making a post request to save history at link: "+httpUrl);
                 ResponseEntity<String> response = createPostRequestForHistory(session, isLoggedIn, input, output, httpUrl);
                 logger.info("createPostRequestForHistory request passed, response is : "+response);
@@ -154,7 +156,7 @@ public class WebController {
                 }
                 else {
                     logger.info("failed to precess request response is "+response);
-                    output = "Failed to process request please try again";
+                    output = "Failed to process request. Please try again.";
                 }
             }
         }
@@ -175,7 +177,7 @@ public class WebController {
                 }
                 else {
                     logger.info("failed to precess request response is "+response);
-                    output = "Failed to process request please try again";
+                    output = "Failed to process request. Please try again.";
                 }
             }
 
@@ -270,14 +272,12 @@ public class WebController {
         boolean isValidLogin = loginResponse.getStatusCode().is2xxSuccessful();
 
         if (isValidLogin) {
-        LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
-        assert loginResponseDTO != null;
-        logger.info("jwt:" + loginResponseDTO.getJwt());
+            LoginResponseDTO loginResponseDTO = (LoginResponseDTO) loginResponse.getBody();
+            assert loginResponseDTO != null;
+            logger.info("jwt:" + loginResponseDTO.getJwt());
 
-
-        session.setAttribute("jwt", loginResponseDTO.getJwt());
-        session.setAttribute("email", loginResponseDTO.getUser().getEmail());
-
+            session.setAttribute("jwt", loginResponseDTO.getJwt());
+            session.setAttribute("email", loginResponseDTO.getUser().getEmail());
 
             request.getSession().setAttribute("username", userDTO.getLogin_email());
             model.addAttribute("isLoggedIn", true);
@@ -338,27 +338,31 @@ public class WebController {
 
             return "user/account";
         } else {
+            User getUser = userService.getFoundUser(email);
+            List<HistoryResAto> histories = historyService.findHistoryId(getUser.getId());
+
+            model.addAttribute("histories", histories);
             model.addAttribute("email", email);
         }
 
         logger.info("User update request for the following user: " + user);
-
         if (!user.getPassword().isBlank()) {
-            if(!checkPassword(user.getPassword())) {
+            if (!checkPassword(user.getPassword())) {
                 model.addAttribute("isValid", false);
                 model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
                 model.addAttribute("message", "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
+
                 return "user/account";
             }
         }
 
         ResponseEntity<?> isValidUpdate = authenticationController.updateUser(user);
-        if(user!=null){
-            if(Objects.equals(user.getAccount_llm(), "bart")){
+        if (user != null) {
+            if (Objects.equals(user.getAccount_llm(), "bart")) {
                 request.getSession().setAttribute("llm", "bart");
                 logger.info("llm selected : bart");
                 this.currentLlm = bart;
-            }else if(Objects.equals(user.getAccount_llm(), "openai")){
+            } else if (Objects.equals(user.getAccount_llm(), "openai")) {
                 request.getSession().setAttribute("llm", "openai");
                 logger.info("llm selected : openai");
                 this.currentLlm = openAi;
@@ -372,12 +376,13 @@ public class WebController {
         } else if (isValidUpdate.getStatusCode().isSameCodeAs(HttpStatus.FORBIDDEN)) {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
-            model.addAttribute("message", "Account settings for '" + email + "' cannot be updated as it is a google/github account");
+            model.addAttribute("message", "Failed to save settings for '" + email + "'. oAuth login used.");
         } else {
             model.addAttribute("isValid", false);
             model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
             model.addAttribute("message", "Failed to save settings for '" + email + "'. Please try again.");
         }
+
         return "user/account";
     }
 
