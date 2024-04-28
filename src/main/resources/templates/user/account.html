@@ -54,7 +54,7 @@
                 </ol>
             </div>
         </fieldset>
-        <fieldset id="account-list" class="field-set scroll-summary p-3" hx-preserve="true">
+        <fieldset id="account-list" class="field-set scroll-summary p-3">
             <legend class="m-0 px-2 py-0">Chat History <span th:class="${isProUser == 'true'} ? 'bi bi-unlock-fill' : 'bi bi-lock-fill'"></span></legend>
             <div class="wrapper-list" th:classappend="${isProUser != 'true'} ? 'opacity-50 pe-none user-select-none blur disabled'">
                 <th:block th:unless="${#lists.isEmpty(histories)}">
@@ -68,7 +68,7 @@
                         </li>
                     </ol>
                 </th:block>
-                <th:block th:if="${#lists.isEmpty(histories)}">
+                <th:block th:if="${#lists.isEmpty(histories)} or ${histories == null}">
                     <ol class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-start border-0">
                             <div class="me-auto w-75 fs-8 text-truncate text-nowrap overflow-hidden rounded-0">
