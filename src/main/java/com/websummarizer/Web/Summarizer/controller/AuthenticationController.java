@@ -25,8 +25,6 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
-    @Autowired
-    private UserController userController;
 
     /**
      * Endpoint for user registration.

@@ -47,7 +47,7 @@ public class HistoryService {
      * @return List of HistoryResAto objects.
      */
     public List<HistoryResAto> findHistoryId(long id) {
-        List<HistoryResAto> result = new ArrayList<HistoryResAto>();
+        List<HistoryResAto> result = new ArrayList<>();
 
         for(var h: historyRepo.findAll()){
             HistoryResAto history = HistoryMapper.mapHistoryEtoResAto(h);

@@ -93,7 +93,7 @@ public class OpenAi implements Llm {
 
     /**
      * Method for extracting message from JSON response
-     * @param response
+     * @param response response from api
      * @return string of message
      */
     public static String extractMessageFromJSONResponse(String response) {
