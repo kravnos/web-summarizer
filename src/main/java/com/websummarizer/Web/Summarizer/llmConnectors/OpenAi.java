@@ -10,6 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Controller to create a request to OpenAI api
+ */
 @RestController
 public class OpenAi implements Llm {
     // Logger for logging messages
@@ -20,7 +23,6 @@ public class OpenAi implements Llm {
     private final HttpHeaders headers; // HTTP headers for API requests
     private final RestTemplate restTemplate; // Template for making HTTP requests
     private final String model; // Model to be used for processing
-    private String authToken; // Authentication token for accessing the API
 
     // Constructor for initializing OpenAI object
     public OpenAi(@Value("${API_URL_OPENAI}") String apiUrl,
@@ -40,7 +42,11 @@ public class OpenAi implements Llm {
         this.restTemplate = new RestTemplate();
     }
 
-    // Method for querying the OpenAI model
+    /**
+     *  Method for querying the OpenAI model
+     * @param prompt The input text to query the model.
+     * @return summarized text
+     */
     @Override
     public String queryModel(String prompt) {
         try {
@@ -85,7 +91,11 @@ public class OpenAi implements Llm {
         }
     }
 
-    // Method for extracting message from JSON response
+    /**
+     * Method for extracting message from JSON response
+     * @param response response from api
+     * @return string of message
+     */
     public static String extractMessageFromJSONResponse(String response) {
         // Find the start and end index of the content in the response
         int start = response.indexOf("content") + 11;

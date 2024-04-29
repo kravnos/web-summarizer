@@ -3,9 +3,17 @@ package com.websummarizer.Web.Summarizer.services.history;
 import com.websummarizer.Web.Summarizer.model.History;
 import com.websummarizer.Web.Summarizer.model.HistoryResAto;
 
+/**
+ * Mapper class for mapping History entity to HistoryResAto.
+ */
 public class HistoryMapper {
 
-    // Map History entity to HistoryResAto
+    /**
+     * Maps History entity to HistoryResAto.
+     *
+     * @param history The History entity to map.
+     * @return The mapped HistoryResAto object.
+     */
     public static HistoryResAto mapHistoryEtoResAto(History history) {
         return HistoryResAto.builder()
                 .HID(history.getId())

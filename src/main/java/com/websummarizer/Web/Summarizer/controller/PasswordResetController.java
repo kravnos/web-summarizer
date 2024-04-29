@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.logging.Logger;
 
+/**
+ * Controller class for handling password reset functionality.
+ */
 @Controller
 public class PasswordResetController {
 
@@ -28,10 +31,10 @@ public class PasswordResetController {
     private static final Logger logger = Logger.getLogger("PasswordResetController");
 
     /**
-     * Endpoint for requesting the modal where the user's inputs their email of the account with the password to reset.
+     * Endpoint for requesting the modal where the user inputs their email for password reset.
      *
-     * @param email The email the user submitted.
-     * @param model Self-explanatory
+     * @param email The email submitted by the user.
+     * @param model Model object for rendering the view.
      * @return The name of the view to render.
      */
     @PostMapping("/user/code")
@@ -47,8 +50,8 @@ public class PasswordResetController {
     /**
      * Endpoint for sending authentication code to the email submitted.
      *
-     * @param email    The email the user submitted.
-     * @param model    Self-explanatory
+     * @param email The email submitted by the user.
+     * @param model Model object for rendering the view.
      * @return The name of the view to render.
      */
     @PostMapping("/user/send")
@@ -71,7 +74,6 @@ public class PasswordResetController {
 
             //  Create email body
             try{
-                // Try-catch used in case there is a problem with the SMTP configuration in env.properties
                 SimpleMailMessage message = new SimpleMailMessage();
                 message.setTo(email);
                 message.setSubject("Password Reset");
@@ -101,9 +103,6 @@ public class PasswordResetController {
             }
 
             //  Runs if there is a problem with the SMTP config properties
-            //  "AuthenticationFailedException" is typically the exception but for some reason the catch block thinks
-            //  that it isn't thrown, yet it will get thrown during runtime if there was a problem with the SMTP properties.
-            //  So, a generic Exception is used
             catch (Exception e){
                 model.addAttribute("isValid", false);
                 model.addAttribute("html", "<span class=\"bi bi-exclamation-triangle-fill\"></span>");
@@ -124,12 +123,12 @@ public class PasswordResetController {
     }
 
     /**
-     * Endpoint for reset password.
+     * Endpoint for resetting password.
      *
-     * @param email    The email the user submitted.
-     * @param password The new password
-     * @param code     The code used to identify that the user made the reset request
-     * @param model    Self-explanatory
+     * @param email    The email submitted by the user.
+     * @param password The new password.
+     * @param code     The code used to identify the user's reset request.
+     * @param model    Model object for rendering the view.
      * @return The name of the view to render.
      */
     @PostMapping("/user/reset")

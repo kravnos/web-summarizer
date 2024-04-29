@@ -25,9 +25,13 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService authenticationService;
-    @Autowired
-    private UserController userController;
 
+    /**
+     * Endpoint for user registration.
+     *
+     * @param user User object containing registration details.
+     * @return ResponseEntity containing the registered user or an error message.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(User user) {
         logger.info("Received user creation request: " + user);
@@ -50,7 +54,7 @@ public class AuthenticationController {
      * Endpoint for user login.
      *
      * @param userDTO UserDTO object containing login credentials.
-     * @return The view name for login status.
+     * @return ResponseEntity containing login response DTO or an error message.
      */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(UserDTO userDTO) {
@@ -71,6 +75,12 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * Endpoint for updating user information.
+     *
+     * @param userReqAto UserReqAto object containing updated user information.
+     * @return ResponseEntity containing the updated user or an error message.
+     */
     @PostMapping("/update-user")
     public ResponseEntity<?> updateUser(UserReqAto userReqAto){
         //todo make sure not to allow user info change for other users
@@ -87,7 +97,7 @@ public class AuthenticationController {
             }
         } catch (OauthUpdateNotAllowed e){
             logger.warning("Failed to update user as user is oauth user: ");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update information for google/github users");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot update information for Google/Github users.");
         }
         catch (Exception e) {
             logger.severe("Failed to update user due to an exception: " + e.getMessage());

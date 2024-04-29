@@ -21,18 +21,26 @@ public class WebSummarizerApplication {
         SpringApplication.run(WebSummarizerApplication.class, args);
     }
 
+    // Bean to initialize the database with admin role and user
     @Bean
     CommandLineRunner run(RoleRepo roleRepository, UserRepo userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
+            // Check if the admin role already exists
             if (roleRepository.findByAuthority("ADMIN").isPresent()) return;
+
+            // Create admin role and user role
             Role adminRole = roleRepository.save(new Role("ADMIN"));
             roleRepository.save(new Role("USER"));
 
+            // Set roles for admin user
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
 
+            // Create admin user
             User admin = new User(1, "ADMIN", "ADMIN", "admin@email.com", passwordEncoder.
                     encode("password"), null, null, roles, Provider.LOCAL, "bart");
+
+            // Save admin user
             userRepository.save(admin);
         };
     }

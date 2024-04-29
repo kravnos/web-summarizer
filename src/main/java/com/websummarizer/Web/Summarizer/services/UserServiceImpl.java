@@ -16,37 +16,42 @@ public class UserServiceImpl implements UserDetailsService {
 
     private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
-
     @Autowired
     private UserRepo userRepo;
 
+    /**
+     * Creates a new user.
+     *
+     * @param user The user to create.
+     * @return The created user.
+     */
     public User createUser(User user) {
         return userRepo.save(user);
     }
 
     /**
-     * Loads user details by email.
+     * Retrieves a user by email and reset token.
      *
      * @param email The email of the user.
-     * @param token The token associated with the user
-     * @return User object containing user details (Null if not found).
+     * @param token The reset token associated with the user.
+     * @return The user object containing user details (null if not found).
      */
     public User getUserByEmailAndResetToken(String email, String token) {
         return userRepo.getUserByEmailAndResetToken(email, token);
     }
 
     /**
-     * Loads user details by email.
+     * Sets the reset token for a user.
      *
-     * @param token The token associated with the user
-     * @param user The user that is having its reset token set
+     * @param token The reset token.
+     * @param user  The user to set the token for.
      */
     public void setPasswordRequestToken(String token, User user) {
         userRepo.setRequestToken(token, user.getEmail());
     }
 
     /**
-     * Loads user details by email.
+     * Loads user details by username.
      *
      * @param email The email of the user.
      * @return UserDetails object containing user details.
@@ -59,41 +64,49 @@ public class UserServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
+    /**
+     * Retrieves the username of a user by their ID.
+     *
+     * @param id The ID of the user.
+     * @return The username.
+     */
     public String getUserName(long id) {
         String username = "You";
         try {
             username = userRepo.findById(id).get().getFirst_name();
-        } catch (Exception e){
-
+        } catch (Exception e) {
+            // Handle exceptions
         }
-
         return username;
     }
 
-    public Long getFoundId(String email){
-        long id = 1l;
+    /**
+     * Retrieves the ID of a user by their email.
+     *
+     * @param email The email of the user.
+     * @return The ID of the user.
+     */
+    public Long getFoundId(String email) {
+        long id = 1L; // Default value
 
         Optional<User> maybeFoundEmail = userRepo.findByEmail(email);
         try {
             id = maybeFoundEmail.get().getId();
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            // Handle exceptions
         }
 
         return id;
     }
 
-    public User getFoundUser(String email){
-//        long id = 1l;
-
+    /**
+     * Retrieves the user by their email.
+     *
+     * @param email The email of the user.
+     * @return The user object.
+     */
+    public User getFoundUser(String email) {
         Optional<User> maybeFoundEmail = userRepo.findByEmail(email);
-//        try {
-//            id = maybeFoundEmail.get().getId();
-//        }catch (Exception e){
-//
-//        }
-
-        return maybeFoundEmail.get();
+        return maybeFoundEmail.orElse(null); // Return null if not found
     }
 }
-
