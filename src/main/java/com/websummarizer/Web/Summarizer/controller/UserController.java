@@ -15,30 +15,46 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Controller class for handling user-related requests.
+ */
 @RestController
 @RequestMapping("users")
 @Slf4j
 public class UserController {
 
     @Autowired
-    private HistoryService historyService; //todo service remove
+    private HistoryService historyService; // Service for history operations
     @Autowired
-    private UserRepo userRepo;
+    private UserRepo userRepo; // Repository for user data access
     @Autowired
-    private ShortLinkGenerator shortLinkGenerator;
+    private ShortLinkGenerator shortLinkGenerator; // Short link generator service
     private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
+    /**
+     * Endpoint to get the email of the authenticated user.
+     *
+     * @return The email of the authenticated user.
+     */
     @GetMapping("/")
     public String getAuthenticatedUserEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    /**
+     * Endpoint to add a new history record for a user.
+     *
+     * @param inputText    The input text.
+     * @param output       The output text.
+     * @param email        The user's email.
+     * @return ResponseEntity containing the saved history if successful, otherwise an error response.
+     */
     @PostMapping("/add-new-history")
-    public ResponseEntity<?> addNewHistory(String inputText, String output,String email) {
+    public ResponseEntity<?> addNewHistory(String inputText, String output, String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
-            logger.info("new history request from : " + email);
+            logger.info("New history request from: " + email);
             History history = new History();
             assert user != null;
             history.setUser(user);
@@ -53,55 +69,67 @@ public class UserController {
             logger.info("New user history created successfully: " + savedHistory.getId());
             return ResponseEntity.ok(savedHistory);
         } catch (Exception e) {
-            logger.severe("Failed to create new user history." + e.getMessage());
+            logger.severe("Failed to create new user history: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create new user history.");
         }
     }
 
+    /**
+     * Endpoint to append to a previous history record for a user.
+     *
+     * @param short_link   The short link identifier of the previous history.
+     * @param inputText    The input text to append.
+     * @param output       The output text to append.
+     * @param email        The user's email.
+     * @return ResponseEntity containing the saved history if successful, otherwise an error response.
+     */
     @PostMapping("/{short_link}/append-history")
-    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String inputText, String output,String email) {
+    public ResponseEntity<?> addToPreviousHistory(@PathVariable String short_link, String inputText, String output, String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
             // Create a new history for the user
-            logger.info("new history append request from : " + email);
+            logger.info("New history append request from: " + email);
             History history = new History();
             assert user != null;
             history.setUser(user);
             history.setInputText(inputText);
             history.setHistoryContent(output);
             history.setUploadTime(LocalDateTime.now());
-
-            //String shortLink = String.valueOf(historyRepo.findHistoryByShortLink(short_link));
-
             history.setShort_link(short_link);
 
             // Save the new history
             History savedHistory = historyService.save(history);
 
-            logger.info("new user history created successfully: " + savedHistory.getId());
+            logger.info("New user history created successfully: " + savedHistory.getId());
             return ResponseEntity.ok(savedHistory);
         } catch (Exception e) {
-            logger.severe("failed to create new user history." + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to append new user history.");
+            logger.severe("Failed to append new user history: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to append new user history.");
         }
     }
 
+    /**
+     * Endpoint to get all histories for a user.
+     *
+     * @param email The user's email.
+     * @return ResponseEntity containing the user's histories if successful, otherwise an error response.
+     */
     @GetMapping("/histories")
-    public ResponseEntity<?> addToPreviousHistory(String email) {
+    public ResponseEntity<?> getHistories(String email) {
         try {
             User user = userRepo.findByEmail(email).orElse(null);
-            // Create a new history for the user
-            logger.info("fetching histories for : " + email);
+            // Fetch histories for the user
+            logger.info("Fetching histories for: " + email);
 
-            // Save the new history
+            // Return all histories
             assert user != null;
             List<History> allHistories = historyService.findAllHistory(user.getId());
 
-            logger.info("returning all histories for : "+email);
+            logger.info("Returning all histories for: " + email);
             return ResponseEntity.ok(allHistories);
         } catch (Exception e) {
-            logger.severe("failed to return histories." + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failed to return histories.");
+            logger.severe("Failed to return histories: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to return histories.");
         }
     }
 }

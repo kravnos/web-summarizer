@@ -16,6 +16,13 @@ public class HTMLParser {
 
     private static final Logger LOGGER = Logger.getLogger(HTMLParser.class.getName());
 
+    /**
+     * Parses HTML content from a given URL and extracts text from paragraph elements.
+     *
+     * @param url The URL of the webpage to parse.
+     * @return The extracted text content from paragraph elements.
+     * @throws IOException If an error occurs while connecting to the URL or reading the HTML content.
+     */
     public static String parser(String url) throws IOException {
         // Get the URL, selects every paragraph element, extract the text value of each paragraph
         Document doc = Jsoup.connect(url).get();

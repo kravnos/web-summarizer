@@ -203,6 +203,10 @@ public class WebController {
         return "api/summary";
     }
 
+    /**
+     * This method creates a new chat for user
+     * @return The name of the view to render
+     */
     @PostMapping("/api/newchat")
     public String newChat() {
         this.flag = true;
@@ -451,6 +455,13 @@ public class WebController {
         }
     }
 
+    /**
+     * This method handles the frontend requests for the pro model
+     * @param isLoggedIn String true/false - is user logged in
+     * @param isProUser String true/false - is user a pro user
+     * @param model View model
+     * @return View to render
+     */
     @PostMapping("/user/pro")
     public String pro(
             @RequestParam(value = "isLoggedIn", required = false) String isLoggedIn,
@@ -537,18 +548,29 @@ public class WebController {
         }
     }
 
-
+    /**
+     * Creates a POST request for saving history data.
+     *
+     * @param session        HttpSession object
+     * @param isLoggedIn     String representing user's login status
+     * @param inputText      String representing input text
+     * @param historyContent String representing history content
+     * @param httpUrl        String representing the URL for the POST request
+     * @return ResponseEntity<String> containing the response from the server
+     */
     private ResponseEntity<String> createPostRequestForHistory(HttpSession session,
                                                                String isLoggedIn,
                                                                String inputText,
                                                                String historyContent,
                                                                String httpUrl) {
         try {
+            // Check if the user is logged in
             if (!isLoggedIn.equals("true")) {
                 // User is not logged in, no need to make a request
                 return null;
             }
 
+            // Log that user is logged in and making a post request
             logger.info("User is logged in, making a post request");
 
             // Generate a new link for the history
@@ -576,58 +598,81 @@ public class WebController {
                     String.class
             );
         } catch (Exception e) {
-            logger.severe("Error while making the post request: "+ e.getMessage());
+            // Log any error that occurs while making the post request
+            logger.severe("Error while making the post request: " + e.getMessage());
             // Handle the exception appropriately (e.g., log, throw custom exception, etc.)
             return null;
         }
     }
 
+    /**
+     * Extracts history data from the response entity and assigns them to class variables.
+     *
+     * @param response ResponseEntity<String> containing the response from the server
+     */
     private void extractHistoryData1(ResponseEntity<String> response){
+        // Log the new history response body
         logger.info("new history response body: " + response.getBody());
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
         try {
+            // Attempt to parse response body as JSON
             rootNode = mapper.readTree(response.getBody());
         } catch (JsonProcessingException e) {
-            //todo
+            // Log error if there is an issue creating JSON object of history
             logger.severe("error creating json object of history");
         }
         assert rootNode != null;
+        // Extract history data from JSON response
         int id = rootNode.get("id").asInt();
         hid = id;
         shortUrl = rootNode.get("short_link").asText();
         flag = false;
         logger.info("extracted history id: " + id);
     }
+
+    /**
+     * Extracts history data from the response entity and assigns the ID to a class variable.
+     *
+     * @param response ResponseEntity<String> containing the response from the server
+     */
     private void extractHistoryData2(ResponseEntity<String> response) {
+        // Log the new history append body
         logger.info("new history append body: " + response.getBody());
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null;
         try {
+            // Attempt to parse response body as JSON
             rootNode = mapper.readTree(response.getBody());
         } catch (JsonProcessingException e) {
-            //todo
+            // Log error if there is an issue creating JSON object of history
             logger.severe("error creating json object of history");
         }
 
         assert rootNode != null;
+        // Extract history data from JSON response
         int id = rootNode.get("id").asInt();
         hid = id;
         logger.info("extracted history id: " + id);
     }
 
+    /**
+     * Checks if the provided password meets the specified pattern requirements.
+     *
+     * @param password String representing the password to check
+     * @return true if the password meets the pattern requirements, false otherwise
+     */
     public boolean checkPassword(String password){
         String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 
         // Compile the pattern
         Pattern regex = Pattern.compile(pattern);
 
-        // Create a Matcher objectco
+        // Create a Matcher object
         Matcher matcher = regex.matcher(password);
         return matcher.matches();
     }
-
 
 }

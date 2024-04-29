@@ -57,6 +57,12 @@ public class OAuth2AuthenticationService {
         return userRepo.save(user);
     }
 
+    /**
+     * Process user login via Google OAuth.
+     *
+     * @param oidcUser The OAuth2 user details.
+     * @return LoginResponseDTO containing user details and JWT token.
+     */
     public LoginResponseDTO processOAuthPostLoginGoogle(DefaultOidcUser oidcUser) {
         String email = oidcUser.getEmail();
         logger.info("received oauth 2 Google user creation request: " + email);
@@ -105,6 +111,12 @@ public class OAuth2AuthenticationService {
         }
     }
 
+    /**
+     * Process user login via GitHub OAuth.
+     *
+     * @param oauth2User The OAuth2 user details.
+     * @return LoginResponseDTO containing user details and JWT token.
+     */
     public LoginResponseDTO processOAuthPostLoginGithub(UserOAuth2 oauth2User) {
         String uniqueUserName = oauth2User.getLogin();
         logger.info("received oauth 2 GITHUB user creation request: " + uniqueUserName);
@@ -128,9 +140,6 @@ public class OAuth2AuthenticationService {
                 logger.log(Level.WARNING, "Failed to login user: {0}", uniqueUserName);
                 return new LoginResponseDTO(null, "");
             }
-
-
-
 
         } else {
             //TODO : check what will happen if the user has a email registered and then tries to loging using google
