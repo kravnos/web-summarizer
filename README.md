@@ -5,6 +5,7 @@ Project documents are located in the [doc](doc) folder.
 
 ## Project Website 🌐
 Visit the live site at [web-summarizer-nf8x.onrender.com](https://web-summarizer-nf8x.onrender.com/)
+check our final product demonstation at (https://youtu.be/6hawMy3JRDU)
 
 ⚠️ Free hosting service will spin down on inactivity, please be patient on first load! ⚠️
 
