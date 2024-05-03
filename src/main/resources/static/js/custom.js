@@ -214,8 +214,8 @@ $(document).ready(function() {
         }
     });
 
-    $("#wrapper-login").on("htmx:beforeRequest", ".link-request", function() {
-        $("#wrapper-login .link-request").addClass("disabled").attr("aria-disabled", "true");
+    $("body").on("htmx:beforeRequest", ".nav-request, .link-request", function() {
+        $("#wrapper-page .nav-request, #wrapper-login .link-request").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
         $("#modal-login-loader").show();
@@ -308,7 +308,7 @@ $(document).ready(function() {
     $("#wrapper-login").on("htmx:afterSettle", function() {
         $("#modal-login-loader").fadeOut(sleep, function() {
             $("#wrapper-login, #wrapper-login .modal-body, #wrapper-login .button-text").removeClass("opacity-0");
-            $("#wrapper-login .link-request, #wrapper-login .btn-request").removeClass("disabled").removeAttr("aria-disabled");
+            $("#wrapper-page .nav-request, #wrapper-login .link-request, #wrapper-login .btn-request").removeClass("disabled").removeAttr("aria-disabled");
             $("#wrapper-login .button-spinner").addClass("d-none").attr("aria-hidden", "true");
 
             clearTimeout(timeout);
