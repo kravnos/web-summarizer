@@ -42,6 +42,9 @@ body {
 .modal-header, .modal-footer {
     border: 0;
 }
+.modal-content {
+    min-height: 200px;
+}
 .div-control {
     position: relative;
     flex: 1 1 auto;
