@@ -58,7 +58,7 @@ $(document).ready(function() {
 
         clearTimeout(timeout);
         timeout = setTimeout(function() { // throttle input events
-            if ((val.length) && ($("#loader").css("display") == "none") && ((!element.length) || (element.css("display") == "none"))) {
+            if ((val.length) && ($("#loader-main").css("display") == "none") && ((!element.length) || (element.css("display") == "none"))) {
                 $("#feedback-length").text(val.length + "/" + maxLength).removeClass("opacity-0");
 
                 if ((val.toLowerCase().startsWith("http") == true) || (val.toLowerCase().indexOf("www") >= 0)) {
@@ -111,7 +111,7 @@ $(document).ready(function() {
 
         $("#main").addClass("opacity-0");
         $("#intro").hide();
-        $("#loader").show();
+        $("#loader-main").show();
     });
 
     $("#button-summary, #wrapper-summary").on("htmx:afterRequest", function(event) {
@@ -156,7 +156,7 @@ $(document).ready(function() {
     });
 
     $("#main").on("htmx:afterSettle", function() {
-        $("#loader").fadeOut(sleep, function() {
+        $("#loader-main").fadeOut(sleep, function() {
             $("#main").removeClass("opacity-0");
         });
     });
@@ -218,7 +218,7 @@ $(document).ready(function() {
         $("#wrapper-page .nav-request, #wrapper-login .link-request").addClass("disabled").attr("aria-disabled", "true");
 
         $("#wrapper-login").addClass("opacity-0");
-        $("#modal-login-loader").show();
+        $("#loader-login").show();
     });
 
     $("#wrapper-login").on("htmx:beforeRequest", ".btn-request", function(event) {
@@ -255,7 +255,7 @@ $(document).ready(function() {
             $("#wrapper-login .btn-request").addClass("disabled").attr("aria-disabled", "true");
             $("#wrapper-login .button-text, #wrapper-login .modal-body").addClass("opacity-0");
             $("#wrapper-login .button-spinner").removeClass("d-none").removeAttr("aria-hidden");
-            $("#modal-login-loader").show();
+            $("#loader-login").show();
         } else {
             let element = $("#modal-message");
 
@@ -306,7 +306,7 @@ $(document).ready(function() {
     });
 
     $("#wrapper-login").on("htmx:afterSettle", function() {
-        $("#modal-login-loader").fadeOut(sleep, function() {
+        $("#loader-login").fadeOut(sleep, function() {
             $("#wrapper-login, #wrapper-login .modal-body, #wrapper-login .button-text").removeClass("opacity-0");
             $("#wrapper-page .nav-request, #wrapper-login .link-request, #wrapper-login .btn-request").removeClass("disabled").removeAttr("aria-disabled");
             $("#wrapper-login .button-spinner").addClass("d-none").attr("aria-hidden", "true");
@@ -387,7 +387,7 @@ $(document).ready(function() {
     when ALL content is loaded
 */
 $(window).on("load", function() {
-    $("#loader").fadeOut(750, function() {
+    $("#loader-main").fadeOut(750, function() {
         $("#wrapper-page").removeClass("opacity-0");
     });
 });
